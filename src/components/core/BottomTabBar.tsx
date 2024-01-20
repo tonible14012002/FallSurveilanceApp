@@ -1,12 +1,10 @@
 import {
   Avatar,
   BottomNavigation,
-  BottomNavigationProps,
   BottomNavigationTab,
   Icon,
   Layout,
 } from '@ui-kitten/components';
-import {useState} from 'react';
 import {StyleSheet} from 'react-native';
 import COLORS from '~/constants/colors';
 import LogoImg from '../../assets/images/logo.png';

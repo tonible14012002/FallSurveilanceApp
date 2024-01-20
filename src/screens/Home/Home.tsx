@@ -1,14 +1,13 @@
 import {Icon, Layout, Text} from '@ui-kitten/components';
-import {StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import HouseSearchBar from '~/components/Home/HouseSearchBar';
 import MyHousesList from '~/components/Home/HousesList';
-import BottomTabBar from '~/components/core/BottomTabBar';
 import COLORS from '~/constants/colors';
 
 export default function Home() {
   return (
     <Layout level="3" style={styles.container}>
-      <View style={styles.wrapper}>
+      <ScrollView style={styles.wrapper}>
         <View style={{display: 'flex', alignItems: 'flex-end'}}>
           <Icon
             name="plus-circle-outline"
@@ -22,7 +21,8 @@ export default function Home() {
         <HouseSearchBar />
         <MyHousesList title="My Houses" />
         <MyHousesList title="Member Houses" />
-      </View>
+        <View style={{height: 20}} />
+      </ScrollView>
     </Layout>
   );
 }

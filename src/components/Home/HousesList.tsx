@@ -1,4 +1,4 @@
-import {Icon, Input, Text} from '@ui-kitten/components';
+import {Text} from '@ui-kitten/components';
 import {StyleSheet, View} from 'react-native';
 import COLORS from '~/constants/colors';
 import HouseItem from './HouseItem';
@@ -14,7 +14,7 @@ export default function HousesList({title}: HousesListProps) {
         {title}
       </Text>
       <View style={styles.housesList}>
-        {Array(4)
+        {Array(6)
           .fill(0)
           .map((_, idx) => (
             <HouseItem key={idx} />

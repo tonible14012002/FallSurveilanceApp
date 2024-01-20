@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import {Icon, Input, Text} from '@ui-kitten/components';
+import {Icon, Text} from '@ui-kitten/components';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 
 export default function HouseItem() {
