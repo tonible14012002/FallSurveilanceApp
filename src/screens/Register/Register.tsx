@@ -1,14 +1,14 @@
-import {Input, Layout} from '@ui-kitten/components';
+import {Layout} from '@ui-kitten/components';
 import {StyleSheet, View} from 'react-native';
-import LoginForm from '~/components/Login/LoginForm';
+import RegisterForm from '~/components/Register/RegisterForm';
 import Logo from '~/components/core/Logo';
 import COLORS from '~/constants/colors';
 
-export default function Login() {
+export default function Register() {
   return (
     <Layout level="3" style={styles.container}>
       <Logo />
-      <LoginForm />
+      <RegisterForm />
     </Layout>
   );
 }
