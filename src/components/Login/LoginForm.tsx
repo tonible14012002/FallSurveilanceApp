@@ -7,10 +7,12 @@ import {StyleSheet, View} from 'react-native';
 import COLORS from '~/constants/colors';
 import {useRenderIcon} from '~/hooks/useRenderIcon';
 import {LoginSchema, LoginSchemaType} from '~/schema/form';
+import {useNavigation} from '@react-navigation/native';
 
 export default function LoginForm() {
   const [rememberMe, setRememberMe] = useState(false);
 
+  const navigation = useNavigation();
   const {renderIcon} = useRenderIcon();
   const {
     handleSubmit,
@@ -21,6 +23,7 @@ export default function LoginForm() {
   });
   const onSubmit = (data: any) => {
     console.log(data);
+    navigation.navigate('Home');
   };
 
   return (
