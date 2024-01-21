@@ -58,7 +58,7 @@ function App() {
   return (
     <>
       <IconRegistry icons={EvaIconsPack} />
-      <ApplicationProvider {...eva} theme={eva.dark}>
+      <ApplicationProvider {...eva} theme={eva.light}>
         <NavigationContainer>
           <PublicNavigator>
             {publicRoutes.map(route => (

@@ -1,9 +1,9 @@
-import {Icon, Input} from '@ui-kitten/components';
-import {StyleSheet, View} from 'react-native';
+import {Icon, Input, Layout} from '@ui-kitten/components';
+import {StyleSheet} from 'react-native';
 
 export default function HouseSearchBar() {
   return (
-    <View style={styles.container}>
+    <Layout level="1" style={styles.container}>
       <Icon name="search" fill="white" style={{width: 24, height: 24}} />
       <Input
         placeholder="Search"
@@ -11,7 +11,7 @@ export default function HouseSearchBar() {
           flexGrow: 1,
         }}
       />
-    </View>
+    </Layout>
   );
 }
 

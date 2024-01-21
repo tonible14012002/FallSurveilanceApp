@@ -1,28 +1,33 @@
 import {useNavigation} from '@react-navigation/native';
-import {Icon, Text} from '@ui-kitten/components';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Text} from '@ui-kitten/components';
+import {StyleSheet, View} from 'react-native';
+import ListItem from '../core/ListItem';
 
 export default function HouseItem() {
   const navigation = useNavigation<any>();
 
-  return (
-    <TouchableOpacity
-      onPress={() => navigation.navigate('HouseDetail', {id: 10})}>
-      <View style={styles.container}>
-        <Text>House 1</Text>
+  const handleOnPress = () => navigation.navigate('HouseDetail', {});
 
-        <View
-          style={{
-            display: 'flex',
-            alignItems: 'flex-end',
-            flexDirection: 'row',
-            gap: 2,
-          }}>
-          <Text category="s2">2</Text>
-          <Icon name="arrow-right" style={{width: 16, height: 16}} />
-        </View>
-      </View>
-    </TouchableOpacity>
+  const __renderTitle = () => <Text>House 1</Text>;
+
+  const __renderSubTitle = () => (
+    <View style={styles.houseSmallInfo}>
+      <Text appearance="hint" category="c1">
+        2 members
+      </Text>
+      <Text>•</Text>
+      <Text appearance="hint" category="c1">
+        2 rooms
+      </Text>
+    </View>
+  );
+
+  return (
+    <ListItem
+      title={__renderTitle()}
+      subTitle={__renderSubTitle()}
+      onPressHandler={handleOnPress}
+    />
   );
 }
 
@@ -32,7 +37,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
-    borderBottomWidth: 0.8,
+  },
+  houseSmallInfo: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
 });

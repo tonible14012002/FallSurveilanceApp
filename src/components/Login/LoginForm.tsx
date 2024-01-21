@@ -107,7 +107,6 @@ export default function LoginForm() {
           marginTop: 10,
         }}
         size="large"
-        status="basic"
         onPress={handleSubmit(onSubmit)}>
         Sign In
       </Button>
