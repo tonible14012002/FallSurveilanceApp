@@ -1,10 +1,9 @@
-import {Button, Icon as KittenIcon, Text} from '@ui-kitten/components';
+import {Button, Icon as KittenIcon} from '@ui-kitten/components';
 import {RenderProp} from '@ui-kitten/components/devsupport';
-import {GestureResponderEvent, StyleSheet, View} from 'react-native';
+import {GestureResponderEvent, StyleSheet} from 'react-native';
 import {ImageProps} from 'react-native-svg';
 
 interface FloatButtonrops {
-  title?: string;
   icon?: RenderProp<Partial<ImageProps>>;
   iconPosition?: 'left' | 'right';
   style?: Object;
@@ -13,7 +12,6 @@ interface FloatButtonrops {
 
 export default function FloatButton(props: FloatButtonrops) {
   const {
-    title = 'Add',
     icon: Icon = <KittenIcon name="plus" style={{width: 16, height: 16}} />,
     iconPosition = 'left',
     style = {},
@@ -28,23 +26,22 @@ export default function FloatButton(props: FloatButtonrops) {
       {...iconPositionProp}
       onPress={pressHandler}
       style={[styles.container, style]}
-      status="warning">
-      {title}
-    </Button>
+      status="primary"
+    />
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 15,
-    right: 10,
+    bottom: 24,
+    right: 24,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    height: 55,
-    width: 90,
-    gap: -10,
-    borderRadius: 15,
+    height: 56,
+    width: 56,
+    borderRadius: 1000,
+    elevation: 10,
   },
 });

@@ -3,7 +3,6 @@ import {
   GestureResponderEvent,
   StyleSheet,
   TouchableOpacity,
-  View,
 } from 'react-native';
 
 interface TabItemProps {

@@ -1,45 +1,49 @@
-import {Layout} from '@ui-kitten/components';
-import {useMemo, useState} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
-import Detection from '~/components/Notification/Detection';
-import Invite from '~/components/Notification/Invite';
-import HeaderRow from '~/components/core/HeaderRow';
+import {Icon} from '@ui-kitten/components';
+import ListItem from '~/components/core/ListItem';
+import {useState} from 'react';
+import {View} from 'react-native';
+// import Detection from '~/components/Notification/Detection';
+// import Invite from '~/components/Notification/Invite';
+import ScreenLayout from '~/components/core/ScreenLayout';
 import TabsRow from '~/components/core/TabsRow';
+import TopBar from '~/components/core/TopBar';
 
 const TABS = ['Detection', 'Invite'];
 
-const TABS_CONTENT: Record<(typeof TABS)[number], () => React.JSX.Element> = {
-  Detection,
-  Invite,
-};
+// const TABS_CONTENT: Record<(typeof TABS)[number], () => React.JSX.Element> = {
+//   Detection,
+//   Invite,
+// };
 
 export default function Notification() {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const Content = useMemo(
-    () => TABS_CONTENT[TABS[selectedIndex]],
-    [selectedIndex],
-  );
+  // const Content = useMemo(
+  //   () => TABS_CONTENT[TABS[selectedIndex]],
+  //   [selectedIndex],
+  // );
 
   return (
-    <Layout level="3" style={styles.container}>
-      <HeaderRow title="Notification" />
-      <View style={{paddingHorizontal: 10, paddingTop: 15}}>
-        <TabsRow
-          selectedIndex={selectedIndex}
-          setSelectedIndex={setSelectedIndex}
-          tabs={TABS}
-        />
-        <ScrollView>
-          <Content />
-        </ScrollView>
-      </View>
-    </Layout>
+    <ScreenLayout topBar={<TopBar title="Notification" />}>
+      <TabsRow
+        selectedIndex={selectedIndex}
+        setSelectedIndex={setSelectedIndex}
+        tabs={TABS}
+      />
+      <ListItem
+        level="2"
+        size="large"
+        isLeftIcon
+        rightEle={
+          <View
+            style={{
+              width: 16,
+              height: 16,
+            }}>
+            <Icon name="checkmark-outline" />
+          </View>
+        }
+        title={'House'}
+      />
+    </ScreenLayout>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    height: '100%',
-  },
-});

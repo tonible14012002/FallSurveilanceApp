@@ -16,6 +16,7 @@ export default function BottomTabBar({navigation, state}: BottomTabBarProps) {
       onSelect={index => navigation.navigate(state.routeNames[index])}>
       <BottomNavigationTab icon={HomeIcon} />
       <BottomNavigationTab icon={BellIcon} />
+      <BottomNavigationTab icon={BellIcon} />
     </BottomNavigation>
   );
 }

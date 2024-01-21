@@ -1,5 +1,5 @@
 import {Icon, Input, Layout} from '@ui-kitten/components';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 export default function HouseSearchBar() {
   return (

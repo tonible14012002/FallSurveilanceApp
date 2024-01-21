@@ -11,6 +11,7 @@ import {CompositeNavigationProp} from '@react-navigation/native';
 import Home from '~/screens/Home/Home';
 import Login from '~/screens/Login/Login';
 import Notification from '~/screens/Notification/Notification';
+import Account from '~/screens/Account/Account';
 
 export type PublicRouteParamList = {
   Login: undefined;
@@ -26,6 +27,7 @@ export type PrivateRouteParamList = {
 export type PrivateBottomRouteParamList = {
   Home: undefined;
   Notification: undefined;
+  Account: undefined;
   // Bottom Tab Screen
 };
 
@@ -97,6 +99,13 @@ const privateTabRoutes: PrivateTabRouteItem[] = [
   {
     screen: Notification,
     name: 'Notification',
+    options: {
+      headerShown: false,
+    },
+  },
+  {
+    screen: Account,
+    name: 'Account',
     options: {
       headerShown: false,
     },
