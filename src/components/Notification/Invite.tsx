@@ -1,7 +1,6 @@
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import NotSeenLabel from '../core/NotSeenLabel';
 import {Avatar, Icon, Text} from '@ui-kitten/components';
-import COLORS from '~/constants/colors';
 import LogoImg from '~/assets/images/logo.png';
 
 interface InviteItemProps {
@@ -11,53 +10,30 @@ interface InviteItemProps {
   pressHandler: () => void;
 }
 
-const STATUS_BACKGROUND_COLOR: Record<InviteItemProps['status'], string> = {
-  pending: 'transparent',
-  accepted: 'rgba(246, 201, 14, 0.2)',
-  rejected: 'rgba(250, 112, 112, 0.3)',
-};
-
 const InviteItem = ({
-  item,
   isNotSeen = false,
   status,
   pressHandler,
 }: InviteItemProps) => {
   const __renderPendingAction = () => (
     <View style={styles.inviteAction}>
-      <Icon
-        name="checkmark-circle-2"
-        style={{width: 24, height: 24}}
-        fill={COLORS.yellow}
-      />
-      <Icon name="close" style={{width: 32, height: 32}} fill={COLORS.danger} />
+      <Icon name="checkmark-circle-2" style={{width: 24, height: 24}} />
+      <Icon name="close" style={{width: 32, height: 32}} />
     </View>
   );
 
   const __renderAcceptedStatus = () => (
-    <Icon
-      name="checkmark-outline"
-      style={{width: 24, height: 24}}
-      fill={COLORS.yellow}
-    />
+    <Icon name="checkmark-outline" style={{width: 24, height: 24}} />
   );
 
   const __renderRejectedStatus = () => (
-    <Icon
-      name="close-circle-outline"
-      style={{width: 24, height: 24}}
-      fill={COLORS.danger}
-    />
+    <Icon name="close-circle-outline" style={{width: 24, height: 24}} />
   );
 
   return (
     <TouchableOpacity onPress={pressHandler}>
       <View style={styles.inviteItem}>
-        <Icon
-          name="trash-2-outline"
-          style={{width: 24, height: 24}}
-          fill={COLORS.danger}
-        />
+        <Icon name="trash-2-outline" style={{width: 24, height: 24}} />
         {isNotSeen ? (
           <NotSeenLabel style={{position: 'relative', top: 0, right: 0}} />
         ) : (
@@ -66,7 +42,6 @@ const InviteItem = ({
         <View
           style={{
             ...styles.inviteInformation,
-            backgroundColor: STATUS_BACKGROUND_COLOR[status],
           }}>
           <Avatar source={LogoImg} size="medium" />
           <View style={{paddingLeft: 5}}>
@@ -118,7 +93,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 5,
     borderBottomWidth: 0.9,
-    borderBottomColor: 'rgba(255,255,255,0.5)',
   },
   inviteStatus: {
     position: 'absolute',

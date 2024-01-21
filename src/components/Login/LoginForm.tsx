@@ -4,15 +4,15 @@ import {Button, CheckBox, Input, Text} from '@ui-kitten/components';
 import {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {StyleSheet, View} from 'react-native';
-import COLORS from '~/constants/colors';
 import {useRenderIcon} from '~/hooks/useRenderIcon';
 import {LoginSchema, LoginSchemaType} from '~/schema/form';
 import {useNavigation} from '@react-navigation/native';
+import {PublicScreenProps} from '~/constants/routes';
 
 export default function LoginForm() {
   const [rememberMe, setRememberMe] = useState(false);
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<PublicScreenProps>();
   const {renderIcon} = useRenderIcon();
   const {
     handleSubmit,
@@ -23,7 +23,7 @@ export default function LoginForm() {
   });
   const onSubmit = (data: any) => {
     console.log(data);
-    navigation.navigate('Home');
+    navigation.navigate('Private');
   };
 
   return (
@@ -35,15 +35,13 @@ export default function LoginForm() {
             <Input
               style={{
                 width: '100%',
-                backgroundColor: COLORS.secondary,
-                borderColor: COLORS.secondary,
               }}
               accessoryLeft={renderIcon('phone')}
               size="large"
               status="control"
               placeholder="Phone number"
               onBlur={onBlur}
-              onChangeText={value => onChange(value)}
+              onChangeText={val => onChange(val)}
               value={value}
             />
           )}
@@ -62,8 +60,6 @@ export default function LoginForm() {
             <Input
               style={{
                 width: '100%',
-                backgroundColor: COLORS.secondary,
-                borderColor: COLORS.secondary,
               }}
               status="control"
               accessoryLeft={renderIcon('lock')}
@@ -90,9 +86,7 @@ export default function LoginForm() {
         <CheckBox checked={rememberMe} onChange={value => setRememberMe(value)}>
           Remember me
         </CheckBox>
-        <Link to={''} style={{color: 'white'}}>
-          Forgot password?
-        </Link>
+        <Link to={''}>Forgot password?</Link>
       </View>
       <View
         style={{
@@ -104,15 +98,13 @@ export default function LoginForm() {
         <Text category="s2">New user?</Text>
         <Link
           to={{screen: 'Register'}}
-          style={{textDecorationLine: 'underline', color: COLORS.yellow}}>
+          style={{textDecorationLine: 'underline'}}>
           Register
         </Link>
       </View>
       <Button
         style={{
           marginTop: 10,
-          backgroundColor: COLORS.yellow,
-          borderColor: COLORS.yellow,
         }}
         size="large"
         status="basic"

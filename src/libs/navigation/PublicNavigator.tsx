@@ -1,6 +1,6 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createStackNavigator} from '@react-navigation/stack';
 
 const {Navigator: PublicNavigator, Screen: PublicScreen} =
-  createBottomTabNavigator();
+  createStackNavigator();
 
 export {PublicScreen, PublicNavigator};

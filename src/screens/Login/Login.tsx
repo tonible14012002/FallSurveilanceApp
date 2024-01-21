@@ -2,7 +2,6 @@ import {Layout} from '@ui-kitten/components';
 import {StyleSheet} from 'react-native';
 import LoginForm from '~/components/Login/LoginForm';
 import Logo from '~/components/core/Logo';
-import COLORS from '~/constants/colors';
 
 export default function Login() {
   return (
@@ -19,6 +18,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
-    backgroundColor: COLORS.primary,
   },
 });

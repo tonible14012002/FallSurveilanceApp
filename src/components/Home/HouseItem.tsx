@@ -3,7 +3,7 @@ import {Icon, Text} from '@ui-kitten/components';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 
 export default function HouseItem() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
   return (
     <TouchableOpacity
@@ -19,11 +19,7 @@ export default function HouseItem() {
             gap: 2,
           }}>
           <Text category="s2">2</Text>
-          <Icon
-            name="arrow-right"
-            style={{width: 16, height: 16}}
-            fill="#ffffff"
-          />
+          <Icon name="arrow-right" style={{width: 16, height: 16}} />
         </View>
       </View>
     </TouchableOpacity>
@@ -37,7 +33,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 12,
-    borderBottomColor: 'rgba(255,255,255,0.3)',
     borderBottomWidth: 0.8,
   },
 });

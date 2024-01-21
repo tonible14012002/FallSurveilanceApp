@@ -1,7 +1,6 @@
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import NotSeenLabel from '../core/NotSeenLabel';
 import {Avatar, Icon, Text} from '@ui-kitten/components';
-import COLORS from '~/constants/colors';
 import LogoImg from '~/assets/images/logo.png';
 
 interface DetectionItemProps {
@@ -11,18 +10,13 @@ interface DetectionItemProps {
 }
 
 const DetectionItem = ({
-  item,
   isNotSeen = false,
   pressHandler,
 }: DetectionItemProps) => {
   return (
     <TouchableOpacity onPress={pressHandler}>
       <View style={styles.detectionItem}>
-        <Icon
-          name="trash-2-outline"
-          style={{width: 24, height: 24}}
-          fill={COLORS.danger}
-        />
+        <Icon name="trash-2-outline" style={{width: 24, height: 24}} />
         {isNotSeen ? (
           <NotSeenLabel style={{position: 'relative', top: 0, right: 0}} />
         ) : (
@@ -72,6 +66,5 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 15,
     borderBottomWidth: 0.9,
-    borderBottomColor: 'rgba(255,255,255,0.5)',
   },
 });

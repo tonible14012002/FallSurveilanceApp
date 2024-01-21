@@ -1,6 +1,5 @@
 import {Icon, Input} from '@ui-kitten/components';
 import {StyleSheet, View} from 'react-native';
-import COLORS from '~/constants/colors';
 
 export default function HouseSearchBar() {
   return (
@@ -9,8 +8,6 @@ export default function HouseSearchBar() {
       <Input
         placeholder="Search"
         style={{
-          backgroundColor: 'transparent',
-          borderColor: 'transparent',
           flexGrow: 1,
         }}
       />
@@ -23,7 +20,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.secondary,
     borderRadius: 8,
     height: 50,
     paddingHorizontal: 15,

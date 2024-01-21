@@ -16,7 +16,6 @@ export default function HeaderRow({title, menu}: HeaderRowProps) {
     <View style={styles.menuContainer}>
       <Icon
         name="menu-outline"
-        fill="#ffffff"
         style={styles.menuButton}
         onPress={handleNavigateBack}
       />
@@ -27,7 +26,6 @@ export default function HeaderRow({title, menu}: HeaderRowProps) {
     <View style={styles.container}>
       <Icon
         name="chevron-left-outline"
-        fill="#ffffff"
         style={styles.backButton}
         onPress={handleNavigateBack}
       />
@@ -47,7 +45,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.2)',
     height: 60,
   },
   backButton: {

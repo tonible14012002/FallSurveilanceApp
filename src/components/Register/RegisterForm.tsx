@@ -3,7 +3,6 @@ import {Link} from '@react-navigation/native';
 import {Button, Input, Text} from '@ui-kitten/components';
 import {Controller, useForm} from 'react-hook-form';
 import {StyleSheet, View} from 'react-native';
-import COLORS from '~/constants/colors';
 import {useRenderIcon} from '~/hooks/useRenderIcon';
 import {RegisterSchema, RegisterSchemaType} from '~/schema/form';
 
@@ -29,8 +28,6 @@ export default function RegisterForm() {
             <Input
               style={{
                 width: '100%',
-                backgroundColor: COLORS.secondary,
-                borderColor: COLORS.secondary,
               }}
               accessoryLeft={renderIcon('person')}
               size="large"
@@ -56,8 +53,6 @@ export default function RegisterForm() {
             <Input
               style={{
                 width: '100%',
-                backgroundColor: COLORS.secondary,
-                borderColor: COLORS.secondary,
               }}
               accessoryLeft={renderIcon('phone')}
               size="large"
@@ -83,8 +78,6 @@ export default function RegisterForm() {
             <Input
               style={{
                 width: '100%',
-                backgroundColor: COLORS.secondary,
-                borderColor: COLORS.secondary,
               }}
               status="control"
               accessoryLeft={renderIcon('lock')}
@@ -111,17 +104,13 @@ export default function RegisterForm() {
           marginTop: 5,
         }}>
         <Text category="s2">Already has an account?</Text>
-        <Link
-          to={{screen: 'Login'}}
-          style={{textDecorationLine: 'underline', color: COLORS.yellow}}>
+        <Link to={{screen: 'Login'}} style={{textDecorationLine: 'underline'}}>
           Login
         </Link>
       </View>
       <Button
         style={{
           marginTop: 10,
-          backgroundColor: COLORS.yellow,
-          borderColor: COLORS.yellow,
         }}
         size="large"
         status="basic"

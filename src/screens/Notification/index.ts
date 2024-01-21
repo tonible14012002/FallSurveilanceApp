@@ -1,1 +1,1 @@
-import './Notification';
+export * from './Notification';

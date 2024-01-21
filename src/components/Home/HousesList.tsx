@@ -1,6 +1,5 @@
 import {Text} from '@ui-kitten/components';
 import {StyleSheet, View} from 'react-native';
-import COLORS from '~/constants/colors';
 import HouseItem from './HouseItem';
 
 interface HousesListProps {
@@ -30,7 +29,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   housesList: {
-    backgroundColor: COLORS.secondary,
     paddingHorizontal: 10,
     paddingBottom: 20,
     borderRadius: 10,

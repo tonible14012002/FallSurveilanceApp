@@ -1,1 +1,1 @@
-import './Register';
+export * from './Register';

@@ -2,7 +2,6 @@ import {Icon, Layout, Text} from '@ui-kitten/components';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import HouseSearchBar from '~/components/Home/HouseSearchBar';
 import MyHousesList from '~/components/Home/HousesList';
-import COLORS from '~/constants/colors';
 
 export default function Home() {
   return (
@@ -31,8 +30,6 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     height: '100%',
-    backgroundColor: COLORS.primary,
-    color: 'white',
   },
   wrapper: {
     paddingTop: 10,

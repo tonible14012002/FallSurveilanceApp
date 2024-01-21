@@ -1,6 +1,5 @@
 import {Text} from '@ui-kitten/components';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import COLORS from '~/constants/colors';
 import NotSeenLabel from './NotSeenLabel';
 
 interface TabItemProps {
@@ -10,18 +9,12 @@ interface TabItemProps {
   pressHandler: () => void;
 }
 
-const TabItem = ({
-  item,
-  selected,
-  isNotSeen = false,
-  pressHandler,
-}: TabItemProps) => {
+const TabItem = ({item, isNotSeen = false, pressHandler}: TabItemProps) => {
   return (
     <TouchableOpacity onPress={pressHandler}>
       <View
         style={{
           ...styles.tabItem,
-          backgroundColor: selected ? COLORS.yellow : COLORS.secondary,
         }}>
         <Text style={{fontWeight: 'bold'}}>{item}</Text>
         {isNotSeen && <NotSeenLabel />}
@@ -80,6 +73,5 @@ const styles = StyleSheet.create({
     right: -3,
     borderRadius: 50,
     elevation: 4,
-    backgroundColor: COLORS.yellow,
   },
 });
