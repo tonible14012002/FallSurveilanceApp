@@ -1,28 +1,53 @@
 import {useNavigation} from '@react-navigation/native';
-import {Icon, Text} from '@ui-kitten/components';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Button, Icon, Text} from '@ui-kitten/components';
+import {StyleSheet, View} from 'react-native';
+import ListItem from '../core/ListItem';
 
 export default function HouseItem() {
   const navigation = useNavigation<any>();
 
-  return (
-    <TouchableOpacity
-      onPress={() => navigation.navigate('HouseDetail', {id: 10})}>
-      <View style={styles.container}>
-        <Text>House 1</Text>
+  const handleOnPress = () => navigation.navigate('HouseDetail', {});
 
-        <View
-          style={{
-            display: 'flex',
-            alignItems: 'flex-end',
-            flexDirection: 'row',
-            gap: 2,
-          }}>
-          <Text category="s2">2</Text>
-          <Icon name="arrow-right" style={{width: 16, height: 16}} />
-        </View>
+  const __renderLeftIcon = () => (
+    <Icon name="home-outline" style={{width: 24, height: 24}} fill="#ffffff" />
+  );
+
+  const __renderTitle = () => <Text>House 1</Text>;
+
+  const __renderSubTitle = () => (
+    <View style={styles.houseSmallInfo}>
+      <Text category="s2">2 members</Text>
+      <Text>•</Text>
+      <Text category="s2">2 rooms</Text>
+    </View>
+  );
+
+  const __renderRightEle = () => (
+    <Button
+      style={{
+        borderRadius: 50,
+        width: 45,
+        height: 45,
+      }}
+      status="warning">
+      <View>
+        <Icon
+          name="arrow-right"
+          fill="#ffffff"
+          style={{width: 24, height: 24}}
+        />
       </View>
-    </TouchableOpacity>
+    </Button>
+  );
+
+  return (
+    <ListItem
+      leftIcon={__renderLeftIcon()}
+      title={__renderTitle()}
+      subTitle={__renderSubTitle()}
+      rightEle={__renderRightEle()}
+      onPressHandler={handleOnPress}
+    />
   );
 }
 
@@ -32,7 +57,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
-    borderBottomWidth: 0.8,
+    padding: 15,
+    borderRadius: 25,
+  },
+  houseInfo: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  houseSmallInfo: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
 });
