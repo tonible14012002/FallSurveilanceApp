@@ -1,5 +1,5 @@
-import {Input, Layout} from '@ui-kitten/components';
-import {StyleSheet, View} from 'react-native';
+import {Layout} from '@ui-kitten/components';
+import {StyleSheet} from 'react-native';
 import LoginForm from '~/components/Login/LoginForm';
 import Logo from '~/components/core/Logo';
 import COLORS from '~/constants/colors';

@@ -5,6 +5,7 @@ import {ApplicationProvider, IconRegistry} from '@ui-kitten/components';
 import {publicRoutes} from '~/constants/routes';
 import {PublicNavigator, PublicScreen} from '~/libs/navigation';
 import {EvaIconsPack} from '@ui-kitten/eva-icons';
+import BottomTabBar from '~/components/core/BottomTabBar';
 
 function App() {
   return (
@@ -12,13 +13,13 @@ function App() {
       <IconRegistry icons={EvaIconsPack} />
       <ApplicationProvider {...eva} theme={eva.dark}>
         <NavigationContainer>
-          <PublicNavigator>
+          <PublicNavigator tabBar={props => <BottomTabBar {...props} />}>
             {publicRoutes.map(route => (
               <PublicScreen
                 key={route.name}
                 name={route.name}
                 component={route.screen}
-                options={route.options}
+                options={route?.options}
               />
             ))}
           </PublicNavigator>

@@ -1,6 +1,6 @@
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Link} from '@react-navigation/native';
-import {Button, CheckBox, Input, Text} from '@ui-kitten/components';
+import {Button, Input, Text} from '@ui-kitten/components';
 import {Controller, useForm} from 'react-hook-form';
 import {StyleSheet, View} from 'react-native';
 import COLORS from '~/constants/colors';
