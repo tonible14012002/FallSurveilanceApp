@@ -6,8 +6,8 @@ import {
   useMemo,
   useState,
 } from 'react';
-import type {User} from '../schema/identity';
-// import jwtManager from '../libs/jwt/jwtManager';
+import type {User} from '~/schema/api/identity';
+import jwtManager from '~/libs/jwt/jwtManager';
 
 export type AuthContextValue = {
   user?: User;
@@ -26,8 +26,8 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
   const [user, setUser] = useState<User>();
   const logout = useCallback(() => {
     setUser(undefined);
-    // jwtManager.clearRefreshToken();
-    // jwtManager.clearToken();
+    jwtManager.clearRefreshToken();
+    jwtManager.clearToken();
   }, []);
 
   const authState = useMemo(

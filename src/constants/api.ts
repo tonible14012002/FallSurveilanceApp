@@ -1,10 +1,12 @@
 import wretch from 'wretch';
-import QueryStringAddon from 'wretch/addons/queryString';
-import AbortAddon from 'wretch/addons/abort';
+// import QueryStringAddon from 'wretch/addons/queryString';
+// import AbortAddon from 'wretch/addons/abort';
 
-const FALL_SURVEILANCE = wretch('')
-  .addon(QueryStringAddon)
-  .addon(AbortAddon())
+const FALL_SURVEILANCE = wretch(
+  process.env.FALL_SERVERILANCE_URL ?? 'http://localhost:8080/',
+)
+  // .addon(QueryStringAddon)
+  // .addon(AbortAddon())
   .errorType('json');
 
 export const API = {
@@ -20,6 +22,11 @@ export const logoutApi = () => {
 };
 
 export const API_PATH = {
-  LOGIN: '/api/token/',
-  PROFILE: '',
+  IDENTITY_SERVICES: {
+    ME: '/api/identity-services/me/',
+    LOGIN: '/api/identity-services/token/',
+  },
+  USER_SERVICES: {
+    PROFILE: (id: string) => '/api/user-services/profile/' + id + '/',
+  },
 };
