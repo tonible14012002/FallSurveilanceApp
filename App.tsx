@@ -17,6 +17,7 @@ import {
   PublicScreen,
 } from '~/libs/navigation';
 import BottomTabBar from '~/components/core/BottomTabBar';
+import {HouseDetailContextProvider} from '~/components/HouseDetail';
 
 const PrivateTabScreens = () => {
   return (
@@ -35,50 +36,50 @@ const PrivateTabScreens = () => {
 
 const PrivateScreens = () => {
   return (
-    <PrivateNavigator>
-      {privateRoutes.map(route => (
+    <HouseDetailContextProvider>
+      <PrivateNavigator>
+        {privateRoutes.map(route => (
+          <PrivateScreen
+            key={route.name}
+            name={route.name}
+            component={route.screen}
+            options={route?.options}
+          />
+        ))}
         <PrivateScreen
-          key={route.name}
-          name={route.name}
-          component={route.screen}
-          options={route?.options}
+          key="Main"
+          name="Main"
+          component={PrivateTabScreens}
+          options={{headerShown: false}}
         />
-      ))}
-      <PrivateScreen
-        key="Main"
-        name="Main"
-        component={PrivateTabScreens}
-        options={{headerShown: false}}
-      />
-    </PrivateNavigator>
+      </PrivateNavigator>
+    </HouseDetailContextProvider>
   );
 };
 
 function App() {
   return (
-    <>
+    <ApplicationProvider {...eva} theme={eva.light}>
       <IconRegistry icons={EvaIconsPack} />
-      <ApplicationProvider {...eva} theme={eva.light}>
-        <NavigationContainer>
-          <PublicNavigator>
-            {publicRoutes.map(route => (
-              <PublicScreen
-                key={route.name}
-                name={route.name}
-                component={route.screen}
-                options={route?.options}
-              />
-            ))}
+      <NavigationContainer>
+        <PublicNavigator>
+          {publicRoutes.map(route => (
             <PublicScreen
-              key="Private"
-              name="Private"
-              component={PrivateScreens}
-              options={{headerShown: false}}
+              key={route.name}
+              name={route.name}
+              component={route.screen}
+              options={route?.options}
             />
-          </PublicNavigator>
-        </NavigationContainer>
-      </ApplicationProvider>
-    </>
+          ))}
+          <PublicScreen
+            key="Private"
+            name="Private"
+            component={PrivateScreens}
+            options={{headerShown: false}}
+          />
+        </PublicNavigator>
+      </NavigationContainer>
+    </ApplicationProvider>
   );
 }
 

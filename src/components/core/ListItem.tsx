@@ -29,8 +29,6 @@ export default function ListItem(props: ListItemProps) {
     leftIcon,
     rightEle = null,
     subTitle = null,
-    isLeftIcon,
-    isRightIcon,
     wrapperStyle = {},
     style = {},
     level = '3',
@@ -46,21 +44,13 @@ export default function ListItem(props: ListItemProps) {
         return (
           <Layout style={[styles.container, wrapperStyle]} level={level}>
             <View style={[styles.itemBody, style]}>
-              {leftIcon && (
-                <View style={[isLeftIcon ? styles.iconWrapper : null]}>
-                  {leftIcon}
-                </View>
-              )}
+              {leftIcon}
               <View>
                 <TextFallback category="s2">{title as any}</TextFallback>
                 <TextFallback category="c1">{subTitle as any}</TextFallback>
               </View>
             </View>
-            {rightEle && (
-              <View style={[isRightIcon ? styles.iconWrapper : null]}>
-                {rightEle}
-              </View>
-            )}
+            {rightEle}
           </Layout>
         );
       }}

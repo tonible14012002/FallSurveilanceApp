@@ -1,10 +1,11 @@
-import {Icon, Input, Layout} from '@ui-kitten/components';
+import {Input, Layout} from '@ui-kitten/components';
+import Icon from '../core/Icon';
 import {StyleSheet} from 'react-native';
 
 export default function HouseSearchBar() {
   return (
     <Layout level="1" style={styles.container}>
-      <Icon name="search" fill="white" style={{width: 24, height: 24}} />
+      <Icon name="search" size="medium" />
       <Input
         placeholder="Search"
         style={{

@@ -2,33 +2,41 @@ import {
   StackNavigationOptions,
   StackNavigationProp,
 } from '@react-navigation/stack';
-import Register from '~/screens/Register/Register';
+import {
+  RegisterScreen,
+  NotificationScreen,
+  LoginScreen,
+  HomeScreen,
+  AccountScreen,
+  HouseDetailScreen,
+} from '~/screens';
+import {} from '~/screens';
 import {
   BottomTabNavigationOptions,
   BottomTabNavigationProp,
 } from '@react-navigation/bottom-tabs';
 import {CompositeNavigationProp} from '@react-navigation/native';
-import Home from '~/screens/Home/Home';
-import Login from '~/screens/Login/Login';
-import Notification from '~/screens/Notification/Notification';
-import Account from '~/screens/Account/Account';
 
+// NOTE: add public screen for Stack navigation here
+// EX: Login, Register, Forget Password, OTP, ...
 export type PublicRouteParamList = {
   Login: undefined;
   Register: undefined;
-  Private: undefined;
+  Private: undefined; // NOTE: navigate to Private Router
 };
 
+// NOTE: add private screen for Stack navigation here
+// EX: Modal screen, ...
 export type PrivateRouteParamList = {
-  Main: undefined;
-  // Add Modal Screen
+  Main: undefined; // NOTE: navigate to Private Bottom Tab Router
 };
 
+// NOTE: add private screen for Bottom Tab here
 export type PrivateBottomRouteParamList = {
   Home: undefined;
   Notification: undefined;
   Account: undefined;
-  // Bottom Tab Screen
+  HouseDetail: undefined;
 };
 
 export type PublicScreenProps<
@@ -71,14 +79,14 @@ type PrivateTabRouteItem = RouteItem<
 
 const publicRoutes: PublicRouteItem[] = [
   {
-    screen: Login,
+    screen: LoginScreen,
     name: 'Login',
     options: {
       headerShown: false,
     },
   },
   {
-    screen: Register,
+    screen: RegisterScreen,
     name: 'Register',
     options: {
       headerShown: false,
@@ -90,21 +98,28 @@ const privateRoutes: PrivateRouteItem[] = [];
 
 const privateTabRoutes: PrivateTabRouteItem[] = [
   {
-    screen: Home,
+    screen: HomeScreen,
     name: 'Home',
     options: {
       headerShown: false,
     },
   },
   {
-    screen: Notification,
+    screen: NotificationScreen,
     name: 'Notification',
     options: {
       headerShown: false,
     },
   },
   {
-    screen: Account,
+    screen: HouseDetailScreen,
+    name: 'HouseDetail',
+    options: {
+      headerShown: false,
+    },
+  },
+  {
+    screen: AccountScreen,
     name: 'Account',
     options: {
       headerShown: false,

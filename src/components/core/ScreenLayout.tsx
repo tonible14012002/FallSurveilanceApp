@@ -1,5 +1,5 @@
 import {Layout} from '@ui-kitten/components';
-import {PropsWithChildren, ReactNode} from 'react';
+import {Fragment, PropsWithChildren, ReactNode} from 'react';
 import {ScrollView, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 
 interface ScreenLayoutProps extends PropsWithChildren {
@@ -7,15 +7,47 @@ interface ScreenLayoutProps extends PropsWithChildren {
   style?: StyleProp<ViewStyle>;
   floatEl?: ReactNode;
   hasPadding?: boolean;
+  hasBottomBar?: boolean;
+  isScrollable?: boolean;
 }
 
 export default function ScreenLayout(props: ScreenLayoutProps) {
-  const {children, topBar, style, floatEl, hasPadding} = props;
+  const {
+    children,
+    topBar,
+    style,
+    floatEl,
+    hasPadding = false,
+    hasBottomBar = false,
+    isScrollable = false,
+  } = props;
+
+  const BodyWrapper = isScrollable ? ScrollView : View;
+  const InnerBodyWrapper = isScrollable ? View : Fragment;
+  const innerBodyProps = isScrollable
+    ? ({
+        style: {
+          height: '100%',
+          paddingVertical: 12,
+        },
+      } as const)
+    : {};
+
   return (
     <Layout style={[styles.container, style]} level="1">
       {topBar}
-      <View style={{padding: hasPadding ? 12 : 0}}>
-        <ScrollView>{children}</ScrollView>
+      <View
+        style={{
+          paddingHorizontal: hasPadding ? 12 : 0,
+          paddingBottom: hasBottomBar ? 64 : 0,
+        }}>
+        <BodyWrapper
+          style={{
+            height: '100%',
+          }}>
+          {/* Inner body for setting padding but retain screen scroll overflow */}
+          <InnerBodyWrapper {...innerBodyProps}>{children}</InnerBodyWrapper>
+        </BodyWrapper>
       </View>
       {floatEl}
     </Layout>
