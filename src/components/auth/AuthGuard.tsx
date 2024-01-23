@@ -1,12 +1,12 @@
 import {useNavigation} from '@react-navigation/native';
 import {PropsWithChildren, useCallback, useEffect, useState} from 'react';
-import {API, API_PATH} from '~/constants/api';
+import {API, API_PATH, loginApi} from '~/constants/api';
 import {PublicScreenProps} from '~/constants/routes';
 import {useAuthContext} from '~/context/auth';
 import {useIsMounted} from '~/hooks/common';
 import jwtManager from '~/libs/jwt/jwtManager';
 import {BaseResponse} from '~/schema/common';
-import {User} from '~/schema/identity';
+import type {User} from '~/schema/api/identity';
 import {ScreenSkeleton} from './ScreenSkeleton';
 
 export const AuthGuard = ({children}: PropsWithChildren) => {
@@ -17,24 +17,26 @@ export const AuthGuard = ({children}: PropsWithChildren) => {
   const isMounted = useIsMounted();
 
   const handleTokenGuard = useCallback(async () => {
-    const tokenIsValid =
-      (await jwtManager?.getToken()) && (await jwtManager?.isTokenValid());
+    const token = await jwtManager.getToken();
+    const tokenIsValid = Boolean(token) && (await jwtManager.isTokenValid());
     const refreshTokenIsValid =
-      (await jwtManager?.getRefreshToken()) &&
-      (await jwtManager?.isRefreshTokenValid());
+      Boolean(await jwtManager.getRefreshToken()) &&
+      (await jwtManager.isRefreshTokenValid());
     const isAuth = tokenIsValid || refreshTokenIsValid;
 
     if (isAuth) {
-      console.log('isAuthed');
       if (user) {
         setIsAuthenticated(true);
+        setIsLoading(false);
         return;
       }
 
       const getMyProfile = async () => {
+        setIsLoading(true);
+        loginApi(token as string);
         try {
-          setIsLoading(true);
-          const result = await API.FALL_SURVEILANCE.get(
+          const result = await API.FALL_SURVEILANCE.post(
+            {},
             API_PATH.IDENTITY_SERVICES.ME,
           ).json<BaseResponse<User>>(r => r);
 
@@ -43,6 +45,7 @@ export const AuthGuard = ({children}: PropsWithChildren) => {
             setIsAuthenticated(true);
           }
         } catch (e) {
+          console.log(e);
           setIsAuthenticated(false);
         } finally {
           if (isMounted()) {
@@ -50,11 +53,10 @@ export const AuthGuard = ({children}: PropsWithChildren) => {
           }
         }
       };
-      getMyProfile();
+      await getMyProfile();
     } else {
       console.log('not Authed');
       setIsAuthenticated(false);
-      setIsLoading(false);
     }
   }, [isMounted, setUser, user]);
 
@@ -63,14 +65,13 @@ export const AuthGuard = ({children}: PropsWithChildren) => {
   }, [handleTokenGuard]);
 
   useEffect(() => {
-    console.log('Run navigate to Login', {isLoading, isAuthenticated});
+    console.log({isLoading, isAuthenticated});
     if (!isLoading && !isAuthenticated) {
-      console.log('navigated to login');
       navigation.navigate('Login');
     }
   }, [isAuthenticated, isLoading, navigation]);
 
-  if (!isLoading || !isAuthenticated) {
+  if (isLoading) {
     return <ScreenSkeleton />;
   }
   return <>{children}</>;

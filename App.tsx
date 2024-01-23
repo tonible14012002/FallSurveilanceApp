@@ -1,3 +1,4 @@
+import '@react-native-anywhere/polyfill-base64';
 import React from 'react';
 import * as eva from '@eva-design/eva';
 import {NavigationContainer} from '@react-navigation/native';

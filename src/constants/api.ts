@@ -1,12 +1,14 @@
 import wretch from 'wretch';
-// import QueryStringAddon from 'wretch/addons/queryString';
-// import AbortAddon from 'wretch/addons/abort';
+// @ts-expect-error
+import QueryStringAddon from 'wretch/dist/addons/queryString';
+// @ts-expect-error
+import AbortAddon from 'wretch/dist/addons/abort';
 
 const FALL_SURVEILANCE = wretch(
-  process.env.FALL_SERVERILANCE_URL ?? 'http://localhost:8080/',
+  process.env.FALL_SERVERILANCE_URL ?? 'http://14.225.204.127',
 )
-  // .addon(QueryStringAddon)
-  // .addon(AbortAddon())
+  .addon(QueryStringAddon)
+  .addon(AbortAddon())
   .errorType('json');
 
 export const API = {

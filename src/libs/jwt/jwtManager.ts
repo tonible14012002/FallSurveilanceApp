@@ -1,4 +1,3 @@
-// import {jwtDecode} from 'jwt-decode';
 import {jwtDecode} from 'jwt-decode';
 import * as KeyChain from 'react-native-keychain';
 
@@ -48,6 +47,7 @@ const JWTManager = () => {
       }
       return false;
     } catch (e) {
+      console.log(e);
       clearToken();
       return false;
     }
@@ -62,6 +62,7 @@ const JWTManager = () => {
       }
       return false;
     } catch (e) {
+      console.log(e);
       clearRefreshToken();
       return false;
     }

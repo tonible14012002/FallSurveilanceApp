@@ -4,7 +4,7 @@ const phoneRegex = new RegExp(
   /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/,
 );
 
-export const LoginSchema = z.object({
+export const LoginFormSchema = z.object({
   phone: z
     .string()
     .trim()
@@ -18,7 +18,7 @@ export const LoginSchema = z.object({
     .max(20, 'Password only contains at most 20 characters!'),
 });
 
-export type LoginSchemaType = z.infer<typeof LoginSchema>;
+export type LoginFormSchemaType = z.infer<typeof LoginFormSchema>;
 
 export const RegisterSchema = z.object({
   fullname: z
