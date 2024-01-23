@@ -39,7 +39,6 @@ export default function ListItem(props: ListItemProps) {
   return (
     <Pressable onPress={onPressHandler}>
       {({pressed}) => {
-        console.log({pressed});
         const styles = getStyles({pressed, size});
         return (
           <Layout style={[styles.container, wrapperStyle]} level={level}>

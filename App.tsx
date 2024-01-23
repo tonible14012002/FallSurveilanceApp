@@ -1,3 +1,4 @@
+import '@react-native-anywhere/polyfill-base64';
 import React from 'react';
 import * as eva from '@eva-design/eva';
 import {NavigationContainer} from '@react-navigation/native';
@@ -18,6 +19,8 @@ import {
 } from '~/libs/navigation';
 import BottomTabBar from '~/components/core/BottomTabBar';
 import {HouseDetailContextProvider} from '~/components/HouseDetail';
+import {AuthProvider} from '~/context/auth';
+import AuthGuard from '~/components/auth/AuthGuard';
 
 const PrivateTabScreens = () => {
   return (
@@ -36,24 +39,28 @@ const PrivateTabScreens = () => {
 
 const PrivateScreens = () => {
   return (
-    <HouseDetailContextProvider>
-      <PrivateNavigator>
-        {privateRoutes.map(route => (
-          <PrivateScreen
-            key={route.name}
-            name={route.name}
-            component={route.screen}
-            options={route?.options}
-          />
-        ))}
-        <PrivateScreen
-          key="Main"
-          name="Main"
-          component={PrivateTabScreens}
-          options={{headerShown: false}}
-        />
-      </PrivateNavigator>
-    </HouseDetailContextProvider>
+    <AuthProvider>
+      <AuthGuard>
+        <HouseDetailContextProvider>
+          <PrivateNavigator>
+            {privateRoutes.map(route => (
+              <PrivateScreen
+                key={route.name}
+                name={route.name}
+                component={route.screen}
+                options={route?.options}
+              />
+            ))}
+            <PrivateScreen
+              key="Main"
+              name="Main"
+              component={PrivateTabScreens}
+              options={{headerShown: false}}
+            />
+          </PrivateNavigator>
+        </HouseDetailContextProvider>
+      </AuthGuard>
+    </AuthProvider>
   );
 };
 

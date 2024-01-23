@@ -1,29 +1,49 @@
-import {zodResolver} from '@hookform/resolvers/zod';
-import {Link} from '@react-navigation/native';
+import {Link, useNavigation} from '@react-navigation/native';
 import {Button, CheckBox, Input, Text} from '@ui-kitten/components';
 import {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {StyleSheet, View} from 'react-native';
 import {useRenderIcon} from '~/hooks/useRenderIcon';
-import {LoginSchema, LoginSchemaType} from '~/schema/form';
-import {useNavigation} from '@react-navigation/native';
+import {LoginFormSchemaType} from '~/schema/form';
+import {API, API_PATH} from '~/constants/api';
+import {BaseResponse} from '~/schema/common';
+import {LoginResponse} from '~/schema/api/identity';
+import {useAuthContext} from '~/context/auth';
+import jwtManager from '~/libs/jwt/jwtManager';
 import {PublicScreenProps} from '~/constants/routes';
 
 export default function LoginForm() {
   const [rememberMe, setRememberMe] = useState(false);
-
+  const [isLoading, setIsloading] = useState(false);
+  const {setUser} = useAuthContext();
   const navigation = useNavigation<PublicScreenProps>();
   const {renderIcon} = useRenderIcon();
   const {
     handleSubmit,
     control,
     formState: {errors},
-  } = useForm<LoginSchemaType>({
-    resolver: zodResolver(LoginSchema),
+  } = useForm<LoginFormSchemaType>({
+    // resolver: zodResolver(LoginFormSchema),
   });
-  const onSubmit = (data: any) => {
-    console.log(data);
-    navigation.navigate('Private');
+  const onSubmit = async (data: any) => {
+    try {
+      setIsloading(true);
+      const resp = await API.FALL_SURVEILANCE.post(
+        {username: data.phone, password: data.password},
+        API_PATH.IDENTITY_SERVICES.LOGIN,
+      ).json<BaseResponse<LoginResponse>>(r => r);
+
+      const {user, access, refresh} = resp.data;
+      setUser(user);
+      jwtManager.setToken(access);
+      jwtManager.setRefreshToken(refresh);
+      navigation.navigate('Private');
+    } catch (e) {
+      setIsloading(false);
+      console.log(e);
+    } finally {
+      setIsloading(false);
+    }
   };
 
   return (
@@ -66,7 +86,7 @@ export default function LoginForm() {
               size="large"
               placeholder="Password"
               onBlur={onBlur}
-              onChangeText={value => onChange(value)}
+              onChangeText={onChange}
               value={value}
             />
           )}
@@ -103,6 +123,7 @@ export default function LoginForm() {
         </Link>
       </View>
       <Button
+        disabled={isLoading}
         style={{
           marginTop: 10,
         }}
