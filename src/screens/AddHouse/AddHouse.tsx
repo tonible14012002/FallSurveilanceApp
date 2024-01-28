@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {useCallback} from 'react';
-import {StyleSheet} from 'react-native';
+// import {StyleSheet} from 'react-native';
 import AddHouseForm from '~/components/AddHouse/AddHouseForm';
 import ScreenLayout from '~/components/core/ScreenLayout';
 import TopBar from '~/components/core/TopBar';
@@ -10,7 +10,7 @@ export default function AddHouse() {
   const navigation = useNavigation<PrivateScreenWithBottomBarProps>();
 
   const onBackPress = useCallback(() => {
-    navigation.navigate('Home');
+    navigation.navigate('Main');
   }, [navigation]);
 
   return (
@@ -22,17 +22,17 @@ export default function AddHouse() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  houseSmallInfo: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     display: 'flex',
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     justifyContent: 'space-between',
+//   },
+//   houseSmallInfo: {
+//     display: 'flex',
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     gap: 8,
+//   },
+// });

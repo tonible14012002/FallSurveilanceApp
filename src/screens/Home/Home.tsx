@@ -11,7 +11,6 @@ import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
 import {useHouseDetailContext} from '~/components/HouseDetail';
 import {ProfileDropdown} from '~/components/common/ProfileDropdown';
 import {useDisclosure} from '~/hooks/common';
-import AddMemberBottomSheet from '~/components/AddHouse/AddMemberBottomSheet';
 
 export default function Home() {
   const navigation = useNavigation<PrivateScreenWithBottomBarProps>();
