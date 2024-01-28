@@ -11,6 +11,7 @@ import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
 import {useHouseDetailContext} from '~/components/HouseDetail';
 import {ProfileDropdown} from '~/components/common/ProfileDropdown';
 import {useDisclosure} from '~/hooks/common';
+import AddMemberBottomSheet from '~/components/AddHouse/AddMemberBottomSheet';
 
 export default function Home() {
   const navigation = useNavigation<PrivateScreenWithBottomBarProps>();
@@ -25,6 +26,10 @@ export default function Home() {
     },
     [navigation, setHouseId],
   );
+
+  const onAddButtonPress = useCallback(() => {
+    navigation.navigate('AddHouse');
+  }, [navigation]);
 
   const renderHomeItem = useCallback(
     (i: any) => {
@@ -88,7 +93,7 @@ export default function Home() {
           }
         />
       }
-      floatEl={<FloatButton pressHandler={() => {}} />}
+      floatEl={<FloatButton pressHandler={onAddButtonPress} />}
       hasPadding
       hasBottomBar
       isScrollable>

@@ -39,3 +39,33 @@ export const RegisterSchema = z.object({
 });
 
 export type RegisterSchemaType = z.infer<typeof RegisterSchema>;
+
+export const AddHouseSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .max(30, 'House name only contains at most 30 characters!'),
+  address: z
+    .string()
+    .trim()
+    .min(10, 'House address must contains at least 10 characters!')
+    .max(120, 'House adreess only contain at most 120 characters!'),
+  phone: z
+    .string()
+    .trim()
+    .regex(phoneRegex, 'Phone is not valid!')
+    .min(10, 'Phone must contains at least 10 characters!')
+    .max(10, 'Phone is not valid!'),
+});
+
+export type AddHouseSchemaType = z.infer<typeof AddHouseSchema>;
+
+export const SearchUsersSchema = z.object({
+  username: z
+    .string()
+    .trim()
+    .min(1, 'Username is required!')
+    .max(30, 'Username name only contains at most 30 characters!'),
+});
+
+export type SearchUsersSchemaType = z.infer<typeof SearchUsersSchema>;

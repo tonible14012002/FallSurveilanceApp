@@ -3,14 +3,14 @@ import {RenderProp} from '@ui-kitten/components/devsupport';
 import {GestureResponderEvent, StyleSheet} from 'react-native';
 import {ImageProps} from 'react-native-svg';
 
-interface FloatButtonrops {
+interface FloatButtonProps {
   icon?: RenderProp<Partial<ImageProps>>;
   iconPosition?: 'left' | 'right';
   style?: Object;
   pressHandler: (event: GestureResponderEvent) => void;
 }
 
-export default function FloatButton(props: FloatButtonrops) {
+export default function FloatButton(props: FloatButtonProps) {
   const {
     icon: Icon = <KittenIcon name="plus" style={{width: 16, height: 16}} />,
     iconPosition = 'left',

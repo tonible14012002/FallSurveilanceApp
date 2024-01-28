@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import '@react-native-anywhere/polyfill-base64';
 import React from 'react';
 import * as eva from '@eva-design/eva';
@@ -21,6 +22,7 @@ import BottomTabBar from '~/components/core/BottomTabBar';
 import {HouseDetailContextProvider} from '~/components/HouseDetail';
 import {AuthProvider} from '~/context/auth';
 import AuthGuard from '~/components/auth/AuthGuard';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 const PrivateTabScreens = () => {
   return (
@@ -66,7 +68,7 @@ const PrivateScreens = () => {
 
 function App() {
   return (
-    <ApplicationProvider {...eva} theme={eva.light}>
+    <ApplicationProvider {...eva} theme={eva.dark}>
       <IconRegistry icons={EvaIconsPack} />
       <NavigationContainer>
         <PublicNavigator>

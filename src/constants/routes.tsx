@@ -16,6 +16,7 @@ import {
   BottomTabNavigationProp,
 } from '@react-navigation/bottom-tabs';
 import {CompositeNavigationProp} from '@react-navigation/native';
+import {AddHouseScreen} from '~/screens/AddHouse';
 
 // NOTE: add public screen for Stack navigation here
 // EX: Login, Register, Forget Password, OTP, ...
@@ -29,6 +30,8 @@ export type PublicRouteParamList = {
 // EX: Modal screen, ...
 export type PrivateRouteParamList = {
   Main: undefined; // NOTE: navigate to Private Bottom Tab Router
+  Home: undefined;
+  AddHouse: undefined;
 };
 
 // NOTE: add private screen for Bottom Tab here
@@ -94,7 +97,15 @@ const publicRoutes: PublicRouteItem[] = [
   },
 ];
 
-const privateRoutes: PrivateRouteItem[] = [];
+const privateRoutes: PrivateRouteItem[] = [
+  {
+    screen: AddHouseScreen,
+    name: 'AddHouse',
+    options: {
+      headerShown: false,
+    },
+  },
+];
 
 const privateTabRoutes: PrivateTabRouteItem[] = [
   {
