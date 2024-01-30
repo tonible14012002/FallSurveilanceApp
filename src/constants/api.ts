@@ -31,4 +31,7 @@ export const API_PATH = {
   USER_SERVICES: {
     PROFILE: (id: string) => '/api/user-services/profile/' + id + '/',
   },
+  HOUSE_SERVICES: {
+    CREATE: '/api/house-services/houses/',
+  },
 };

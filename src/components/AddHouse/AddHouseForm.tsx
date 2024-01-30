@@ -1,16 +1,23 @@
-import {zodResolver} from '@hookform/resolvers/zod';
+import {useNavigation} from '@react-navigation/native';
 import {Button, Input, Text} from '@ui-kitten/components';
 import {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {API, API_PATH} from '~/constants/api';
+import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
+import {useAuthContext} from '~/context/auth';
 import {useRenderIcon} from '~/hooks/useRenderIcon';
+import {BaseResponse} from '~/schema/common';
 import {AddHouseSchema, AddHouseSchemaType} from '~/schema/form';
 import AddMemberBottomSheet from './AddMemberBottomSheet';
-import List from '../core/List';
+import {useHouseDetailContext} from '../HouseDetail';
+import {zodResolver} from '@hookform/resolvers/zod';
 
 export default function AddHouseForm() {
   const [isLoading, setIsloading] = useState(false);
+  const {user} = useAuthContext();
   const {renderIcon} = useRenderIcon();
+  const navigation = useNavigation<PrivateScreenWithBottomBarProps>();
   const {
     handleSubmit,
     control,
@@ -18,16 +25,24 @@ export default function AddHouseForm() {
   } = useForm<AddHouseSchemaType>({
     resolver: zodResolver(AddHouseSchema),
   });
-  const onSubmit = async (data: any) => {
-    try {
-      console.log({data});
-    } catch (e) {
-      setIsloading(false);
-      console.log(e);
-    } finally {
-      setIsloading(false);
-    }
-  };
+  const {setHouseId} = useHouseDetailContext();
+  const onSubmit = handleSubmit(async (data: any) => {
+    // try {
+    //   const {data: respData} = await API.FALL_SURVEILANCE.post(
+    //     {...data, owner_ids: [user?.id], rooms: []},
+    //     API_PATH.HOUSE_SERVICES.CREATE,
+    //   ).json<BaseResponse<any>>(r => r);
+    //   setHouseId(respData.id);
+    //   navigation.navigate('Main');
+    //   navigation.navigate('HouseDetail');
+    // } catch (e) {
+    //   setIsloading(false);
+    //   console.log(e);
+    // } finally {
+    //   setIsloading(false);
+    // }
+    console.log('jad');
+  });
 
   return (
     <View style={styles.formContainer}>
@@ -80,39 +95,16 @@ export default function AddHouseForm() {
         )}
       </View>
       <View>
-        <Controller
-          control={control}
-          render={({field: {onChange, onBlur, value}}) => (
-            <Input
-              style={{
-                width: '100%',
-              }}
-              accessoryLeft={renderIcon('phone')}
-              size="large"
-              placeholder="Phone"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-            />
-          )}
-          name="phone"
-        />
-        {errors.phone && (
-          <Text category="s2" status="danger" style={{marginTop: 5}}>
-            {errors.phone.message}
-          </Text>
-        )}
         <AddMemberBottomSheet />
       </View>
-      <Button
+      <TouchableOpacity
         disabled={isLoading}
         style={{
           marginTop: 10,
         }}
-        size="large"
-        onPress={handleSubmit(onSubmit)}>
-        Add
-      </Button>
+        onPress={onSubmit}>
+        <Text>Add</Text>
+      </TouchableOpacity>
     </View>
   );
 }

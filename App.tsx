@@ -45,6 +45,12 @@ const PrivateScreens = () => {
       <AuthGuard>
         <HouseDetailContextProvider>
           <PrivateNavigator>
+            <PrivateScreen
+              key="Main"
+              name="Main"
+              component={PrivateTabScreens}
+              options={{headerShown: false}}
+            />
             {privateRoutes.map(route => (
               <PrivateScreen
                 key={route.name}
@@ -53,12 +59,6 @@ const PrivateScreens = () => {
                 options={route?.options}
               />
             ))}
-            <PrivateScreen
-              key="Main"
-              name="Main"
-              component={PrivateTabScreens}
-              options={{headerShown: false}}
-            />
           </PrivateNavigator>
         </HouseDetailContextProvider>
       </AuthGuard>
