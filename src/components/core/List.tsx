@@ -1,13 +1,16 @@
 import {StyleSheet, View} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 
-interface ListProps {
+type ListProps = {
   title?: React.ReactNode;
   children?: React.ReactNode;
   detailNavigator?: React.ReactNode;
   containerStyle?: Object;
   listStyle?: Object;
   listTitleStyle?: Object;
-}
+  scrollable?: boolean;
+  horizontal?: boolean;
+};
 
 export default function List(props: ListProps) {
   const {
@@ -17,7 +20,11 @@ export default function List(props: ListProps) {
     containerStyle = {},
     listStyle = {},
     listTitleStyle = {},
+    scrollable = false,
+    ...rest
   } = props;
+
+  const Wrapper = scrollable ? ScrollView : View;
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -25,7 +32,9 @@ export default function List(props: ListProps) {
         {title}
         {detailNavigator}
       </View>
-      <View style={[styles.list, listStyle]}>{children}</View>
+      <Wrapper {...rest}>
+        <View style={[styles.list, listStyle]}>{children}</View>
+      </Wrapper>
     </View>
   );
 }

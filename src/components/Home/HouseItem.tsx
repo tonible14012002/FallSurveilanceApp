@@ -2,11 +2,16 @@ import {useNavigation} from '@react-navigation/native';
 import {Text} from '@ui-kitten/components';
 import {StyleSheet, View} from 'react-native';
 import ListItem from '../core/ListItem';
+import {useHouseDetailContext} from '../HouseDetail';
 
 export default function HouseItem() {
   const navigation = useNavigation<any>();
+  const {setHouseId} = useHouseDetailContext();
 
-  const handleOnPress = () => navigation.navigate('HouseDetail', {});
+  const handleOnPress = () => {
+    setHouseId('5d18f4ca-6e69-4ca8-8f6d-8db6ab346868');
+    // navigation.navigate('HouseDetail');
+  };
 
   const __renderTitle = () => <Text>House 1</Text>;
 

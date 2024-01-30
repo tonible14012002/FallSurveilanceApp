@@ -19,9 +19,8 @@ export default function Home() {
 
   const onHomeItemPress = useCallback(
     (id: string) => {
-      console.log(id);
+      setHouseId('5d18f4ca-6e69-4ca8-8f6d-8db6ab346868');
       navigation.navigate('HouseDetail');
-      setHouseId(id);
     },
     [navigation, setHouseId],
   );

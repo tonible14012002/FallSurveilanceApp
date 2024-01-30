@@ -1,25 +1,29 @@
 import {useNavigation} from '@react-navigation/native';
-import {
-  Avatar,
-  Divider,
-  Layout,
-  List,
-  Modal,
-  Text,
-} from '@ui-kitten/components';
+import {Avatar, Button, Text} from '@ui-kitten/components';
 import {Pressable} from 'react-native';
-import {useHouseDetailContext} from '~/components/HouseDetail';
+import {
+  HousesSelectModal,
+  useHouseDetailContext,
+} from '~/components/HouseDetail';
 import Icon from '~/components/core/Icon';
-import ListItem from '~/components/core/ListItem';
+import List from '~/components/core/List';
 import ScreenLayout from '~/components/core/ScreenLayout';
+import TabItem from '~/components/core/TabItem';
 import TopBar from '~/components/core/TopBar';
+import UserList from '~/components/core/UserList';
 import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
 import {useDisclosure} from '~/hooks/common';
+import {useFetchHouseDetail} from '~/hooks/useFetchHouseDetail';
 
 export default function HouseDetailScreen() {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
   const {houseId, setHouseId} = useHouseDetailContext();
   const {isOpen, onClose, onOpen} = useDisclosure();
+
+  const {detail} = useFetchHouseDetail(houseId, Boolean(houseId));
+  const rooms = detail?.rooms ?? [];
+  const owners = detail?.owners ?? []; //members here
+
   return (
     <>
       <ScreenLayout
@@ -46,46 +50,112 @@ export default function HouseDetailScreen() {
                   alignItems: 'center',
                   gap: 4,
                 })}>
-                <Text category="h6">Tony's House {houseId ?? ''}</Text>
+                <Text category="h6">{detail?.name ?? ''}</Text>
                 <Icon name="chevron-down-outline" />
               </Pressable>
             }
           />
         }>
-        <Text>Hello world</Text>
+        <UserList
+          containerStyle={{marginBottom: 30}}
+          listStyle={{gap: 10}}
+          title={
+            <Text category="s2" style={{opacity: 0.7}}>
+              Members
+            </Text>
+          }
+          detailNavigator={
+            <Button
+              style={{
+                borderRadius: 1000,
+                width: 35,
+                height: 35,
+              }}
+              status="control">
+              <Icon size="giant" name="chevron-right-outline" />
+            </Button>
+          }>
+          {owners.map(room => (
+            <Avatar
+              source={{
+                uri: 'https://sm.ign.com/ign_za/cover/m/marvels-sp/marvels-spider-man-remastered_az82.jpg',
+              }}
+              style={{width: 50, height: 50}}
+            />
+          ))}
+          <Button
+            style={{
+              borderRadius: 1000,
+              width: 50,
+              height: 50,
+            }}
+            status="control">
+            <Icon name="plus" />
+          </Button>
+        </UserList>
+
+        <List
+          scrollable
+          horizontal
+          listStyle={{flexDirection: 'row'}}
+          title={
+            <Text category="s2" style={{opacity: 0.7}}>
+              Rooms
+            </Text>
+          }
+          detailNavigator={
+            <Button
+              style={{
+                borderRadius: 1000,
+                width: 35,
+                height: 35,
+              }}
+              status="control">
+              <Icon size="giant" name="chevron-right-outline" />
+            </Button>
+          }>
+          {rooms.map(room => (
+            <TabItem
+              containerStyle={{width: 110, height: 100}}
+              key={room.id}
+              title={room.name}
+              icon={<Icon name="tv" size="large" fill="#fff" />}
+            />
+          ))}
+        </List>
+
+        <List
+          scrollable
+          horizontal
+          listStyle={{flexDirection: 'row'}}
+          containerStyle={{marginTop: 30}}
+          title={
+            <Text category="s2" style={{opacity: 0.7}}>
+              Devices
+            </Text>
+          }
+          detailNavigator={
+            <Button
+              style={{
+                borderRadius: 1000,
+                width: 35,
+                height: 35,
+              }}
+              status="control">
+              <Icon size="giant" name="chevron-right-outline" />
+            </Button>
+          }>
+          {rooms.map(room => (
+            <TabItem
+              containerStyle={{width: 110, height: 100}}
+              key={room.id}
+              title={room.name}
+              icon={<Icon name="tv" size="large" fill="#fff" />}
+            />
+          ))}
+        </List>
       </ScreenLayout>
-      {/* FIXME: Migrate to Bottom Sheet component later */}
-      <Modal visible={isOpen} onBackdropPress={onClose}>
-        <Layout
-          style={{
-            width: 380,
-            maxHeight: 380,
-            elevation: 3,
-            borderRadius: 16,
-            overflow: 'hidden',
-          }}>
-          <List
-            data={[1, 2, 3, 4, 5, 6, 7]}
-            ItemSeparatorComponent={Divider}
-            renderItem={({index}) => (
-              <ListItem
-                onPressHandler={() => {
-                  setHouseId(String(index + 1));
-                  onClose();
-                }}
-                title={`House ${index + 1}`}
-                subTitle="2 members"
-                rightEle={
-                  houseId === String(index + 1) ? (
-                    <Icon size="small" name="checkmark-outline" />
-                  ) : null
-                }
-                level="1"
-              />
-            )}
-          />
-        </Layout>
-      </Modal>
+      <HousesSelectModal isOpen={isOpen} onClose={onClose} />
     </>
   );
 }

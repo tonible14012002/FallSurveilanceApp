@@ -23,25 +23,24 @@ export default function AddHouseForm() {
     control,
     formState: {errors},
   } = useForm<AddHouseSchemaType>({
-    resolver: zodResolver(AddHouseSchema),
+    // resolver: zodResolver(AddHouseSchema),
   });
   const {setHouseId} = useHouseDetailContext();
   const onSubmit = handleSubmit(async (data: any) => {
-    // try {
-    //   const {data: respData} = await API.FALL_SURVEILANCE.post(
-    //     {...data, owner_ids: [user?.id], rooms: []},
-    //     API_PATH.HOUSE_SERVICES.CREATE,
-    //   ).json<BaseResponse<any>>(r => r);
-    //   setHouseId(respData.id);
-    //   navigation.navigate('Main');
-    //   navigation.navigate('HouseDetail');
-    // } catch (e) {
-    //   setIsloading(false);
-    //   console.log(e);
-    // } finally {
-    //   setIsloading(false);
-    // }
-    console.log('jad');
+    try {
+      const {data: respData} = await API.FALL_SURVEILANCE.post(
+        {...data, owner_ids: [user?.id], rooms: []},
+        API_PATH.HOUSE_SERVICES.CREATE,
+      ).json<BaseResponse<any>>(r => r);
+      setHouseId(respData.id);
+      navigation.navigate('Main');
+      navigation.navigate('HouseDetail');
+    } catch (e) {
+      setIsloading(false);
+      console.log(e);
+    } finally {
+      setIsloading(false);
+    }
   });
 
   return (
@@ -97,14 +96,14 @@ export default function AddHouseForm() {
       <View>
         <AddMemberBottomSheet />
       </View>
-      <TouchableOpacity
+      <Button
         disabled={isLoading}
         style={{
           marginTop: 10,
         }}
-        onPress={onSubmit}>
+        onPress={() => onSubmit()}>
         <Text>Add</Text>
-      </TouchableOpacity>
+      </Button>
     </View>
   );
 }
