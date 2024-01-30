@@ -4,7 +4,7 @@ import {
 } from '@ui-kitten/components';
 
 interface IconProps extends PrimitiveIconProps {
-  size?: 'tiny' | 'small' | 'medium' | 'large' | 'giant';
+  size?: 'tiny' | 'small' | 'medium' | 'large' | 'giant' | 'superGiant';
 }
 
 export default function Icon(props: IconProps) {
@@ -15,6 +15,7 @@ export default function Icon(props: IconProps) {
     medium: 20,
     large: 24,
     giant: 28,
+    superGiant: 40,
   }[size];
   return <PrimitiveIcon {...restProps} width={iconSize} height={iconSize} />;
 }

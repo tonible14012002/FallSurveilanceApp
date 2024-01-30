@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
+import TextFallback from './TextFallback';
 
 interface TabItemProps {
   containerStyle?: Object;
@@ -19,7 +20,7 @@ export default function TabItem(props: TabItemProps) {
     title,
     icon: Icon = null,
     containerStyle = {},
-    level = '1',
+    level = '3',
     iconPosition = 'top',
     onPressHandler = () => {},
   } = props;
@@ -32,7 +33,7 @@ export default function TabItem(props: TabItemProps) {
         style={[{...styles.container, flexDirection}, containerStyle]}
         level={level}>
         {Icon}
-        {title}
+        <TextFallback category="s2">{title as any}</TextFallback>
       </Layout>
     </TouchableOpacity>
   );
