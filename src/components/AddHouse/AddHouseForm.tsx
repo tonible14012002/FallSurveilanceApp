@@ -29,7 +29,7 @@ export default function AddHouseForm() {
   const onSubmit = handleSubmit(async (data: any) => {
     try {
       const {data: respData} = await API.FALL_SURVEILANCE.post(
-        {...data, owner_ids: [user?.id], rooms: []},
+        {...data, owner_ids: [user?.id], member_ids: [user?.id], rooms: []},
         API_PATH.HOUSE_SERVICES.CREATE,
       ).json<BaseResponse<any>>(r => r);
       setHouseId(respData.id);
