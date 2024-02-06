@@ -69,3 +69,18 @@ export const SearchUsersSchema = z.object({
 });
 
 export type SearchUsersSchemaType = z.infer<typeof SearchUsersSchema>;
+
+export const RoomSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, 'Username is required!')
+    .max(30, 'Username name only contains at most 30 characters!'),
+  description: z
+    .string()
+    .trim()
+    .min(1, 'Username is required!')
+    .max(30, 'Username name only contains at most 30 characters!'),
+});
+
+export type RoomSchemaType = z.infer<typeof RoomSchema>;

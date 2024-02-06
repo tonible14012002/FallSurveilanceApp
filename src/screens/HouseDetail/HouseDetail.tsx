@@ -4,6 +4,8 @@ import {Pressable} from 'react-native';
 import {
   HousesSelectModal,
   useHouseDetailContext,
+  RoomsList,
+  DevicesList,
 } from '~/components/HouseDetail';
 import Icon from '~/components/core/Icon';
 import List from '~/components/core/List';
@@ -94,66 +96,8 @@ export default function HouseDetailScreen() {
           </Button>
         </UserList>
 
-        <List
-          scrollable
-          horizontal
-          listStyle={{flexDirection: 'row'}}
-          title={
-            <Text category="s2" style={{opacity: 0.7}}>
-              Rooms
-            </Text>
-          }
-          detailNavigator={
-            <Button
-              style={{
-                borderRadius: 1000,
-                width: 35,
-                height: 35,
-              }}
-              status="control">
-              <Icon size="giant" name="chevron-right-outline" />
-            </Button>
-          }>
-          {rooms.map(room => (
-            <TabItem
-              containerStyle={{width: 110, height: 100}}
-              key={room.id}
-              title={room.name}
-              icon={<Icon name="tv" size="large" fill="#fff" />}
-            />
-          ))}
-        </List>
-
-        <List
-          scrollable
-          horizontal
-          listStyle={{flexDirection: 'row'}}
-          containerStyle={{marginTop: 30}}
-          title={
-            <Text category="s2" style={{opacity: 0.7}}>
-              Devices
-            </Text>
-          }
-          detailNavigator={
-            <Button
-              style={{
-                borderRadius: 1000,
-                width: 35,
-                height: 35,
-              }}
-              status="control">
-              <Icon size="giant" name="chevron-right-outline" />
-            </Button>
-          }>
-          {rooms.map(room => (
-            <TabItem
-              containerStyle={{width: 110, height: 100}}
-              key={room.id}
-              title={room.name}
-              icon={<Icon name="tv" size="large" fill="#fff" />}
-            />
-          ))}
-        </List>
+        <RoomsList rooms={rooms} />
+        <DevicesList devices={rooms} />
       </ScreenLayout>
       <HousesSelectModal isOpen={isOpen} onClose={onClose} />
     </>
