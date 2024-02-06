@@ -2,15 +2,13 @@ import {useNavigation} from '@react-navigation/native';
 import {Avatar, Button, Text} from '@ui-kitten/components';
 import {Pressable} from 'react-native';
 import {
-  HousesSelectModal,
-  useHouseDetailContext,
-  RoomsList,
   DevicesList,
+  HousesSelectModal,
+  RoomsList,
+  useHouseDetailContext,
 } from '~/components/HouseDetail';
 import Icon from '~/components/core/Icon';
-import List from '~/components/core/List';
 import ScreenLayout from '~/components/core/ScreenLayout';
-import TabItem from '~/components/core/TabItem';
 import TopBar from '~/components/core/TopBar';
 import UserList from '~/components/core/UserList';
 import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
@@ -19,12 +17,13 @@ import {useFetchHouseDetail} from '~/hooks/useFetchHouseDetail';
 
 export default function HouseDetailScreen() {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
-  const {houseId, setHouseId} = useHouseDetailContext();
+  const {houseId} = useHouseDetailContext();
   const {isOpen, onClose, onOpen} = useDisclosure();
 
   const {detail} = useFetchHouseDetail(houseId, Boolean(houseId));
+
   const rooms = detail?.rooms ?? [];
-  const owners = detail?.owners ?? []; //members here
+  const members = detail?.members ?? []; //members here
 
   return (
     <>
@@ -77,10 +76,11 @@ export default function HouseDetailScreen() {
               <Icon size="giant" name="chevron-right-outline" />
             </Button>
           }>
-          {owners.map(room => (
+          {members.map(member => (
             <Avatar
+              key={member.id}
               source={{
-                uri: 'https://sm.ign.com/ign_za/cover/m/marvels-sp/marvels-spider-man-remastered_az82.jpg',
+                uri: member.avatar,
               }}
               style={{width: 50, height: 50}}
             />

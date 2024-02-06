@@ -5,21 +5,41 @@ import FloatButton from '~/components/core/FloatButton';
 import ListItem from '~/components/core/ListItem';
 import ScreenLayout from '~/components/core/ScreenLayout';
 import TopBar from '~/components/core/TopBar';
-import {useCallback} from 'react';
+import {useCallback, useMemo} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
 import {useHouseDetailContext} from '~/components/HouseDetail';
 import {ProfileDropdown} from '~/components/common/ProfileDropdown';
 import {useDisclosure} from '~/hooks/common';
+import {useFetchJoinedHouses} from '~/hooks/useFetchJoinedHouses';
+import {HouseInfo} from '~/schema/api/house';
 
 export default function Home() {
   const navigation = useNavigation<PrivateScreenWithBottomBarProps>();
   const {isOpen, onOpen, onClose} = useDisclosure();
   const {setHouseId} = useHouseDetailContext();
+  const {houses} = useFetchJoinedHouses();
+
+  const formatedHouses = useMemo(() => {
+    let personalHouses: HouseInfo[] = [];
+    let joinedHouses: HouseInfo[] = [];
+
+    if (houses && houses.length > 0) {
+      houses.forEach(house => {
+        if (house.is_owner) personalHouses.push(house);
+        else joinedHouses.push(house);
+      });
+    }
+
+    return {
+      personalHouses,
+      joinedHouses,
+    };
+  }, [houses]);
 
   const onHomeItemPress = useCallback(
     (id: string) => {
-      setHouseId('5d18f4ca-6e69-4ca8-8f6d-8db6ab346868');
+      setHouseId(id);
       navigation.navigate('HouseDetail');
     },
     [navigation, setHouseId],
@@ -30,10 +50,10 @@ export default function Home() {
   }, [navigation]);
 
   const renderHomeItem = useCallback(
-    (i: any) => {
+    ({item: house}: {item: HouseInfo}) => {
       return (
         <ListItem
-          onPressHandler={() => onHomeItemPress(`${i.index + 1}`)}
+          onPressHandler={() => onHomeItemPress(house.id)}
           wrapperStyle={{
             borderRadius: 24,
           }}
@@ -50,24 +70,24 @@ export default function Home() {
               <Icon name="chevron-right-outline" />
             </Layout>
           }
-          title={`House ${i.index + 1}`}
+          title={house.name}
           subTitle={
             <View style={styles.houseSmallInfo}>
               <Text appearance="hint" category="c1">
-                2 members
+                {house.members.length} members
               </Text>
               <Text appearance="hint" category="c1">
                 •
               </Text>
               <Text appearance="hint" category="c1">
-                2 rooms
+                {house.rooms.length} rooms
               </Text>
             </View>
           }
         />
       );
     },
-    [onHomeItemPress],
+    [onHomeItemPress, formatedHouses],
   );
 
   return (
@@ -101,7 +121,7 @@ export default function Home() {
         // eslint-disable-next-line react/no-unstable-nested-components
         ItemSeparatorComponent={() => <View style={{height: 12}} />}
         scrollEnabled={false}
-        data={[1, 2]}
+        data={formatedHouses['personalHouses']}
         ListHeaderComponentStyle={{backgroundColor: 'black'}}
         renderItem={renderHomeItem}
       />
@@ -111,7 +131,7 @@ export default function Home() {
         // eslint-disable-next-line react/no-unstable-nested-components
         ItemSeparatorComponent={() => <View style={{height: 12}} />}
         scrollEnabled={false}
-        data={[1, 2, 3]}
+        data={formatedHouses['joinedHouses']}
         ListHeaderComponentStyle={{backgroundColor: 'black'}}
         renderItem={renderHomeItem}
       />
