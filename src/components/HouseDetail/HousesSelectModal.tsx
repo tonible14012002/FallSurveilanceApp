@@ -2,13 +2,19 @@ import {Divider, Layout, List, Modal} from '@ui-kitten/components';
 import Icon from '~/components/core/Icon';
 import ListItem from '~/components/core/ListItem';
 import {useHouseDetailContext} from './context';
+import {GetJoinedHousesResponse} from '~/schema/api/house';
 
 interface HousesSelectModalProps {
   isOpen: boolean;
   onClose: () => void;
+  houses: GetJoinedHousesResponse;
 }
 
-export function HousesSelectModal({isOpen, onClose}: HousesSelectModalProps) {
+export function HousesSelectModal({
+  isOpen,
+  onClose,
+  houses,
+}: HousesSelectModalProps) {
   const {houseId, setHouseId} = useHouseDetailContext();
 
   return (
@@ -22,26 +28,22 @@ export function HousesSelectModal({isOpen, onClose}: HousesSelectModalProps) {
           overflow: 'hidden',
         }}>
         <List
-          data={[1, 2, 3, 4, 5, 6, 7]}
+          data={houses}
           ItemSeparatorComponent={Divider}
-          renderItem={({index}) => (
+          renderItem={({item}) => (
             <ListItem
               onPressHandler={() => {
-                setHouseId(String(index + 1));
+                setHouseId(String(item.id));
                 onClose();
               }}
-              title={`House ${index + 1}`}
-              subTitle="2 members"
+              title={item.name}
+              subTitle={`${item.members.length} members`}
               rightEle={
-                houseId === String(index + 1) ? (
+                houseId === String(item.id) ? (
                   <Icon size="small" name="checkmark-outline" />
                 ) : null
               }
-              wrapperStyle={{
-                borderBottomColor: 'rgba(255,255,255,0.3)',
-                borderBottomWidth: 1,
-              }}
-              level="3"
+              level="1"
             />
           )}
         />

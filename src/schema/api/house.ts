@@ -1,24 +1,20 @@
+import {BasicUser} from './identity';
+
 export interface Room {
   id: string;
   name: string;
   description: string;
-}
-interface User {
-  id: string;
-  avatar: string;
-  nickname: string;
-  first_name: string;
-  last_name: string;
+  house: {
+    id: string;
+    name: string;
+  };
+  members: BasicUser[];
+  allow_assign_member: boolean;
 }
 
-export interface HouseInfo {
-  id: string;
-  name: string;
-  description: string;
-  address: string;
-  members: User[];
-  rooms: Room[];
-  is_owner: boolean;
+export interface HouseDetailRoom
+  extends Pick<Room, 'id' | 'name' | 'description'> {
+  accessible: boolean;
 }
 
 export interface GetHouseDetailResponse {
@@ -26,7 +22,10 @@ export interface GetHouseDetailResponse {
   name: string;
   description: string;
   address: string;
-  is_owner: boolean;
-  rooms: Room[];
-  members: User[];
+  members: BasicUser[];
+  rooms: HouseDetailRoom[];
 }
+
+export type GetJoinedHousesResponse = Array<
+  GetHouseDetailResponse & {is_owner: boolean}
+>;

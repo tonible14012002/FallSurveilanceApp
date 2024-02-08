@@ -1,16 +1,16 @@
-import {API, API_PATH} from '~/constants/api';
 import {useFetchWithCache} from '~/libs/hooks/useFetchWithCache';
-import {HouseInfo} from '~/schema/api/house';
+import {API, API_PATH} from '~/constants/api';
 import type {BaseResponse} from '~/schema/common';
+import {GetJoinedHousesResponse} from '~/schema/api/house';
 
-export const JOINED_HOUSES_KEY = 'JOINED_HOUSES_KEY';
+export const HOUSES_KEY = 'HOUSES_KEY';
 
-export const useFetchJoinedHouses = (allowFetch = true) => {
+export const useFetchJoinedHouses = (allowFetch: boolean = true) => {
   const {data, ...rest} = useFetchWithCache(
-    allowFetch ? [JOINED_HOUSES_KEY] : null,
+    allowFetch ? [HOUSES_KEY] : null,
     () =>
       API.FALL_SURVEILANCE.get(API_PATH.HOUSE_SERVICES.JOINED_HOUSES).json<
-        BaseResponse<HouseInfo[]>
+        BaseResponse<GetJoinedHousesResponse>
       >(u => u),
   );
 

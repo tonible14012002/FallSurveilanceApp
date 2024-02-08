@@ -22,7 +22,6 @@ import BottomTabBar from '~/components/core/BottomTabBar';
 import {HouseDetailContextProvider} from '~/components/HouseDetail';
 import {AuthProvider} from '~/context/auth';
 import AuthGuard from '~/components/auth/AuthGuard';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 const PrivateTabScreens = () => {
   return (
@@ -68,7 +67,7 @@ const PrivateScreens = () => {
 
 function App() {
   return (
-    <ApplicationProvider {...eva} theme={eva.dark}>
+    <ApplicationProvider {...eva} theme={eva.light}>
       <IconRegistry icons={EvaIconsPack} />
       <NavigationContainer>
         <PublicNavigator>
