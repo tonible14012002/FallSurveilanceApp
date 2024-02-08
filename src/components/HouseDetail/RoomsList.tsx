@@ -1,13 +1,13 @@
 import {Button, Text} from '@ui-kitten/components';
 import List from '../core/List';
 import Icon from '../core/Icon';
-import {Room} from '~/schema/api/house';
+import {HouseDetailRoom} from '~/schema/api/house';
 import TabItem from '../core/TabItem';
 import {RoomModal} from './RoomModal';
 import {useDisclosure} from '~/hooks/common';
 
 interface RoomsListProps {
-  rooms: Room[];
+  rooms: HouseDetailRoom[];
 }
 
 export const RoomsList = ({rooms}: RoomsListProps) => {
@@ -40,7 +40,7 @@ export const RoomsList = ({rooms}: RoomsListProps) => {
             containerStyle={{width: 110, height: 100}}
             key={room.id}
             title={room.name}
-            icon={<Icon name="tv" size="large" fill="#fff" />}
+            icon={<Icon name="tv" size="large" />}
           />
         ))}
       </List>

@@ -13,6 +13,12 @@ export interface User {
   phone: string;
 }
 
+export interface BasicUser
+  extends Pick<
+    User,
+    'id' | 'avatar' | 'nickname' | 'first_name' | 'last_name'
+  > {}
+
 export interface LoginResponse {
   refresh: string;
   access: string;

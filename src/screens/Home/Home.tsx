@@ -12,7 +12,7 @@ import {useHouseDetailContext} from '~/components/HouseDetail';
 import {ProfileDropdown} from '~/components/common/ProfileDropdown';
 import {useDisclosure} from '~/hooks/common';
 import {useFetchJoinedHouses} from '~/hooks/useFetchJoinedHouses';
-import {HouseInfo} from '~/schema/api/house';
+import {GetJoinedHousesResponse} from '~/schema/api/house';
 
 export default function Home() {
   const navigation = useNavigation<PrivateScreenWithBottomBarProps>();
@@ -20,22 +20,15 @@ export default function Home() {
   const {setHouseId} = useHouseDetailContext();
   const {houses} = useFetchJoinedHouses();
 
-  const formatedHouses = useMemo(() => {
-    let personalHouses: HouseInfo[] = [];
-    let joinedHouses: HouseInfo[] = [];
+  const owned_houses = useMemo(
+    () => houses?.filter(house => house.is_owner),
+    [houses],
+  );
 
-    if (houses && houses.length > 0) {
-      houses.forEach(house => {
-        if (house.is_owner) personalHouses.push(house);
-        else joinedHouses.push(house);
-      });
-    }
-
-    return {
-      personalHouses,
-      joinedHouses,
-    };
-  }, [houses]);
+  const joined_houses = useMemo(
+    () => houses?.filter(house => !house.is_owner),
+    [houses],
+  );
 
   const onHomeItemPress = useCallback(
     (id: string) => {
@@ -50,10 +43,10 @@ export default function Home() {
   }, [navigation]);
 
   const renderHomeItem = useCallback(
-    ({item: house}: {item: HouseInfo}) => {
+    ({item: detail}: {item: GetJoinedHousesResponse[number]}) => {
       return (
         <ListItem
-          onPressHandler={() => onHomeItemPress(house.id)}
+          onPressHandler={() => onHomeItemPress(`${detail.id}`)}
           wrapperStyle={{
             borderRadius: 24,
           }}
@@ -70,24 +63,24 @@ export default function Home() {
               <Icon name="chevron-right-outline" />
             </Layout>
           }
-          title={house.name}
+          title={detail.name}
           subTitle={
             <View style={styles.houseSmallInfo}>
               <Text appearance="hint" category="c1">
-                {house.members.length} members
+                {detail.members.length} members
               </Text>
               <Text appearance="hint" category="c1">
                 •
               </Text>
               <Text appearance="hint" category="c1">
-                {house.rooms.length} rooms
+                {detail.rooms.length} rooms
               </Text>
             </View>
           }
         />
       );
     },
-    [onHomeItemPress, formatedHouses],
+    [onHomeItemPress],
   );
 
   return (
@@ -115,26 +108,34 @@ export default function Home() {
       hasPadding
       hasBottomBar
       isScrollable>
-      <Text category="label">Personal Houses</Text>
-      <List
-        style={{backgroundColor: 'transparent', marginVertical: 18}}
-        // eslint-disable-next-line react/no-unstable-nested-components
-        ItemSeparatorComponent={() => <View style={{height: 12}} />}
-        scrollEnabled={false}
-        data={formatedHouses['personalHouses']}
-        ListHeaderComponentStyle={{backgroundColor: 'black'}}
-        renderItem={renderHomeItem}
-      />
-      <Text category="label">Joined Houses</Text>
-      <List
-        style={{backgroundColor: 'transparent', marginTop: 18}}
-        // eslint-disable-next-line react/no-unstable-nested-components
-        ItemSeparatorComponent={() => <View style={{height: 12}} />}
-        scrollEnabled={false}
-        data={formatedHouses['joinedHouses']}
-        ListHeaderComponentStyle={{backgroundColor: 'black'}}
-        renderItem={renderHomeItem}
-      />
+      {owned_houses?.length !== 0 && (
+        <>
+          <Text category="label">Owned Houses</Text>
+          <List
+            style={{backgroundColor: 'transparent', marginVertical: 18}}
+            // eslint-disable-next-line react/no-unstable-nested-components
+            ItemSeparatorComponent={() => <View style={{height: 12}} />}
+            scrollEnabled={false}
+            data={owned_houses}
+            ListHeaderComponentStyle={{backgroundColor: 'black'}}
+            renderItem={renderHomeItem}
+          />
+        </>
+      )}
+      {joined_houses?.length !== 0 && (
+        <>
+          <Text category="label">Joined Houses</Text>
+          <List
+            style={{backgroundColor: 'transparent', marginTop: 18}}
+            // eslint-disable-next-line react/no-unstable-nested-components
+            ItemSeparatorComponent={() => <View style={{height: 12}} />}
+            scrollEnabled={false}
+            data={joined_houses}
+            ListHeaderComponentStyle={{backgroundColor: 'black'}}
+            renderItem={renderHomeItem}
+          />
+        </>
+      )}
     </ScreenLayout>
   );
 }

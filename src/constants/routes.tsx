@@ -17,6 +17,7 @@ import {
 } from '@react-navigation/bottom-tabs';
 import {CompositeNavigationProp} from '@react-navigation/native';
 import {AddHouseScreen} from '~/screens/AddHouse';
+import {UserPickerScreen} from '~/screens/UserPicker';
 
 // NOTE: add public screen for Stack navigation here
 // EX: Login, Register, Forget Password, OTP, ...
@@ -32,6 +33,7 @@ export type PrivateRouteParamList = {
   Main: undefined; // NOTE: navigate to Private Bottom Tab Router
   Home: undefined;
   AddHouse: undefined;
+  UserPicker: undefined;
 };
 
 // NOTE: add private screen for Bottom Tab here
@@ -101,6 +103,13 @@ const privateRoutes: PrivateRouteItem[] = [
   {
     screen: AddHouseScreen,
     name: 'AddHouse',
+    options: {
+      headerShown: false,
+    },
+  },
+  {
+    screen: UserPickerScreen,
+    name: 'UserPicker',
     options: {
       headerShown: false,
     },

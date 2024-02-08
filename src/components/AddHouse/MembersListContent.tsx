@@ -29,7 +29,7 @@ export default function MembersListContent() {
           height: 50,
         },
       }}
-      icon={<Icon name="close-outline" size="large" fill="#fff" />}
+      icon={<Icon name="close-outline" size="large" />}
       text={
         <Text
           ellipsizeMode="tail"

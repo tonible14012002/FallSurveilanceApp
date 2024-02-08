@@ -2,17 +2,20 @@ import {Divider, Layout, List, Modal} from '@ui-kitten/components';
 import Icon from '~/components/core/Icon';
 import ListItem from '~/components/core/ListItem';
 import {useHouseDetailContext} from './context';
-import {useFetchJoinedHouses} from '~/hooks/useFetchJoinedHouses';
-import {HouseInfo} from '~/schema/api/house';
+import {GetJoinedHousesResponse} from '~/schema/api/house';
 
 interface HousesSelectModalProps {
   isOpen: boolean;
   onClose: () => void;
+  houses: GetJoinedHousesResponse;
 }
 
-export function HousesSelectModal({isOpen, onClose}: HousesSelectModalProps) {
+export function HousesSelectModal({
+  isOpen,
+  onClose,
+  houses,
+}: HousesSelectModalProps) {
   const {houseId, setHouseId} = useHouseDetailContext();
-  const {houses} = useFetchJoinedHouses();
 
   return (
     <Modal visible={isOpen} onBackdropPress={onClose}>
@@ -25,26 +28,22 @@ export function HousesSelectModal({isOpen, onClose}: HousesSelectModalProps) {
           overflow: 'hidden',
         }}>
         <List
-          data={houses ?? []}
+          data={houses}
           ItemSeparatorComponent={Divider}
-          renderItem={({item: house}: {item: HouseInfo}) => (
+          renderItem={({item}) => (
             <ListItem
               onPressHandler={() => {
-                setHouseId(house.id);
+                setHouseId(String(item.id));
                 onClose();
               }}
-              title={house.name}
-              subTitle={house.members.length + ' members'}
+              title={item.name}
+              subTitle={`${item.members.length} members`}
               rightEle={
-                houseId === house.id ? (
+                houseId === String(item.id) ? (
                   <Icon size="small" name="checkmark-outline" />
                 ) : null
               }
-              wrapperStyle={{
-                borderBottomColor: 'rgba(255,255,255,0.3)',
-                borderBottomWidth: 1,
-                backgroundColor: houseId === house.id ? '#FFE4C9' : '#FFF7F1',
-              }}
+              level="1"
             />
           )}
         />

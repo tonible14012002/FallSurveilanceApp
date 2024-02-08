@@ -1,5 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {Avatar, Button, Text} from '@ui-kitten/components';
+import {useEffect} from 'react';
 import {Pressable} from 'react-native';
 import {
   DevicesList,
@@ -12,18 +13,36 @@ import ScreenLayout from '~/components/core/ScreenLayout';
 import TopBar from '~/components/core/TopBar';
 import UserList from '~/components/core/UserList';
 import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
+import {useAuthContext} from '~/context/auth';
 import {useDisclosure} from '~/hooks/common';
 import {useFetchHouseDetail} from '~/hooks/useFetchHouseDetail';
+import {useFetchJoinedHouses} from '~/hooks/useFetchJoinedHouses';
+import {boringAvatar} from '~/libs/utils';
+import {ProfileDropdown} from '~/components/common/ProfileDropdown';
 
 export default function HouseDetailScreen() {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
-  const {houseId} = useHouseDetailContext();
+  const {user} = useAuthContext();
+  const {houseId, setHouseId} = useHouseDetailContext();
+  const {
+    isOpen: isOpenProfile,
+    onClose: onCloseProfile,
+    onOpen: onOpenProfile,
+  } = useDisclosure();
+
   const {isOpen, onClose, onOpen} = useDisclosure();
 
   const {detail} = useFetchHouseDetail(houseId, Boolean(houseId));
+  const {houses} = useFetchJoinedHouses(!houseId || isOpen);
 
   const rooms = detail?.rooms ?? [];
   const members = detail?.members ?? []; //members here
+
+  useEffect(() => {
+    if (houseId === undefined && houses?.[0]) {
+      setHouseId(houses?.[0].id);
+    }
+  }, [houseId, houses, setHouseId]);
 
   return (
     <>
@@ -35,10 +54,20 @@ export default function HouseDetailScreen() {
           <TopBar
             onBack={() => navigate('Home')}
             rightIcon={
-              <Avatar
-                source={{
-                  uri: 'https://scontent.fhan3-3.fna.fbcdn.net/v/t39.30808-1/369053435_3628631834068330_6252299390237773315_n.jpg?stp=dst-jpg_p320x320&_nc_cat=101&ccb=1-7&_nc_sid=5740b7&_nc_ohc=0A4cTRL139QAX8I1rlU&_nc_ht=scontent.fhan3-3.fna&oh=00_AfCYocC0VA5dKjoQC9EyWOqFvdGVMjfK2-dvlAh7NJUG9Q&oe=65B22743',
-                }}
+              <ProfileDropdown
+                onClose={onCloseProfile}
+                isOpen={isOpenProfile}
+                onOpen={onOpenProfile}
+                trigger={
+                  <Avatar
+                    source={{
+                      uri: user?.avatar,
+                    }}
+                    loadingIndicatorSource={{
+                      uri: boringAvatar(user?.nickname),
+                    }}
+                  />
+                }
               />
             }
             title={
@@ -76,13 +105,16 @@ export default function HouseDetailScreen() {
               <Icon size="giant" name="chevron-right-outline" />
             </Button>
           }>
-          {members.map(member => (
+          {members.map(mem => (
             <Avatar
-              key={member.id}
+              key={mem.id}
               source={{
-                uri: member.avatar,
+                uri: mem.avatar,
               }}
               style={{width: 50, height: 50}}
+              loadingIndicatorSource={{
+                uri: boringAvatar(mem.first_name),
+              }}
             />
           ))}
           <Button
@@ -99,7 +131,11 @@ export default function HouseDetailScreen() {
         <RoomsList rooms={rooms} />
         <DevicesList devices={rooms} />
       </ScreenLayout>
-      <HousesSelectModal isOpen={isOpen} onClose={onClose} />
+      <HousesSelectModal
+        isOpen={isOpen}
+        onClose={onClose}
+        houses={houses || []}
+      />
     </>
   );
 }
