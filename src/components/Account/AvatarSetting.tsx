@@ -6,21 +6,42 @@ import {
   ImageLibraryOptions,
   launchImageLibrary,
 } from 'react-native-image-picker';
+import {uploadImage} from '~/libs/cloudinary';
+import {API, API_PATH} from '~/constants/api';
+import {BaseResponse} from '~/schema/common';
+import {useAuthContext} from '~/context/auth';
 
 interface AvatarSettingProps {
   avatarUrl?: string;
 }
 
 export const AvatarSetting = ({avatarUrl = ''}: AvatarSettingProps) => {
+  const {user, setUser} = useAuthContext();
+
   const handleOpenLibrary = async () => {
+    if (!user) return;
+
     const options = {
       mediaType: 'photo',
       includeBase64: false,
       maxHeight: 2000,
       maxWidth: 2000,
     };
-    const result = await launchImageLibrary(options as ImageLibraryOptions);
-    console.log({result});
+    const {assets} = await launchImageLibrary(options as ImageLibraryOptions);
+
+    const data = await uploadImage(assets);
+
+    if (data) {
+      try {
+        const resp = await API.FALL_SURVEILANCE.patch(
+          {avatar: data.secure_url},
+          API_PATH.USER_SERVICES.PROFILE(user.id as string),
+        ).json<BaseResponse<{avatar: string}>>(r => r);
+        setUser({...user, avatar: resp.data.avatar ?? user.avatar});
+      } catch (error) {
+        console.log({error});
+      }
+    }
   };
 
   return (
