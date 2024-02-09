@@ -36,6 +36,10 @@ export default function RegisterForm() {
               onBlur={onBlur}
               onChangeText={value => onChange(value)}
               value={value}
+              textStyle={{
+                color: '#000',
+              }}
+              placeholderTextColor={'rgba(0,0,0,0.5)'}
             />
           )}
           name="fullname"
@@ -61,6 +65,10 @@ export default function RegisterForm() {
               onBlur={onBlur}
               onChangeText={value => onChange(value)}
               value={value}
+              textStyle={{
+                color: '#000',
+              }}
+              placeholderTextColor={'rgba(0,0,0,0.5)'}
             />
           )}
           name="phone"
@@ -86,6 +94,10 @@ export default function RegisterForm() {
               onBlur={onBlur}
               onChangeText={value => onChange(value)}
               value={value}
+              textStyle={{
+                color: '#000',
+              }}
+              placeholderTextColor={'rgba(0,0,0,0.5)'}
             />
           )}
           name="password"
@@ -113,7 +125,6 @@ export default function RegisterForm() {
           marginTop: 10,
         }}
         size="large"
-        status="basic"
         onPress={handleSubmit(onSubmit)}>
         Sign Up
       </Button>

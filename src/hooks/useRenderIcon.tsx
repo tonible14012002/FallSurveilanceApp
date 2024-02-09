@@ -4,11 +4,11 @@ import {TouchableWithoutFeedback} from 'react-native';
 export const PROFILE_KEY = 'PROFILE_KEY';
 
 export const useRenderIcon = () => {
-  const renderIcon = (iconName: string) => {
+  const renderIcon = (iconName: string, color = '#000') => {
     return (props: IconProps): React.ReactElement => {
       return (
         <TouchableWithoutFeedback>
-          <Icon {...props} name={iconName} />
+          <Icon {...props} name={iconName} fill={color} />
         </TouchableWithoutFeedback>
       );
     };

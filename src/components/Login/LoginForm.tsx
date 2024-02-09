@@ -63,6 +63,10 @@ export default function LoginForm() {
               onBlur={onBlur}
               onChangeText={val => onChange(val)}
               value={value}
+              textStyle={{
+                color: '#000',
+              }}
+              placeholderTextColor={'rgba(0,0,0,0.5)'}
             />
           )}
           name="phone"
@@ -88,6 +92,10 @@ export default function LoginForm() {
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
+              textStyle={{
+                color: '#000',
+              }}
+              placeholderTextColor={'rgba(0,0,0,0.5)'}
             />
           )}
           name="password"
