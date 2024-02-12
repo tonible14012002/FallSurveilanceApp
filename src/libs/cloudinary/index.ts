@@ -1,12 +1,12 @@
 import {CLOUDINARY_API_URL} from '@env';
 import {Asset} from 'react-native-image-picker';
 
-const uploadImage = async (assets?: Asset[]) => {
-  if (!assets || assets.length === 0) return null;
+const uploadImage = async (asset: Asset) => {
+  if (!asset) return null;
 
   const formData = new FormData();
   formData.append('file', {
-    uri: assets[0].uri,
+    uri: asset.uri,
     type: 'image/jpeg',
     name: 'image.jpg',
   });

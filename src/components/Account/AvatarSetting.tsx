@@ -1,25 +1,28 @@
-import React from 'react';
-import {Image, StyleSheet, View} from 'react-native';
-import Icon from '../core/Icon';
 import {Button} from '@ui-kitten/components';
+import React from 'react';
+import {Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {
+  Asset,
   ImageLibraryOptions,
   launchImageLibrary,
 } from 'react-native-image-picker';
-import {uploadImage} from '~/libs/cloudinary';
-import {API, API_PATH} from '~/constants/api';
-import {BaseResponse} from '~/schema/common';
-import {useAuthContext} from '~/context/auth';
+import Icon from '../core/Icon';
 
 interface AvatarSettingProps {
-  avatarUrl?: string;
+  avatar?: string;
+  updateAvatar: Asset | null;
+  disabled: boolean;
+  setUpdateAvatar: (asset: Asset) => void;
 }
 
-export const AvatarSetting = ({avatarUrl = ''}: AvatarSettingProps) => {
-  const {user, setUser} = useAuthContext();
-
+export const AvatarSetting = ({
+  avatar = '',
+  updateAvatar,
+  disabled,
+  setUpdateAvatar,
+}: AvatarSettingProps) => {
   const handleOpenLibrary = async () => {
-    if (!user) return;
+    if (disabled) return;
 
     const options = {
       mediaType: 'photo',
@@ -27,27 +30,21 @@ export const AvatarSetting = ({avatarUrl = ''}: AvatarSettingProps) => {
       maxHeight: 2000,
       maxWidth: 2000,
     };
-    const {assets} = await launchImageLibrary(options as ImageLibraryOptions);
+    try {
+      const {assets} = await launchImageLibrary(options as ImageLibraryOptions);
 
-    const data = await uploadImage(assets);
-
-    if (data) {
-      try {
-        const resp = await API.FALL_SURVEILANCE.patch(
-          {avatar: data.secure_url},
-          API_PATH.USER_SERVICES.PROFILE(user.id as string),
-        ).json<BaseResponse<{avatar: string}>>(r => r);
-        setUser({...user, avatar: resp.data.avatar ?? user.avatar});
-      } catch (error) {
-        console.log({error});
+      if (assets && assets[0]) {
+        setUpdateAvatar(assets[0]);
       }
+    } catch (error) {
+      console.log({error});
     }
   };
 
   return (
-    <View style={styles.container}>
+    <TouchableOpacity onPress={handleOpenLibrary} style={styles.container}>
       <Image
-        source={{uri: avatarUrl}}
+        source={{uri: updateAvatar ? updateAvatar.uri : avatar}}
         width={150}
         height={150}
         style={{
@@ -58,7 +55,7 @@ export const AvatarSetting = ({avatarUrl = ''}: AvatarSettingProps) => {
       <Button onPress={handleOpenLibrary} style={styles.cameraButton}>
         <Icon name="camera-outline" size="large" />
       </Button>
-    </View>
+    </TouchableOpacity>
   );
 };
 
