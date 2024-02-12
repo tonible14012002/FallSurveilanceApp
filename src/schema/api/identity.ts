@@ -24,3 +24,5 @@ export interface LoginResponse {
   access: string;
   user: User;
 }
+
+export interface UpdateProfileResponse extends User {}

@@ -84,3 +84,20 @@ export const RoomSchema = z.object({
 });
 
 export type RoomSchemaType = z.infer<typeof RoomSchema>;
+
+export const UpdateProfileSchema = z.object({
+  nickname: z
+    .string()
+    .trim()
+    .min(1, 'Nickname is required!')
+    .max(30, 'Nickname name only contains at most 30 characters!'),
+  phone: z
+    .string()
+    .trim()
+    .regex(phoneRegex, 'Phone is not valid!')
+    .min(10, 'Phone must contains at least 10 characters!')
+    .max(10, 'Phone is not valid!'),
+  email: z.string().email(),
+});
+
+export type UpdateProfileSchemaType = z.infer<typeof UpdateProfileSchema>;
