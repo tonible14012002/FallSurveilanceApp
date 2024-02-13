@@ -33,7 +33,7 @@ export default function AddMemberBottomSheet() {
         detailNavigator={
           <TouchableOpacity onPress={onOpen}>
             <Layout level="3" style={{padding: 5, borderRadius: 100}}>
-              <Icon name="plus" size="small" />
+              <Icon fill="#fff" name="plus" size="small" />
             </Layout>
           </TouchableOpacity>
         }>

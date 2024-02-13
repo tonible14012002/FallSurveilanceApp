@@ -2,16 +2,14 @@ import {useNavigation} from '@react-navigation/native';
 import {Button, Input, Text} from '@ui-kitten/components';
 import {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {API, API_PATH} from '~/constants/api';
 import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
 import {useAuthContext} from '~/context/auth';
 import {useRenderIcon} from '~/hooks/useRenderIcon';
 import {BaseResponse} from '~/schema/common';
-import {AddHouseSchema, AddHouseSchemaType} from '~/schema/form';
-import AddMemberBottomSheet from './AddMemberBottomSheet';
+import {AddHouseSchemaType} from '~/schema/form';
 import {useHouseDetailContext} from '../HouseDetail';
-import {zodResolver} from '@hookform/resolvers/zod';
 
 export default function AddHouseForm() {
   const [isLoading, setIsloading] = useState(false);
@@ -94,7 +92,10 @@ export default function AddHouseForm() {
         )}
       </View>
       <View>
-        <AddMemberBottomSheet />
+        {/* <AddMemberBottomSheet /> */}
+        <Button onPress={() => navigation.navigate('UserPicker')}>
+          ADd Members
+        </Button>
       </View>
       <Button
         disabled={isLoading}
@@ -102,7 +103,7 @@ export default function AddHouseForm() {
           marginTop: 10,
         }}
         onPress={() => onSubmit()}>
-        <Text>Add</Text>
+        Add
       </Button>
     </View>
   );
