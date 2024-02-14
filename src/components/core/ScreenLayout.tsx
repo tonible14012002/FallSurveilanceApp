@@ -38,12 +38,13 @@ export default function ScreenLayout(props: ScreenLayoutProps) {
       {topBar}
       <View
         style={{
+          flex: 1,
           paddingHorizontal: hasPadding ? 12 : 0,
           paddingBottom: hasBottomBar ? 64 : 0,
         }}>
         <BodyWrapper
           style={{
-            height: '100%',
+            flex: 1,
           }}>
           {/* Inner body for setting padding but retain screen scroll overflow */}
           <InnerBodyWrapper {...innerBodyProps}>{children}</InnerBodyWrapper>

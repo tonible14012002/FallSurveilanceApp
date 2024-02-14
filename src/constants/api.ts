@@ -1,13 +1,14 @@
 import wretch from 'wretch';
 // @ts-expect-error
 import QueryStringAddon from 'wretch/dist/addons/queryString';
+import queryString from 'wretch/addons/queryString';
 // @ts-expect-error
 import AbortAddon from 'wretch/dist/addons/abort';
 
 const FALL_SURVEILANCE = wretch(
-  process.env.FALL_SERVERILANCE_URL ?? 'http://14.225.204.127',
+  process.env.FALL_SERVERILANCE_URL ?? 'http://14.225.204.127/api',
 )
-  .addon(QueryStringAddon)
+  .addon(QueryStringAddon as typeof queryString) // Temporary fix for wretch type
   .addon(AbortAddon())
   .errorType('json');
 
@@ -25,15 +26,18 @@ export const logoutApi = () => {
 
 export const API_PATH = {
   IDENTITY_SERVICES: {
-    ME: '/api/identity-services/me/',
-    LOGIN: '/api/identity-services/token/',
+    ME: '/identity-services/me/',
+    LOGIN: '/identity-services/token/',
   },
   USER_SERVICES: {
-    PROFILE: (id: string) => '/api/user-services/profile/' + id + '/',
+    PROFILE: (id: string) => '/user-services/profile/' + id + '/',
+    SEARCH_USERS: '/user-services/profile/search/',
   },
   HOUSE_SERVICES: {
-    CREATE: '/api/house-services/houses/',
-    JOINED_HOUSES: '/api/house-services/houses/joined/',
-    HOUSE_DETAIL: (id: string) => '/api/house-services/houses/' + id + '/',
+    CREATE: '/house-services/houses/',
+    JOINED_HOUSES: '/house-services/houses/joined/',
+    HOUSE_DETAIL: (id: string) => '/house-services/houses/' + id + '/',
+    ASSIGNABLE_USERS: (houseId: string) =>
+      '/house-services/houses/' + houseId + '/add-members/search/',
   },
 };
