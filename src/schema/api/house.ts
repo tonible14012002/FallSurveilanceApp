@@ -29,3 +29,9 @@ export interface GetHouseDetailResponse {
 export type GetJoinedHousesResponse = Array<
   GetHouseDetailResponse & {is_owner: boolean}
 >;
+
+export interface CreateRoomResponse extends Room {}
+
+export interface GetRoomDetailResponse extends Room {}
+
+export type GetHouseRoomsResponse = Array<Room>;

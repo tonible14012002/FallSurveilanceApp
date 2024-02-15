@@ -17,6 +17,7 @@ import {
 } from '@react-navigation/bottom-tabs';
 import {CompositeNavigationProp} from '@react-navigation/native';
 import {AddHouseScreen} from '~/screens/AddHouse';
+import {RoomDetailScreen} from '~/screens/RoomDetail';
 
 // NOTE: add public screen for Stack navigation here
 // EX: Login, Register, Forget Password, OTP, ...
@@ -40,6 +41,7 @@ export type PrivateBottomRouteParamList = {
   Notification: undefined;
   Account: undefined;
   HouseDetail: undefined;
+  RoomDetail: {roomId: string};
 };
 
 export type PublicScreenProps<
@@ -59,7 +61,7 @@ export type PrivateScreenWithBottomBarProps<
 >;
 
 interface RouteItem<
-  ParamList extends Record<string, undefined>,
+  ParamList extends Record<string, any>,
   NavigationOptions extends
     | BottomTabNavigationOptions
     | StackNavigationOptions = StackNavigationOptions,
@@ -132,6 +134,13 @@ const privateTabRoutes: PrivateTabRouteItem[] = [
   {
     screen: AccountScreen,
     name: 'Account',
+    options: {
+      headerShown: false,
+    },
+  },
+  {
+    screen: RoomDetailScreen,
+    name: 'RoomDetail',
     options: {
       headerShown: false,
     },

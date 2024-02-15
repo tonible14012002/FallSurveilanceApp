@@ -11,3 +11,4 @@ export * from './TabsRow';
 export * from './TextFallback';
 export * from './TopBar';
 export * from './UserList';
+export * from './ItemsSelectModal';

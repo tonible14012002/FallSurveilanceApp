@@ -4,7 +4,6 @@ import {useEffect} from 'react';
 import {Pressable} from 'react-native';
 import {
   DevicesList,
-  HousesSelectModal,
   RoomsList,
   useHouseDetailContext,
 } from '~/components/HouseDetail';
@@ -19,6 +18,8 @@ import {useFetchHouseDetail} from '~/hooks/useFetchHouseDetail';
 import {useFetchJoinedHouses} from '~/hooks/useFetchJoinedHouses';
 import {boringAvatar} from '~/libs/utils';
 import {ProfileDropdown} from '~/components/common/ProfileDropdown';
+import {ItemsSelectModal} from '~/components/core';
+import ListItem from '~/components/core/ListItem';
 
 export default function HouseDetailScreen() {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
@@ -131,10 +132,27 @@ export default function HouseDetailScreen() {
         <RoomsList rooms={rooms} />
         <DevicesList devices={rooms} />
       </ScreenLayout>
-      <HousesSelectModal
+
+      <ItemsSelectModal
         isOpen={isOpen}
         onClose={onClose}
-        houses={houses || []}
+        items={houses || []}
+        renderItem={({item}) => (
+          <ListItem
+            onPressHandler={() => {
+              setHouseId(String(item.id));
+              onClose();
+            }}
+            title={item.name}
+            subTitle={`${item.members.length} members`}
+            rightEle={
+              houseId === String(item.id) ? (
+                <Icon size="small" name="checkmark-outline" />
+              ) : null
+            }
+            level="1"
+          />
+        )}
       />
     </>
   );

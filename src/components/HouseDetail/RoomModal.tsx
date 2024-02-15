@@ -1,49 +1,74 @@
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {Button, Input, Layout, Modal, Text} from '@ui-kitten/components';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
+import {mutate} from 'swr';
 import {API, API_PATH} from '~/constants/api';
 import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
-import {useAuthContext} from '~/context/auth';
+import {ROOM_DETAIL_KEY} from '~/hooks/useFetchRoomDetail';
 import {useRenderIcon} from '~/hooks/useRenderIcon';
+import {CreateRoomResponse, Room} from '~/schema/api/house';
 import {BaseResponse} from '~/schema/common';
 import {RoomSchemaType} from '~/schema/form';
-import {useHouseDetailContext} from '../HouseDetail';
-import {Room} from '~/schema/api/house';
 
 interface RoomModalProps {
   isOpen: boolean;
-  onClose: () => void;
   data?: Room;
+  houseId: string;
+  onClose: () => void;
 }
 
-export function RoomModal({isOpen, onClose, data}: RoomModalProps) {
+export function RoomModal({isOpen, houseId, data, onClose}: RoomModalProps) {
   const [isLoading, setIsloading] = useState(false);
-  const {user} = useAuthContext();
   const {renderIcon} = useRenderIcon();
   const navigation = useNavigation<PrivateScreenWithBottomBarProps>();
+
   const {
     handleSubmit,
     control,
     formState: {errors},
-  } = useForm<RoomSchemaType>({});
-  const onSubmit = handleSubmit(async (data: RoomSchemaType) => {
+    setValue,
+  } = useForm<RoomSchemaType>();
+
+  const handleAddRoom = async (values: RoomSchemaType) => {
+    const {data} = await API.FALL_SURVEILANCE.post(
+      values,
+      API_PATH.HOUSE_SERVICES.CREATE_ROOM(houseId),
+    ).json<BaseResponse<CreateRoomResponse>>(r => r);
+
+    navigation.navigate('Main');
+    navigation.navigate('RoomDetail', {roomId: data.id});
+  };
+
+  const handleUpdateRoom = async (values: RoomSchemaType) => {
+    const roomId = data?.id;
+
+    await API.FALL_SURVEILANCE.put(
+      values,
+      API_PATH.HOUSE_SERVICES.ROOM_DETAIL(roomId as string),
+    ).json<BaseResponse<CreateRoomResponse>>(r => r);
+  };
+
+  const onSubmit = handleSubmit(async (values: RoomSchemaType) => {
+    setIsloading(true);
     try {
-      // const {data: respData} = await API.FALL_SURVEILANCE.post(
-      //   {...data, owner_ids: [user?.id], rooms: []},
-      //   API_PATH.HOUSE_SERVICES.CREATE,
-      // ).json<BaseResponse<any>>(r => r);
-      // setHouseId(respData.id);
-      // navigation.navigate('Main');
-      // navigation.navigate('HouseDetail');
+      await (data ? handleUpdateRoom(values) : handleAddRoom(values));
+      mutate(API_PATH.HOUSE_SERVICES.HOUSE_DETAIL);
     } catch (e) {
-      setIsloading(false);
       console.log(e);
     } finally {
       setIsloading(false);
+      onClose();
     }
   });
+
+  useEffect(() => {
+    if (data) {
+      setValue('name', data.name);
+      setValue('description', data.description);
+    }
+  }, [data]);
 
   return (
     <Modal visible={isOpen} onBackdropPress={onClose}>
@@ -54,6 +79,10 @@ export function RoomModal({isOpen, onClose, data}: RoomModalProps) {
           elevation: 3,
           borderRadius: 16,
           overflow: 'hidden',
+          borderWidth: 1,
+          borderColor: 'lightgray',
+          padding: 0,
+          backgroundColor: 'white',
         }}
         level="3">
         <View style={styles.formContainer}>
@@ -115,7 +144,7 @@ export function RoomModal({isOpen, onClose, data}: RoomModalProps) {
               marginTop: 10,
             }}
             onPress={() => onSubmit()}>
-            <Text>Add</Text>
+            <Text>{data ? 'Save' : 'Add'}</Text>
           </Button>
         </View>
       </Layout>
