@@ -1,5 +1,5 @@
 import {API, API_PATH} from '~/constants/api';
-import {USER_PERMISSIONS} from '~/constants/common';
+import {ROOM_PERMISSIONS} from '~/constants/common';
 import {useFetchInfinite} from '~/libs/hooks/useFetchInfinite';
 import {User} from '~/schema/api/identity';
 import {SearchAssignableUsersParams} from '~/schema/api/user';
@@ -25,12 +25,13 @@ export const useSearchAssignableUsers = (
       API.FALL_SURVEILANCE.query({
         page: index + 1,
         pageSize: pageSize,
-        exclude_permissions: USER_PERMISSIONS.ACCESS,
+        exclude_permissions: Object.keys(ROOM_PERMISSIONS)[0],
         search,
       })
         .get(API_PATH.HOUSE_SERVICES.SEARCH_ASSIGNABLE_USERS(roomId))
         .json<BaseResponse<User[]>>(r => r),
   );
+
   return {
     userCollections: data,
     ...rest,

@@ -1,7 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import {Avatar, Button, Text} from '@ui-kitten/components';
-import {useEffect} from 'react';
-import {Pressable} from 'react-native';
+import {useEffect, useState} from 'react';
+import {Pressable, View} from 'react-native';
 import {
   DevicesList,
   RoomsList,
@@ -20,6 +20,11 @@ import {boringAvatar} from '~/libs/utils';
 import {ProfileDropdown} from '~/components/common/ProfileDropdown';
 import {ItemsSelectModal} from '~/components/core';
 import ListItem from '~/components/core/ListItem';
+import {AddMemberModal} from '~/components/common/AddMemberModal';
+import {useSearchUsers} from '~/hooks/useSearchUsers';
+import {PAGINATION} from '~/constants/common';
+import {useDebounce} from '~/libs/hooks/useDebounce';
+import {EditHouseModal} from '~/components/HouseDetail/EditHouseModal';
 
 export default function HouseDetailScreen() {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
@@ -30,11 +35,35 @@ export default function HouseDetailScreen() {
     onClose: onCloseProfile,
     onOpen: onOpenProfile,
   } = useDisclosure();
+  const {
+    isOpen: isOpenAddMember,
+    onClose: onCloseAddMember,
+    onOpen: onOpenAddMember,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenHouseEdit,
+    onClose: onCloseHouseEdit,
+    onOpen: onOpenHouseEdit,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenHousesSelect,
+    onClose: onCloseHousesSelect,
+    onOpen: onOpenHousesSelect,
+  } = useDisclosure();
 
-  const {isOpen, onClose, onOpen} = useDisclosure();
+  const [searchText, setSearchText] = useState('');
+  const debouncedSearch = useDebounce(searchText, 400);
 
+  const {userCollections, isLoading: isLoadingUserCollections} = useSearchUsers(
+    {
+      page: 1,
+      pageSize: PAGINATION.SMALL,
+      allowFetch: isOpenAddMember,
+      search: debouncedSearch,
+    },
+  );
   const {detail} = useFetchHouseDetail(houseId, Boolean(houseId));
-  const {houses} = useFetchJoinedHouses(!houseId || isOpen);
+  const {houses} = useFetchJoinedHouses(!houseId || isOpenHousesSelect);
 
   const rooms = detail?.rooms ?? [];
   const members = detail?.members ?? []; //members here
@@ -44,6 +73,38 @@ export default function HouseDetailScreen() {
       setHouseId(houses?.[0].id);
     }
   }, [houseId, houses, setHouseId]);
+
+  const __renderHouseActionsBar = () => (
+    <View
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        gap: 5,
+        marginBottom: 15,
+      }}>
+      <Button
+        onPress={onOpenHouseEdit}
+        style={{
+          width: 45,
+          height: 45,
+          borderRadius: 45,
+        }}
+        status="warning">
+        <Icon name="edit-outline" />
+      </Button>
+      <Button
+        onPress={onOpenAddMember}
+        style={{
+          width: 45,
+          height: 45,
+          borderRadius: 45,
+        }}
+        status="danger">
+        <Icon name="person-add-outline" />
+      </Button>
+    </View>
+  );
 
   return (
     <>
@@ -73,7 +134,7 @@ export default function HouseDetailScreen() {
             }
             title={
               <Pressable
-                onPress={onOpen}
+                onPress={onOpenHousesSelect}
                 style={({pressed}) => ({
                   opacity: pressed ? 0.7 : 1,
                   display: 'flex',
@@ -87,6 +148,7 @@ export default function HouseDetailScreen() {
             }
           />
         }>
+        {__renderHouseActionsBar()}
         <UserList
           containerStyle={{marginBottom: 30}}
           listStyle={{gap: 10}}
@@ -102,7 +164,7 @@ export default function HouseDetailScreen() {
                 width: 35,
                 height: 35,
               }}
-              status="control">
+              status="basic">
               <Icon size="giant" name="chevron-right-outline" />
             </Button>
           }>
@@ -124,7 +186,8 @@ export default function HouseDetailScreen() {
               width: 50,
               height: 50,
             }}
-            status="control">
+            status="basic"
+            onPress={onOpenAddMember}>
             <Icon name="plus" />
           </Button>
         </UserList>
@@ -134,14 +197,14 @@ export default function HouseDetailScreen() {
       </ScreenLayout>
 
       <ItemsSelectModal
-        isOpen={isOpen}
-        onClose={onClose}
+        isOpen={isOpenHousesSelect}
+        onClose={onCloseHousesSelect}
         items={houses || []}
         renderItem={({item}) => (
           <ListItem
             onPressHandler={() => {
               setHouseId(String(item.id));
-              onClose();
+              onCloseHousesSelect();
             }}
             title={item.name}
             subTitle={`${item.members.length} members`}
@@ -153,6 +216,20 @@ export default function HouseDetailScreen() {
             level="1"
           />
         )}
+      />
+      <AddMemberModal
+        isOpen={isOpenAddMember}
+        isLoading={isLoadingUserCollections}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        userCollections={userCollections ?? []}
+        onClose={onCloseAddMember}
+        onSave={() => {}}
+      />
+      <EditHouseModal
+        isOpen={isOpenHouseEdit}
+        data={detail}
+        onClose={onCloseHouseEdit}
       />
     </>
   );
