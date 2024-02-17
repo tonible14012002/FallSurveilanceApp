@@ -12,6 +12,13 @@ export interface Room {
   allow_assign_member: boolean;
 }
 
+export interface House {
+  id: string;
+  name: string;
+  description: string;
+  address: string;
+}
+
 export interface HouseDetailRoom
   extends Pick<Room, 'id' | 'name' | 'description'> {
   accessible: boolean;
