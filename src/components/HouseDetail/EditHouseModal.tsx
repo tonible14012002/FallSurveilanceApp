@@ -1,4 +1,4 @@
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {Button, Input, Layout, Modal, Text} from '@ui-kitten/components';
 import {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
@@ -6,54 +6,39 @@ import {StyleSheet, View} from 'react-native';
 import {mutate} from 'swr';
 import {API, API_PATH} from '~/constants/api';
 import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
-import {ROOM_DETAIL_KEY} from '~/hooks/useFetchRoomDetail';
 import {useRenderIcon} from '~/hooks/useRenderIcon';
-import {CreateRoomResponse, Room} from '~/schema/api/house';
+import {CreateRoomResponse, House} from '~/schema/api/house';
 import {BaseResponse} from '~/schema/common';
-import {RoomSchemaType} from '~/schema/form';
+import {EditHouseSchemaType} from '~/schema/form';
 
 interface RoomModalProps {
   isOpen: boolean;
-  data?: Room;
-  houseId: string;
+  data?: House;
   onClose: () => void;
 }
 
-export function RoomModal({isOpen, houseId, data, onClose}: RoomModalProps) {
+export function EditHouseModal({isOpen, data, onClose}: RoomModalProps) {
   const [isLoading, setIsloading] = useState(false);
   const {renderIcon} = useRenderIcon();
-  const navigation = useNavigation<PrivateScreenWithBottomBarProps>();
 
   const {
     handleSubmit,
     control,
     formState: {errors},
     setValue,
-  } = useForm<RoomSchemaType>();
+  } = useForm<EditHouseSchemaType>();
 
-  const handleAddRoom = async (values: RoomSchemaType) => {
-    const {data} = await API.FALL_SURVEILANCE.post(
+  const handleUpdateHouse = async (values: EditHouseSchemaType) => {
+    await API.FALL_SURVEILANCE.patch(
       values,
-      API_PATH.HOUSE_SERVICES.CREATE_ROOM(houseId),
-    ).json<BaseResponse<CreateRoomResponse>>(r => r);
-
-    navigation.navigate('Main');
-    navigation.navigate('RoomDetail', {roomId: data.id});
-  };
-
-  const handleUpdateRoom = async (values: RoomSchemaType) => {
-    const roomId = data?.id;
-
-    await API.FALL_SURVEILANCE.put(
-      values,
-      API_PATH.HOUSE_SERVICES.ROOM_DETAIL(roomId as string),
+      API_PATH.HOUSE_SERVICES.HOUSE_DETAIL(data?.id as string),
     ).json<BaseResponse<CreateRoomResponse>>(r => r);
   };
 
-  const onSubmit = handleSubmit(async (values: RoomSchemaType) => {
+  const onSubmit = handleSubmit(async (values: EditHouseSchemaType) => {
     setIsloading(true);
     try {
-      await (data ? handleUpdateRoom(values) : handleAddRoom(values));
+      await handleUpdateHouse(values);
       mutate(API_PATH.HOUSE_SERVICES.HOUSE_DETAIL);
     } catch (e) {
       console.log(e);
@@ -67,6 +52,7 @@ export function RoomModal({isOpen, houseId, data, onClose}: RoomModalProps) {
     if (data) {
       setValue('name', data.name);
       setValue('description', data.description);
+      setValue('address', data.address);
     }
   }, [data]);
 
@@ -113,7 +99,7 @@ export function RoomModal({isOpen, houseId, data, onClose}: RoomModalProps) {
               </Text>
             )}
           </View>
-          <View>
+          <View style={{width: '100%'}}>
             <Controller
               control={control}
               render={({field: {onChange, onBlur, value}}) => (
@@ -121,11 +107,11 @@ export function RoomModal({isOpen, houseId, data, onClose}: RoomModalProps) {
                   style={{
                     width: '100%',
                   }}
-                  accessoryLeft={renderIcon('info-outline')}
+                  accessoryLeft={renderIcon('edit-2-outline')}
                   size="large"
                   placeholder="Description"
                   onBlur={onBlur}
-                  onChangeText={onChange}
+                  onChangeText={val => onChange(val)}
                   value={value}
                 />
               )}
@@ -137,6 +123,30 @@ export function RoomModal({isOpen, houseId, data, onClose}: RoomModalProps) {
               </Text>
             )}
           </View>
+          <View>
+            <Controller
+              control={control}
+              render={({field: {onChange, onBlur, value}}) => (
+                <Input
+                  style={{
+                    width: '100%',
+                  }}
+                  accessoryLeft={renderIcon('info-outline')}
+                  size="large"
+                  placeholder="Adress"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+              name="address"
+            />
+            {errors.address && (
+              <Text category="s2" status="danger" style={{marginTop: 5}}>
+                {errors.address.message}
+              </Text>
+            )}
+          </View>
 
           <Button
             disabled={isLoading}
@@ -144,7 +154,7 @@ export function RoomModal({isOpen, houseId, data, onClose}: RoomModalProps) {
               marginTop: 10,
             }}
             onPress={() => onSubmit()}>
-            <Text>{data ? 'Save' : 'Add'}</Text>
+            Save
           </Button>
         </View>
       </Layout>

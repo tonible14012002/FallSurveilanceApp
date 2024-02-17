@@ -60,6 +60,25 @@ export const AddHouseSchema = z.object({
 
 export type AddHouseSchemaType = z.infer<typeof AddHouseSchema>;
 
+export const EditHouseSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .max(30, 'House name only contains at most 30 characters!'),
+  description: z
+    .string()
+    .trim()
+    .min(1, 'House description is required!')
+    .max(30, 'House description name only contains at most 30 characters!'),
+  address: z
+    .string()
+    .trim()
+    .min(10, 'House address must contains at least 10 characters!')
+    .max(120, 'House adreess only contain at most 120 characters!'),
+});
+
+export type EditHouseSchemaType = z.infer<typeof EditHouseSchema>;
+
 export const SearchUsersSchema = z.object({
   username: z
     .string()

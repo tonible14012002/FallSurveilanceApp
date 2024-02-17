@@ -5,6 +5,9 @@ import {HouseDetailRoom} from '~/schema/api/house';
 import TabItem from '../core/TabItem';
 import {RoomModal} from './RoomModal';
 import {useDisclosure} from '~/hooks/common';
+import {useHouseDetailContext} from './context';
+import {useNavigation} from '@react-navigation/native';
+import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
 
 interface RoomsListProps {
   rooms: HouseDetailRoom[];
@@ -12,6 +15,14 @@ interface RoomsListProps {
 
 export const RoomsList = ({rooms}: RoomsListProps) => {
   const {isOpen, onOpen, onClose} = useDisclosure();
+  const {houseId} = useHouseDetailContext();
+  const navigation = useNavigation<PrivateScreenWithBottomBarProps>();
+
+  const handleNavigateRoomDetailScreen = (roomId: string) => {
+    navigation.navigate('Main');
+    navigation.navigate('RoomDetail', {roomId});
+  };
+
   return (
     <>
       <List
@@ -41,10 +52,11 @@ export const RoomsList = ({rooms}: RoomsListProps) => {
             key={room.id}
             title={room.name}
             icon={<Icon name="tv" size="large" />}
+            onPressHandler={() => handleNavigateRoomDetailScreen(room.id)}
           />
         ))}
       </List>
-      <RoomModal isOpen={isOpen} onClose={onClose} />
+      <RoomModal isOpen={isOpen} houseId={houseId ?? ''} onClose={onClose} />
     </>
   );
 };

@@ -4,3 +4,9 @@ export const PAGINATION = {
   LARGE: 100,
   SUPER_LARGE: 500,
 };
+
+export const ROOM_PERMISSIONS = {
+  ACCESS: '#DF826C',
+  ASSIGN: '#D0F288',
+  RECEIVE_NOTIFICATION: '#FFC436',
+} as const;

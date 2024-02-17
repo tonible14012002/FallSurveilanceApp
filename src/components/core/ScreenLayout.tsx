@@ -40,7 +40,6 @@ export default function ScreenLayout(props: ScreenLayoutProps) {
         style={{
           flex: 1,
           paddingHorizontal: hasPadding ? 12 : 0,
-          paddingBottom: hasBottomBar ? 64 : 0,
         }}>
         <BodyWrapper
           style={{
