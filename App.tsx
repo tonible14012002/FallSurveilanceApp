@@ -22,6 +22,7 @@ import BottomTabBar from '~/components/core/BottomTabBar';
 import {HouseDetailContextProvider} from '~/components/HouseDetail';
 import {AuthProvider} from '~/context/auth';
 import AuthGuard from '~/components/auth/AuthGuard';
+import {RoomMemberContextProvider} from '~/screens/RoomMembers/context';
 
 const PrivateTabScreens = () => {
   return (
@@ -43,22 +44,24 @@ const PrivateScreens = () => {
     <AuthProvider>
       <AuthGuard>
         <HouseDetailContextProvider>
-          <PrivateNavigator>
-            <PrivateScreen
-              key="Main"
-              name="Main"
-              component={PrivateTabScreens}
-              options={{headerShown: false}}
-            />
-            {privateRoutes.map(route => (
+          <RoomMemberContextProvider>
+            <PrivateNavigator>
               <PrivateScreen
-                key={route.name}
-                name={route.name}
-                component={route.screen}
-                options={route?.options}
+                key="Main"
+                name="Main"
+                component={PrivateTabScreens}
+                options={{headerShown: false}}
               />
-            ))}
-          </PrivateNavigator>
+              {privateRoutes.map(route => (
+                <PrivateScreen
+                  key={route.name}
+                  name={route.name}
+                  component={route.screen}
+                  options={route?.options}
+                />
+              ))}
+            </PrivateNavigator>
+          </RoomMemberContextProvider>
         </HouseDetailContextProvider>
       </AuthGuard>
     </AuthProvider>

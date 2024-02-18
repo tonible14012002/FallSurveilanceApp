@@ -1,3 +1,4 @@
+import {RoomPermission} from '~/constants/permissions';
 import {BasicUser} from './identity';
 
 export interface Room {
@@ -42,3 +43,10 @@ export interface CreateRoomResponse extends Room {}
 export interface GetRoomDetailResponse extends Room {}
 
 export type GetHouseRoomsResponse = Array<Room>;
+
+export type RoomMemberWithPermissions = BasicUser & {
+  room_permissions: RoomPermission[];
+};
+
+export interface GetRoomMembersWithPermissionsResponse
+  extends Array<RoomMemberWithPermissions> {}

@@ -45,5 +45,19 @@ export const API_PATH = {
       '/house-services/houses/room-detail/' + id + '/',
     SEARCH_ASSIGNABLE_USERS: (id: string) =>
       '/house-services/houses/rooms/' + id + '/add-members/search/',
+    ROOM_MEMBERS: (roomId: string) =>
+      '/house-services/houses/rooms/' + roomId + '/members/',
+    UPDATE_ROOM_PERMISSIONS: ({
+      room_id,
+      member_id,
+    }: {
+      room_id: string;
+      member_id: string;
+    }) =>
+      '/house-services/houses/rooms/' +
+      room_id +
+      '/members/' +
+      member_id +
+      '/permissions/',
   },
 };

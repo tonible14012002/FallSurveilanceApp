@@ -1,219 +1,225 @@
 import {
   Avatar,
-  Button,
-  CheckBox,
   Layout,
   List,
   Modal,
   Text,
+  Button,
+  Divider,
+  useTheme,
 } from '@ui-kitten/components';
 import {useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {View} from 'react-native';
 import ListItem from '~/components/core/ListItem';
-import {PAGINATION} from '~/constants/common';
-import {useSearchUsers} from '~/hooks/useSearchUsers';
+import {RoomMemberWithPermissions} from '~/schema/api/house';
 import {BasicUser} from '~/schema/api/identity';
 import {BaseResponse} from '~/schema/common';
+import {RoomPermissionDot} from '../RoomPermissonDot';
+import {ROOM_PERMISSIONS, RoomPermission} from '~/constants/permissions';
+import {useDisclosure} from '~/hooks/common';
+import {Controller, useForm} from 'react-hook-form';
+import Icon from '~/components/core/Icon';
+import {API, API_PATH} from '~/constants/api';
+
+const sortedPermissions: RoomPermission[] = [
+  ROOM_PERMISSIONS.ACCESS,
+  ROOM_PERMISSIONS.ASSIGN,
+  ROOM_PERMISSIONS.ASSIGN_ROOM_PERMISSION,
+  ROOM_PERMISSIONS.RECEIVE_NOTIFICATION,
+  ROOM_PERMISSIONS.DELETE,
+];
 
 interface UserPermissionsModalProps {
-  isOpen: boolean;
-  // userCollections: BaseResponse<User[]>[];
-  permissions: Record<string, string>;
-  onClose: () => void;
+  userCollections?: BaseResponse<BasicUser[]>[];
+  enableScroll?: boolean;
+  members: RoomMemberWithPermissions[];
+  roomId: string;
+  onUpdatedPermissions?: () => void;
 }
 
 export const UserPermissionsModal = (props: UserPermissionsModalProps) => {
-  const {isOpen, permissions, onClose} = props;
+  const {members, enableScroll, roomId, onUpdatedPermissions} = props;
 
-  const {userCollections, isLoading} = useSearchUsers({
-    page: 1,
-    pageSize: PAGINATION.SMALL,
-    allowFetch: true,
-  });
-  const [clickedUser, setClickedUser] = useState(false);
+  const {isOpen, onOpen, onClose} = useDisclosure();
+  const [selectedUser, setSelectedUser] = useState<RoomMemberWithPermissions>();
 
-  const renderUserCollection = ({item}: {item: BaseResponse<BasicUser[]>}) => {
-    const {data} = item;
-    const userPermisisons: Array<keyof typeof permissions> = [
-      'ASSIGN',
-      'ACCESS',
-      'RECEIVE_NOTIFICATION',
-    ];
+  const renderMember = ({item: user}: {item: RoomMemberWithPermissions}) => {
+    const userPermission = sortedPermissions.filter(p =>
+      user.room_permissions.includes(p),
+    );
+
     return (
-      <List
-        key={item.pageable?.next_page}
-        data={data}
-        renderItem={({item: user}) => {
-          // const isSelected = [].some(u => u.id === user.id);
-          return (
-            <ListItem
-              size="medium"
-              onPressHandler={() => {
-                // onUserItemPress(user, isSelected);
-                setClickedUser(true);
-              }}
-              wrapperStyle={{
-                marginHorizontal: -16,
-              }}
-              level="1"
-              rightEle={
-                <View
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    gap: 3,
-                    paddingRight: 2,
-                  }}>
-                  {Object.entries(permissions).map(([permission]) => {
-                    if (
-                      userPermisisons.includes(
-                        permission as keyof typeof permissions,
-                      )
-                    ) {
-                      return (
-                        <View
-                          style={{
-                            width: 8,
-                            height: 12,
-                            borderRadius: 5,
-                            padding: 1,
-                            borderWidth: 1,
-                            backgroundColor:
-                              permissions[
-                                permission as keyof typeof permissions
-                              ],
-                          }}
-                        />
-                      );
-                    }
-                  })}
-                </View>
-              }
-              isRightIcon
-              leftIcon={
-                <Avatar
-                  source={{
-                    uri: user.avatar,
-                  }}
-                />
-              }
-              title={user.nickname}
-            />
-          );
+      <ListItem
+        key={user.id}
+        onPressHandler={() => {
+          setSelectedUser(user);
+          onOpen();
         }}
+        size="small"
+        rightEle={
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              gap: 4,
+              paddingRight: 2,
+            }}>
+            {userPermission.map(permission => {
+              return <RoomPermissionDot permission={permission} />;
+            })}
+          </View>
+        }
+        isRightIcon
+        leftIcon={
+          <Avatar
+            source={{
+              uri: user.avatar,
+            }}
+          />
+        }
+        title={user.nickname}
       />
     );
   };
 
-  const renderPermissionEditor = () => {
-    return (
-      <View
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          flex: 1,
-        }}>
-        <List
-          style={{backgroundColor: '#fff'}}
-          data={Object.entries(permissions)}
-          renderItem={({item}) => {
-            // const isSelected = [].some(u => u.id === user.id);
-            const [permission, color] = item;
-            return (
-              <ListItem
-                size="medium"
-                onPressHandler={() => {
-                  // onUserItemPress(user, isSelected);
-                }}
-                wrapperStyle={{
-                  marginHorizontal: -16,
-                }}
-                level="1"
-                rightEle={
-                  <View
-                    style={{
-                      width: 12,
-                      height: 20,
-                      borderRadius: 5,
-                      padding: 1,
-                      borderWidth: 1,
-                      backgroundColor:
-                        permissions[permission as keyof typeof permissions],
-                    }}
-                  />
-                }
-                isRightIcon
-                leftIcon={<CheckBox checked={true} onChange={() => {}} />}
-                title={permission}
-              />
-            );
-          }}
-        />
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            gap: 10,
-            paddingRight: 2,
-          }}>
-          <Button
-            style={{flex: 1}}
-            status="basic"
-            onPress={() => setClickedUser(false)}>
-            Back
-          </Button>
-          <Button style={{flex: 1}}>Save</Button>
-        </View>
-      </View>
-    );
-  };
-
   return (
-    <Modal visible={isOpen} onBackdropPress={onClose}>
-      <Layout
-        style={{
-          width: 370,
-          minHeight: 480,
-          elevation: 3,
-          borderRadius: 16,
-          padding: 15,
-          paddingBottom: 10,
-          overflow: 'hidden',
-        }}>
-        {!clickedUser && (
-          <>
-            <Text category="h5" style={{textAlign: 'center', marginBottom: 15}}>
-              Members Permissions
-            </Text>
-            <List
-              showsVerticalScrollIndicator={false}
-              style={[{flex: 1, backgroundColor: 'transparent'}]}
-              scrollEnabled={true}
-              data={userCollections ?? []}
-              renderItem={renderUserCollection}
-            />
-          </>
-        )}
-
-        {clickedUser && (
-          <>
-            <Text category="h5" style={{textAlign: 'center', marginBottom: 15}}>
-              Khoa's Permissions
-            </Text>
-            {renderPermissionEditor()}
-          </>
-        )}
-      </Layout>
-    </Modal>
+    <View style={{flex: 1}}>
+      <List
+        showsVerticalScrollIndicator={false}
+        style={[{flex: 1, backgroundColor: 'transparent'}]}
+        scrollEnabled={enableScroll}
+        data={members ?? []}
+        renderItem={renderMember}
+      />
+      {!!selectedUser && (
+        <Modal visible={isOpen} onBackdropPress={onClose}>
+          <UpdateUserPermissionModal
+            user={selectedUser}
+            roomId={roomId}
+            onFinished={() => {
+              onUpdatedPermissions?.();
+              onClose();
+            }}
+          />
+        </Modal>
+      )}
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: 200,
-    elevation: 2,
-    borderRadius: 8,
-    overflow: 'hidden',
-    transform: [{translateY: 12}],
-  },
-});
+interface UpdateUserPermissionModalProps {
+  user: RoomMemberWithPermissions;
+  roomId: string;
+  onFinished?: () => void;
+}
+
+interface UpdateUserPermissionFormValue {
+  permissions: RoomPermission[];
+}
+
+const UpdateUserPermissionModal = (props: UpdateUserPermissionModalProps) => {
+  const {user, roomId, onFinished} = props;
+  const theme = useTheme();
+  const userPermissions = sortedPermissions.filter(p =>
+    user.room_permissions.includes(p),
+  );
+
+  const {control, handleSubmit} = useForm<UpdateUserPermissionFormValue>({
+    defaultValues: {
+      permissions: userPermissions,
+    },
+  });
+
+  const onSubmit = handleSubmit(async value => {
+    const submitPermissions = value.permissions;
+    API.FALL_SURVEILANCE.put(
+      {
+        update_room_permissions: submitPermissions,
+      },
+      API_PATH.HOUSE_SERVICES.UPDATE_ROOM_PERMISSIONS({
+        room_id: roomId,
+        member_id: user.id,
+      }),
+    ).json<any>(r => r);
+    await onFinished?.();
+  });
+
+  return (
+    <Layout
+      style={{
+        width: 360,
+        height: 400,
+        elevation: 2,
+        padding: 16,
+        borderRadius: 8,
+      }}>
+      <Text
+        style={{
+          paddingBottom: 16,
+          fontSize: 16,
+          fontWeight: '700',
+          textAlign: 'center',
+        }}>
+        {user.nickname} 's room permissions
+      </Text>
+      <Divider style={{marginHorizontal: -16}} />
+      <List
+        style={{backgroundColor: '#fff', flex: 1}}
+        data={sortedPermissions}
+        ItemSeparatorComponent={Divider}
+        scrollEnabled
+        renderItem={({item: permission}) => {
+          return (
+            <Controller
+              name="permissions"
+              control={control}
+              render={({field: {onChange, value}}) => {
+                const isSelected = value.includes(permission);
+                return (
+                  <ListItem
+                    key={permission}
+                    size="medium"
+                    onPressHandler={() => {
+                      if (isSelected) {
+                        onChange(value.filter(p => p !== permission));
+                      } else {
+                        onChange([...value, permission]);
+                      }
+                    }}
+                    wrapperStyle={{
+                      marginHorizontal: -16,
+                    }}
+                    level="1"
+                    leftIcon={<RoomPermissionDot permission={permission} />}
+                    isRightIcon
+                    rightEle={
+                      isSelected ? (
+                        <Icon
+                          size="small"
+                          fill={theme['color-primary-default']}
+                          name="checkmark-outline"
+                        />
+                      ) : null
+                    }
+                    title={permission}
+                  />
+                );
+              }}
+            />
+          );
+        }}
+      />
+      <Divider />
+      <View
+        style={{
+          display: 'flex',
+          padding: 16,
+          marginHorizontal: -16,
+        }}>
+        <Button style={{flex: 1}} onPress={onSubmit}>
+          Save
+        </Button>
+      </View>
+    </Layout>
+  );
+};

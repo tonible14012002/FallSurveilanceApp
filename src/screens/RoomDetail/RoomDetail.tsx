@@ -5,19 +5,18 @@ import {Pressable, View} from 'react-native';
 import {RoomModal} from '~/components/HouseDetail/RoomModal';
 import {AddMemberModal} from '~/components/common/AddMemberModal';
 import {ProfileDropdown} from '~/components/common/ProfileDropdown';
-import {UserPermissionsModal} from '~/components/common/UserPermissonsModal';
 import {ItemsSelectModal} from '~/components/core';
 import Icon from '~/components/core/Icon';
 import ListItem from '~/components/core/ListItem';
 import ScreenLayout from '~/components/core/ScreenLayout';
 import TopBar from '~/components/core/TopBar';
 import UserList from '~/components/core/UserList';
-import {ROOM_PERMISSIONS} from '~/constants/common';
 import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
 import {useDebounce} from '~/libs/hooks/useDebounce';
 import {boringAvatar} from '~/libs/utils';
 import useFetchRoomData from './useFetchRoomData';
 import useModalsDisclosure from './useModalsDisclosure';
+import {useRoomMemberContext} from '../RoomMembers/context';
 
 export default function RoomDetailScreen() {
   const [searchText, setSearchText] = useState('');
@@ -37,9 +36,6 @@ export default function RoomDetailScreen() {
     isOpenRoomEdit,
     onCloseRoomEdit,
     onToggleRoomEdit,
-    isOpenUserPermission,
-    onCloseUserPermission,
-    onToggleUserPermission,
   } = useModalsDisclosure();
 
   const {
@@ -53,6 +49,8 @@ export default function RoomDetailScreen() {
     isOpenAddMember,
     debouncedSearch,
   });
+
+  const {setRoomId, setBackSceenName} = useRoomMemberContext();
 
   const __renderTopBar = () => (
     <TopBar
@@ -106,8 +104,8 @@ export default function RoomDetailScreen() {
           height: 45,
           borderRadius: 45,
         }}
-        status="warning">
-        <Icon name="edit-outline" />
+        appearance="ghost">
+        <Icon size="small" name="edit-outline" />
       </Button>
       <Button
         onPress={onToggleAddMember}
@@ -116,25 +114,33 @@ export default function RoomDetailScreen() {
           height: 45,
           borderRadius: 45,
         }}
-        status="danger">
-        <Icon name="person-add-outline" />
+        appearance="ghost">
+        <Icon size="small" name="person-add-outline" />
       </Button>
     </View>
   );
 
   const __renderRoomDetails = () => (
-    <>
-      <View style={{marginBottom: 10, marginTop: 5}}>
-        <Text style={{fontWeight: 'bold', marginBottom: 5}}>Description</Text>
-        <Text category="s2">{roomDetail?.description}</Text>
+    <View style={{gap: 16}}>
+      <View style={{gap: 8}}>
+        <Text category="label">Description</Text>
+        {roomDetail?.description ? (
+          <Text category="s2">{roomDetail?.description}</Text>
+        ) : (
+          <Text category="s2" appearance="hint">
+            - Empty
+          </Text>
+        )}
       </View>
       <UserList
         containerStyle={{marginBottom: 30}}
         listStyle={{gap: 10}}
         title={
-          <Text category="s2">
+          <Text category="label">
             Members •{' '}
-            <Text category="c2">{roomDetail?.members.length ?? 0} members</Text>
+            <Text category="c2" appearance="hint">
+              {roomDetail?.members.length ?? 0} members
+            </Text>
           </Text>
         }
         detailNavigator={
@@ -144,9 +150,13 @@ export default function RoomDetailScreen() {
               width: 35,
               height: 35,
             }}
-            status="basic"
-            onPress={onToggleUserPermission}>
-            <Icon size="giant" name="chevron-right-outline" />
+            appearance="ghost"
+            onPress={() => {
+              setRoomId(roomDetail?.id);
+              setBackSceenName('RoomDetail');
+              navigate('RoomMembers');
+            }}>
+            <Icon name="chevron-right-outline" />
           </Button>
         }>
         {(roomDetail?.members ?? []).map(mem => (
@@ -172,7 +182,7 @@ export default function RoomDetailScreen() {
           <Icon name="plus" />
         </Button>
       </UserList>
-    </>
+    </View>
   );
 
   const __renderRoomModals = () => (
@@ -213,11 +223,6 @@ export default function RoomDetailScreen() {
         isOpen={isOpenAddMember}
         onClose={onCloseAddMember}
       />
-      <UserPermissionsModal
-        permissions={ROOM_PERMISSIONS}
-        isOpen={isOpenUserPermission}
-        onClose={onCloseUserPermission}
-      />
     </>
   );
 
@@ -228,6 +233,12 @@ export default function RoomDetailScreen() {
         hasPadding
         hasBottomBar
         topBar={__renderTopBar()}>
+        <View style={{gap: 8}}>
+          <Text category="label">Devices</Text>
+          <Text appearance="hint" category="p2">
+            - Soon
+          </Text>
+        </View>
         {__renderRoomActionsBar()}
         {__renderRoomDetails()}
         {__renderRoomModals()}

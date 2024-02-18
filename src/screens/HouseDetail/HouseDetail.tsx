@@ -90,7 +90,8 @@ export default function HouseDetailScreen() {
           height: 45,
           borderRadius: 45,
         }}
-        status="warning">
+        status="warning"
+        appearance="ghost">
         <Icon name="edit-outline" />
       </Button>
       <Button
@@ -100,7 +101,7 @@ export default function HouseDetailScreen() {
           height: 45,
           borderRadius: 45,
         }}
-        status="danger">
+        appearance="ghost">
         <Icon name="person-add-outline" />
       </Button>
     </View>
@@ -148,7 +149,18 @@ export default function HouseDetailScreen() {
             }
           />
         }>
-        {__renderHouseActionsBar()}
+        <View
+          style={{
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <View>
+            <Text category="s1">Welcome Back!</Text>
+            <Text category="h4">{user?.nickname}</Text>
+          </View>
+          <View>{__renderHouseActionsBar()}</View>
+        </View>
         <UserList
           containerStyle={{marginBottom: 30}}
           listStyle={{gap: 10}}
@@ -164,8 +176,9 @@ export default function HouseDetailScreen() {
                 width: 35,
                 height: 35,
               }}
+              appearance="ghost"
               status="basic">
-              <Icon size="giant" name="chevron-right-outline" />
+              <Icon name="chevron-right-outline" />
             </Button>
           }>
           {members.map(mem => (
