@@ -68,6 +68,8 @@ export default function HouseDetailScreen() {
   const rooms = detail?.rooms ?? [];
   const members = detail?.members ?? []; //members here
 
+  const handleNavigateAddMembers = () => navigate('AddHouseMembers');
+
   useEffect(() => {
     if (houseId === undefined && houses?.[0]) {
       setHouseId(houses?.[0].id);
@@ -95,7 +97,7 @@ export default function HouseDetailScreen() {
         <Icon name="edit-outline" />
       </Button>
       <Button
-        onPress={onOpenAddMember}
+        onPress={handleNavigateAddMembers}
         style={{
           width: 45,
           height: 45,
@@ -200,7 +202,7 @@ export default function HouseDetailScreen() {
               height: 50,
             }}
             status="basic"
-            onPress={onOpenAddMember}>
+            onPress={handleNavigateAddMembers}>
             <Icon name="plus" />
           </Button>
         </UserList>

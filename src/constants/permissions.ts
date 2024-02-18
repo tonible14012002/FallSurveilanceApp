@@ -9,3 +9,12 @@ export const ROOM_PERMISSIONS = {
 
 export type RoomPermission =
   (typeof ROOM_PERMISSIONS)[keyof typeof ROOM_PERMISSIONS];
+
+export const HOUSE_PERMISSIONS = {
+  INVITE_HOUSE_MEMBER: 'INVITE_HOUSE_MEMBER',
+  REMOVE_HOUSE: 'REMOVE_HOUSE',
+  REMOVE_HOUSE_MEMBER: 'REMOVE_HOUSE_MEMBER',
+} as const;
+
+export type HousePermission =
+  (typeof HOUSE_PERMISSIONS)[keyof typeof HOUSE_PERMISSIONS];
