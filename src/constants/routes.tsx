@@ -19,6 +19,7 @@ import {CompositeNavigationProp} from '@react-navigation/native';
 import {AddHouseScreen} from '~/screens/AddHouse';
 import {RoomDetailScreen} from '~/screens/RoomDetail';
 import {RoomMembers} from '~/screens/RoomMembers';
+import {AddHouseMembers} from '~/screens/AddHouseMembers';
 
 // NOTE: add public screen for Stack navigation here
 // EX: Login, Register, Forget Password, OTP, ...
@@ -35,6 +36,7 @@ export type PrivateRouteParamList = {
   Home: undefined;
   AddHouse: undefined;
   RoomMembers: undefined;
+  AddHouseMembers: undefined;
 };
 
 // NOTE: add private screen for Bottom Tab here
@@ -112,6 +114,13 @@ const privateRoutes: PrivateRouteItem[] = [
   {
     screen: RoomMembers,
     name: 'RoomMembers',
+    options: {
+      headerShown: false,
+    },
+  },
+  {
+    screen: AddHouseMembers,
+    name: 'AddHouseMembers',
     options: {
       headerShown: false,
     },

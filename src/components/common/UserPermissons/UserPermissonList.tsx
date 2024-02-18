@@ -11,7 +11,6 @@ interface UserPermissionListProps<
   userCollections?: BaseResponse<BasicUser[]>[];
   enableScroll?: boolean;
   members: U[];
-  roomId: string;
   permissionsEnum: P[];
   getUserPermissions: (user: U) => P[];
   permissionDotRenderer: (permission: P) => React.ReactNode;

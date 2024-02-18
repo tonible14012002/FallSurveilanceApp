@@ -1,20 +1,21 @@
-import {Modal, Text} from '@ui-kitten/components';
-import ScreenLayout from '~/components/core/ScreenLayout';
-import {useRoomMemberContext} from './context';
-import TopBar from '~/components/core/TopBar';
 import {useNavigation} from '@react-navigation/native';
+import {Modal} from '@ui-kitten/components';
+import React, {useCallback, useState} from 'react';
+import {PermissionDot} from '~/components/common/PermissonDot';
+import {SpinnerDataLoadingShowcase} from '~/components/common/SpinnerDataLoadingShowcase';
+import {
+  UpdateUserPermissionView,
+  UserPermissionList,
+} from '~/components/common/UserPermissons';
+import ScreenLayout from '~/components/core/ScreenLayout';
+import TopBar from '~/components/core/TopBar';
+import {API, API_PATH} from '~/constants/api';
+import {ROOM_PERMISSIONS, RoomPermission} from '~/constants/permissions';
 import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
 import {useFetchRoomMembers} from '~/hooks/Room/useFetchRoomMembers';
-import {
-  UserPermissionList,
-  UpdateUserPermissionView,
-} from '~/components/common/UserPermissons';
-import {RoomMemberWithPermissions} from '~/schema/api/house';
-import {ROOM_PERMISSIONS, RoomPermission} from '~/constants/permissions';
-import {API, API_PATH} from '~/constants/api';
-import {RoomPermissionDot} from '~/components/common/RoomPermissonDot';
-import React, {useCallback, useState} from 'react';
 import {useDisclosure} from '~/hooks/common';
+import {RoomMemberWithPermissions} from '~/schema/api/house';
+import {useRoomMemberContext} from './context';
 
 export const RoomMembers = () => {
   const {roomId} = useRoomMemberContext();
@@ -45,24 +46,11 @@ export const RoomMembers = () => {
 
   const permissionDotRenderer = useCallback(
     (permission: RoomPermission) => (
-      <RoomPermissionDot key={permission} permission={permission} />
+      <PermissionDot key={permission} permission={permission} />
     ),
     [],
   );
 
-  if (isFirstLoading) {
-    return (
-      <ScreenLayout
-        topBar={
-          <TopBar
-            title="Room members"
-            onBack={() => navigate('RoomDetail', {roomId: roomId as string})}
-          />
-        }>
-        <Text>Loading</Text>
-      </ScreenLayout>
-    );
-  }
   return (
     <ScreenLayout
       topBar={
@@ -71,19 +59,23 @@ export const RoomMembers = () => {
           onBack={() => navigate('RoomDetail', {roomId: roomId as string})}
         />
       }>
-      {!!roomId && (
-        <UserPermissionList<RoomPermission, RoomMemberWithPermissions>
-          members={members ?? []}
-          roomId={roomId}
-          getUserPermissions={user => user.room_permissions}
-          permissionsEnum={sortedPermissions}
-          onUserItemClicked={user => {
-            setSelectedUser(user);
-            onOpen();
-          }}
-          permissionDotRenderer={permissionDotRenderer}
-        />
-      )}
+      <SpinnerDataLoadingShowcase
+        isLoading={isFirstLoading}
+        dataLength={members?.length}>
+        {!!roomId && (
+          <UserPermissionList<RoomPermission, RoomMemberWithPermissions>
+            members={members ?? []}
+            getUserPermissions={user => user.room_permissions}
+            permissionsEnum={sortedPermissions}
+            onUserItemClicked={user => {
+              setSelectedUser(user);
+              onOpen();
+            }}
+            permissionDotRenderer={permissionDotRenderer}
+          />
+        )}
+      </SpinnerDataLoadingShowcase>
+
       {!!selectedUser && (
         <Modal
           visible={isOpen}

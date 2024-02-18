@@ -37,6 +37,8 @@ export const API_PATH = {
     CREATE: '/house-services/houses/',
     JOINED_HOUSES: '/house-services/houses/joined/',
     HOUSE_DETAIL: (id: string) => '/house-services/houses/' + id + '/',
+    HOUSE_MEMBERS: (houseId: string) =>
+      '/house-services/houses/' + houseId + '/add-members/',
     ASSIGNABLE_USERS: (houseId: string) =>
       '/house-services/houses/' + houseId + '/add-members/search/',
     CREATE_ROOM: (id: string) => '/house-services/houses/' + id + '/rooms/',

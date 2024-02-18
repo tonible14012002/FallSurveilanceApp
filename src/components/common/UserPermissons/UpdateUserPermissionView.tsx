@@ -119,10 +119,10 @@ export const UpdateUserPermissionView = <
         style={{
           display: 'flex',
           padding: 16,
+          paddingBottom: 0,
           marginHorizontal: -16,
         }}>
         <Button
-          style={{flex: 1}}
           onPress={() => {
             onSubmitChangeMemberPermission(user, pickedPermissions);
           }}>
