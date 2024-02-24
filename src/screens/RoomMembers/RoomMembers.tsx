@@ -1,4 +1,4 @@
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {Modal} from '@ui-kitten/components';
 import React, {useCallback, useState} from 'react';
 import {PermissionDot} from '~/components/common/PermissonDot';
@@ -11,15 +11,19 @@ import ScreenLayout from '~/components/core/ScreenLayout';
 import TopBar from '~/components/core/TopBar';
 import {API, API_PATH} from '~/constants/api';
 import {ROOM_PERMISSIONS, RoomPermission} from '~/constants/permissions';
-import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
+import {
+  PrivateRouteParamList,
+  PrivateScreenWithBottomBarProps,
+} from '~/constants/routes';
 import {useFetchRoomMembers} from '~/hooks/Room/useFetchRoomMembers';
 import {useDisclosure} from '~/hooks/common';
 import {RoomMemberWithPermissions} from '~/schema/api/house';
-import {useRoomMemberContext} from './context';
 
 export const RoomMembers = () => {
-  const {roomId} = useRoomMemberContext();
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
+  const {params} = useRoute();
+  const {roomId} = params as PrivateRouteParamList['RoomMembers'];
+
   const [selectedUser, setSelectedUser] = useState<RoomMemberWithPermissions>();
   const {isOpen, onClose, onOpen} = useDisclosure();
   const {members, isFirstLoading, mutate} = useFetchRoomMembers(

@@ -16,7 +16,6 @@ import {useDebounce} from '~/libs/hooks/useDebounce';
 import {boringAvatar} from '~/libs/utils';
 import useFetchRoomData from './useFetchRoomData';
 import useModalsDisclosure from './useModalsDisclosure';
-import {useRoomMemberContext} from '../RoomMembers/context';
 
 export default function RoomDetailScreen() {
   const [searchText, setSearchText] = useState('');
@@ -49,8 +48,6 @@ export default function RoomDetailScreen() {
     isOpenAddMember,
     debouncedSearch,
   });
-
-  const {setRoomId, setBackSceenName} = useRoomMemberContext();
 
   const __renderTopBar = () => (
     <TopBar
@@ -152,9 +149,10 @@ export default function RoomDetailScreen() {
             }}
             appearance="ghost"
             onPress={() => {
-              setRoomId(roomDetail?.id);
-              setBackSceenName('RoomDetail');
-              navigate('RoomMembers');
+              navigate('RoomMembers', {
+                roomId: roomId as string,
+                backScreenName: 'RoomDetail',
+              });
             }}>
             <Icon name="chevron-right-outline" />
           </Button>

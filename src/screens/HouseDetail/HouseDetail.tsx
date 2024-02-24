@@ -35,11 +35,7 @@ export default function HouseDetailScreen() {
     onClose: onCloseProfile,
     onOpen: onOpenProfile,
   } = useDisclosure();
-  const {
-    isOpen: isOpenAddMember,
-    onClose: onCloseAddMember,
-    onOpen: onOpenAddMember,
-  } = useDisclosure();
+  const {isOpen: isOpenAddMember, onClose: onCloseAddMember} = useDisclosure();
   const {
     isOpen: isOpenHouseEdit,
     onClose: onCloseHouseEdit,
