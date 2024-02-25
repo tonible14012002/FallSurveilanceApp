@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {Avatar, Button, Text} from '@ui-kitten/components';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Pressable, View} from 'react-native';
 import {RoomModal} from '~/components/HouseDetail/RoomModal';
 import {AddMemberModal} from '~/components/common/AddMemberModal';
@@ -16,6 +16,7 @@ import {useDebounce} from '~/libs/hooks/useDebounce';
 import {boringAvatar} from '~/libs/utils';
 import useFetchRoomData from './useFetchRoomData';
 import useModalsDisclosure from './useModalsDisclosure';
+import {DevicesList} from '~/components/HouseDetail';
 
 export default function RoomDetailScreen() {
   const [searchText, setSearchText] = useState('');
@@ -48,6 +49,8 @@ export default function RoomDetailScreen() {
     isOpenAddMember,
     debouncedSearch,
   });
+
+  const devices = roomDetail?.devices ?? [];
 
   const __renderTopBar = () => (
     <TopBar
@@ -119,6 +122,7 @@ export default function RoomDetailScreen() {
 
   const __renderRoomDetails = () => (
     <View style={{gap: 16}}>
+      <DevicesList devices={devices} roomId={roomId} />
       <View style={{gap: 8}}>
         <Text category="label">Description</Text>
         {roomDetail?.description ? (
@@ -231,12 +235,6 @@ export default function RoomDetailScreen() {
         hasPadding
         hasBottomBar
         topBar={__renderTopBar()}>
-        <View style={{gap: 8}}>
-          <Text category="label">Devices</Text>
-          <Text appearance="hint" category="p2">
-            - Soon
-          </Text>
-        </View>
         {__renderRoomActionsBar()}
         {__renderRoomDetails()}
         {__renderRoomModals()}

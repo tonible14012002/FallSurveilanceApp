@@ -120,3 +120,27 @@ export const UpdateProfileSchema = z.object({
 });
 
 export type UpdateProfileSchemaType = z.infer<typeof UpdateProfileSchema>;
+
+export const AddDeviceSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, 'House address must contains at least 10 characters!')
+    .max(30, 'House name only contains at most 30 characters!'),
+  serial_number: z
+    .string()
+    .trim()
+    .min(1, 'House address must contains at least 10 characters!')
+    .max(120, 'House adreess only contain at most 120 characters!'),
+});
+
+export type AddDeviceSchemaType = z.infer<typeof AddDeviceSchema>;
+
+export const EditDeviceSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .max(30, 'Device name only contains at most 30 characters!'),
+});
+
+export type EditDeviceSchemaType = z.infer<typeof EditDeviceSchema>;

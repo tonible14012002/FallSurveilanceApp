@@ -14,7 +14,6 @@ export const StepOne = ({onFinished}: StepOneProps) => {
     control,
     formState: {errors},
   } = useFormContext<AddHouseSchemaType>();
-  console.log({errors});
 
   return (
     <View style={styles.formContainer}>

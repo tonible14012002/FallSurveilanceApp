@@ -17,13 +17,14 @@ const useFetchRoomData = ({isOpenAddMember, debouncedSearch}: Props) => {
   const route = useRoute();
   const {roomId} = route.params as {roomId: string};
 
-  const {userCollections, isLoading} = useSearchAssignableUsers({
-    roomId,
-    page: 1,
-    pageSize: PAGINATION.SMALL,
-    allowFetch: true,
-    search: debouncedSearch,
-  });
+  const {userCollections, isLoading: isLoadingUserCollections} =
+    useSearchAssignableUsers({
+      roomId,
+      page: 1,
+      pageSize: PAGINATION.SMALL,
+      allowFetch: isOpenAddMember,
+      search: debouncedSearch,
+    });
 
   const {detail} = useFetchRoomDetail(roomId, Boolean(roomId));
   console.log({detail});
@@ -32,7 +33,7 @@ const useFetchRoomData = ({isOpenAddMember, debouncedSearch}: Props) => {
   return {
     user,
     roomId,
-    isLoadingUserCollections: isLoading,
+    isLoadingUserCollections,
     userCollections,
     roomDetail: detail,
     rooms,

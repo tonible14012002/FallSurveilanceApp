@@ -65,7 +65,7 @@ export const RoomMembers = () => {
       }>
       <SpinnerDataLoadingShowcase
         isLoading={isFirstLoading}
-        dataLength={members?.length}>
+        isShowData={!!members?.length}>
         {!!roomId && (
           <UserPermissionList<RoomPermission, RoomMemberWithPermissions>
             members={members ?? []}

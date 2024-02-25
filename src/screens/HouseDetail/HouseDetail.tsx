@@ -2,29 +2,25 @@ import {useNavigation} from '@react-navigation/native';
 import {Avatar, Button, Text} from '@ui-kitten/components';
 import {useEffect, useState} from 'react';
 import {Pressable, View} from 'react-native';
-import {
-  DevicesList,
-  RoomsList,
-  useHouseDetailContext,
-} from '~/components/HouseDetail';
+import {RoomsList, useHouseDetailContext} from '~/components/HouseDetail';
+import {EditHouseModal} from '~/components/HouseDetail/EditHouseModal';
+import {AddMemberModal} from '~/components/common/AddMemberModal';
+import {ProfileDropdown} from '~/components/common/ProfileDropdown';
+import {ItemsSelectModal} from '~/components/core';
 import Icon from '~/components/core/Icon';
+import ListItem from '~/components/core/ListItem';
 import ScreenLayout from '~/components/core/ScreenLayout';
 import TopBar from '~/components/core/TopBar';
 import UserList from '~/components/core/UserList';
+import {PAGINATION} from '~/constants/common';
 import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
 import {useAuthContext} from '~/context/auth';
 import {useDisclosure} from '~/hooks/common';
 import {useFetchHouseDetail} from '~/hooks/useFetchHouseDetail';
 import {useFetchJoinedHouses} from '~/hooks/useFetchJoinedHouses';
-import {boringAvatar} from '~/libs/utils';
-import {ProfileDropdown} from '~/components/common/ProfileDropdown';
-import {ItemsSelectModal} from '~/components/core';
-import ListItem from '~/components/core/ListItem';
-import {AddMemberModal} from '~/components/common/AddMemberModal';
 import {useSearchUsers} from '~/hooks/useSearchUsers';
-import {PAGINATION} from '~/constants/common';
 import {useDebounce} from '~/libs/hooks/useDebounce';
-import {EditHouseModal} from '~/components/HouseDetail/EditHouseModal';
+import {boringAvatar} from '~/libs/utils';
 
 export default function HouseDetailScreen() {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
@@ -62,7 +58,7 @@ export default function HouseDetailScreen() {
   const {houses} = useFetchJoinedHouses(!houseId || isOpenHousesSelect);
 
   const rooms = detail?.rooms ?? [];
-  const members = detail?.members ?? []; //members here
+  const members = detail?.members ?? [];
 
   const handleNavigateAddMembers = () => navigate('AddHouseMembers');
 
@@ -162,11 +158,7 @@ export default function HouseDetailScreen() {
         <UserList
           containerStyle={{marginBottom: 30}}
           listStyle={{gap: 10}}
-          title={
-            <Text category="s2" style={{opacity: 0.7}}>
-              Members
-            </Text>
-          }
+          title={<Text category="label">Members</Text>}
           detailNavigator={
             <Button
               style={{
@@ -204,7 +196,6 @@ export default function HouseDetailScreen() {
         </UserList>
 
         <RoomsList rooms={rooms} />
-        <DevicesList devices={rooms} />
       </ScreenLayout>
 
       <ItemsSelectModal

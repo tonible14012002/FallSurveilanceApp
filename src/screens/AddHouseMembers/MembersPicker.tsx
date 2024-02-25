@@ -39,7 +39,7 @@ export const MembersPicker = (props: MembersPickerProps) => {
 
       <SpinnerDataLoadingShowcase
         isLoading={isLoading}
-        dataLength={userCollections?.length}>
+        isShowData={!!userCollections?.length}>
         <UserPicker
           wrapperStyle={{marginHorizontal: 10}}
           selectedUsers={selectedUsers}
