@@ -16,7 +16,6 @@ import {useDebounce} from '~/libs/hooks/useDebounce';
 import {boringAvatar} from '~/libs/utils';
 import useFetchRoomData from './useFetchRoomData';
 import useModalsDisclosure from './useModalsDisclosure';
-import {useRoomMemberContext} from '../RoomMembers/context';
 import {DevicesList} from '~/components/HouseDetail';
 
 export default function RoomDetailScreen() {
@@ -51,15 +50,7 @@ export default function RoomDetailScreen() {
     debouncedSearch,
   });
 
-  const {setRoomId, setBackScreenName} = useRoomMemberContext();
-
   const devices = roomDetail?.devices ?? [];
-
-  useEffect(() => {
-    if (!roomDetail) return;
-
-    setRoomId(roomDetail.id);
-  }, [roomDetail]);
 
   const __renderTopBar = () => (
     <TopBar
@@ -131,7 +122,7 @@ export default function RoomDetailScreen() {
 
   const __renderRoomDetails = () => (
     <View style={{gap: 16}}>
-      <DevicesList devices={devices} />
+      <DevicesList devices={devices} roomId={roomId} />
       <View style={{gap: 8}}>
         <Text category="label">Description</Text>
         {roomDetail?.description ? (
@@ -162,8 +153,10 @@ export default function RoomDetailScreen() {
             }}
             appearance="ghost"
             onPress={() => {
-              setBackScreenName('RoomDetail');
-              navigate('RoomMembers');
+              navigate('RoomMembers', {
+                roomId: roomId as string,
+                backScreenName: 'RoomDetail',
+              });
             }}>
             <Icon name="chevron-right-outline" />
           </Button>

@@ -1,7 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {useHouseDetailContext} from '~/components/HouseDetail';
 import ScreenLayout from '~/components/core/ScreenLayout';
 import TopBar from '~/components/core/TopBar';
 import {PrivateScreenWithBottomBarProps} from '~/constants/routes';

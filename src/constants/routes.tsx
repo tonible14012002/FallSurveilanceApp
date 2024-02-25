@@ -37,9 +37,9 @@ export type PrivateRouteParamList = {
   Main: undefined; // NOTE: navigate to Private Bottom Tab Router
   Home: undefined;
   AddHouse: undefined;
-  RoomMembers: undefined;
+  RoomMembers: {roomId: string; backScreenName?: string};
   AddHouseMembers: undefined;
-  AddDevice: undefined;
+  AddDevice: {roomId: string};
 };
 
 // NOTE: add private screen for Bottom Tab here

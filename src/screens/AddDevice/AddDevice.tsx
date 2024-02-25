@@ -1,4 +1,4 @@
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {useState} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
 import ScreenLayout from '~/components/core/ScreenLayout';
@@ -8,7 +8,6 @@ import {StepOne} from './StepOne';
 import {StepTwo} from './StepTwo';
 import {AddDeviceResponse, DeviceSpecification} from '~/schema/api/house';
 import {API, API_PATH} from '~/constants/api';
-import {useRoomMemberContext} from '../RoomMembers/context';
 import {BaseResponse} from '~/schema/common';
 import {mutate} from 'swr';
 import {Alert} from 'react-native';
@@ -27,7 +26,9 @@ export default function AddDevice() {
   const [selectedSpec, setSelectedSpec] = useState<DeviceSpecification>();
   const [isLoading, setIsLoading] = useState(false);
 
-  const {roomId} = useRoomMemberContext();
+  const route = useRoute();
+  const {roomId} = route.params as {roomId: string};
+
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
   const formContext = useForm<any>({});
 

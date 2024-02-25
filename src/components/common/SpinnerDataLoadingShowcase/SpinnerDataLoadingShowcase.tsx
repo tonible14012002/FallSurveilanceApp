@@ -6,12 +6,14 @@ interface SpinnerDataLoadingShowcaseProps {
   isLoading: boolean;
   isShowData?: boolean;
   children: React.ReactNode;
+  renderEmpty?: React.ReactNode;
 }
 
 export function SpinnerDataLoadingShowcase({
   isLoading,
   isShowData = false,
   children,
+  renderEmpty,
 }: SpinnerDataLoadingShowcaseProps) {
   const renderLoading = () => (
     <View style={styles.center}>
@@ -19,7 +21,7 @@ export function SpinnerDataLoadingShowcase({
     </View>
   );
 
-  const renderEmpty = () => (
+  const fallbackRenderEmpty = () => (
     <View style={styles.center}>
       <Text>None</Text>
     </View>
@@ -28,7 +30,7 @@ export function SpinnerDataLoadingShowcase({
   return (
     <>
       {isLoading && renderLoading()}
-      {!isLoading && !isShowData && renderEmpty()}
+      {!isLoading && !isShowData && fallbackRenderEmpty()}
       {!isLoading && isShowData && children}
     </>
   );
