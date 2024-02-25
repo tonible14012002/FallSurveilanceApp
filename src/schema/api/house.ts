@@ -9,6 +9,7 @@ export interface Room {
     id: string;
     name: string;
   };
+  devices: Device[];
   members: BasicUser[];
   allow_assign_member: boolean;
 }
@@ -25,12 +26,54 @@ export interface HouseDetailRoom
   accessible: boolean;
 }
 
+export interface DeviceSpecification {
+  id: number;
+  name: string;
+  series_name: string;
+  gpu: string;
+  gpu_max_fre: string;
+  cpu: string;
+  cpu_max_fre: string;
+  vision_acceleration: string;
+  storage: string;
+  memory: string;
+  power: string;
+  image: string;
+}
+
+export interface Device {
+  id: string;
+  name: string;
+  room: string;
+  specification: DeviceSpecification;
+  device_type: string;
+  serial_number: string;
+  created_at: string;
+  updated_at: string;
+  status: string;
+  allow_access: boolean;
+}
+
+export interface DeviceDetail {
+  id: string;
+  name: string;
+  room: string;
+  specification: DeviceSpecification;
+  device_type: string;
+  serial_number: string;
+  created_at: string;
+  updated_at: string;
+  status: string;
+  related_users: BasicUser[];
+}
+
 export interface GetHouseDetailResponse {
   id: string;
   name: string;
   description: string;
   address: string;
   members: BasicUser[];
+  devices: Device[];
   rooms: HouseDetailRoom[];
 }
 
@@ -54,3 +97,7 @@ export type HouseMemberWithPermissions = BasicUser & {
 
 export interface GetRoomMembersWithPermissionsResponse
   extends Array<RoomMemberWithPermissions> {}
+
+export interface AddDeviceResponse extends Device {}
+
+export interface GetDeviceDetailResponse extends DeviceDetail {}

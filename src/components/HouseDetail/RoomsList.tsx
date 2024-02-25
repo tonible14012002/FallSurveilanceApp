@@ -18,7 +18,12 @@ export const RoomsList = ({rooms}: RoomsListProps) => {
   const {houseId} = useHouseDetailContext();
   const navigation = useNavigation<PrivateScreenWithBottomBarProps>();
 
-  const handleNavigateRoomDetailScreen = (roomId: string) => {
+  const handleNavigateRoomDetailScreen = (
+    roomId: string,
+    isAccessible: boolean,
+  ) => {
+    if (!isAccessible) return;
+
     navigation.navigate('Main');
     navigation.navigate('RoomDetail', {roomId});
   };
@@ -29,11 +34,7 @@ export const RoomsList = ({rooms}: RoomsListProps) => {
         scrollable
         horizontal
         listStyle={{flexDirection: 'row'}}
-        title={
-          <Text category="s2" style={{opacity: 0.7}}>
-            Rooms
-          </Text>
-        }
+        title={<Text category="label">Rooms</Text>}
         detailNavigator={
           <Button
             style={{
@@ -52,7 +53,9 @@ export const RoomsList = ({rooms}: RoomsListProps) => {
             key={room.id}
             title={room.name}
             icon={<Icon name="tv" size="large" />}
-            onPressHandler={() => handleNavigateRoomDetailScreen(room.id)}
+            onPressHandler={() =>
+              handleNavigateRoomDetailScreen(room.id, room.accessible)
+            }
           />
         ))}
       </List>

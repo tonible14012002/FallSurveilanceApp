@@ -4,12 +4,12 @@ interface RoomMembersContextValue {
   roomId?: string;
   setRoomId: (_: string | undefined) => void;
   backScreenName?: string;
-  setBackSceenName: (_: string | undefined) => void;
+  setBackScreenName: (_: string | undefined) => void;
 }
 
 const RoomMemberContext = createContext<RoomMembersContextValue>({
   setRoomId: (_: string | undefined) => {},
-  setBackSceenName: (_: string | undefined) => {},
+  setBackScreenName: (_: string | undefined) => {},
 });
 export const useRoomMemberContext = () => useContext(RoomMemberContext);
 
@@ -19,9 +19,9 @@ export const RoomMemberContextProvider = ({
   children: React.ReactNode;
 }) => {
   const [roomId, setRoomId] = useState<string>();
-  const [backScreenName, setBackSceenName] = useState<string>();
+  const [backScreenName, setBackScreenName] = useState<string>();
   const contextValue = useMemo(
-    () => ({roomId, setRoomId, backScreenName, setBackSceenName}),
+    () => ({roomId, setRoomId, backScreenName, setBackScreenName}),
     [backScreenName, roomId],
   );
   return (

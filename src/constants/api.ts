@@ -62,4 +62,11 @@ export const API_PATH = {
       member_id +
       '/permissions/',
   },
+  DEVICE_SERVICES: {
+    SPECIFICATIONS: '/device-services/specifications/',
+    ADD_DEVICE: (roomId: string) => `/device-services/room/${roomId}/devices/`,
+    DEVICE_DETAIL: (id: string) => `/device-services/devices/` + id + '/',
+    MODIFY_DEVICE: ({roomId, id}: Record<string, string>) =>
+      `/device-services/room/${roomId}/devices/${id}/`,
+  },
 };

@@ -4,13 +4,13 @@ import {Spinner, Text} from '@ui-kitten/components';
 
 interface SpinnerDataLoadingShowcaseProps {
   isLoading: boolean;
-  dataLength?: number;
+  isShowData?: boolean;
   children: React.ReactNode;
 }
 
 export function SpinnerDataLoadingShowcase({
   isLoading,
-  dataLength = 0,
+  isShowData = false,
   children,
 }: SpinnerDataLoadingShowcaseProps) {
   const renderLoading = () => (
@@ -28,8 +28,8 @@ export function SpinnerDataLoadingShowcase({
   return (
     <>
       {isLoading && renderLoading()}
-      {!isLoading && !!!dataLength && renderEmpty()}
-      {!isLoading && dataLength > 0 && children}
+      {!isLoading && !isShowData && renderEmpty()}
+      {!isLoading && isShowData && children}
     </>
   );
 }

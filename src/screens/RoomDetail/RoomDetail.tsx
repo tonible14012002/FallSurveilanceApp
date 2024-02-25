@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {Avatar, Button, Text} from '@ui-kitten/components';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Pressable, View} from 'react-native';
 import {RoomModal} from '~/components/HouseDetail/RoomModal';
 import {AddMemberModal} from '~/components/common/AddMemberModal';
@@ -17,6 +17,7 @@ import {boringAvatar} from '~/libs/utils';
 import useFetchRoomData from './useFetchRoomData';
 import useModalsDisclosure from './useModalsDisclosure';
 import {useRoomMemberContext} from '../RoomMembers/context';
+import {DevicesList} from '~/components/HouseDetail';
 
 export default function RoomDetailScreen() {
   const [searchText, setSearchText] = useState('');
@@ -50,7 +51,15 @@ export default function RoomDetailScreen() {
     debouncedSearch,
   });
 
-  const {setRoomId, setBackSceenName} = useRoomMemberContext();
+  const {setRoomId, setBackScreenName} = useRoomMemberContext();
+
+  const devices = roomDetail?.devices ?? [];
+
+  useEffect(() => {
+    if (!roomDetail) return;
+
+    setRoomId(roomDetail.id);
+  }, [roomDetail]);
 
   const __renderTopBar = () => (
     <TopBar
@@ -122,6 +131,7 @@ export default function RoomDetailScreen() {
 
   const __renderRoomDetails = () => (
     <View style={{gap: 16}}>
+      <DevicesList devices={devices} />
       <View style={{gap: 8}}>
         <Text category="label">Description</Text>
         {roomDetail?.description ? (
@@ -152,8 +162,7 @@ export default function RoomDetailScreen() {
             }}
             appearance="ghost"
             onPress={() => {
-              setRoomId(roomDetail?.id);
-              setBackSceenName('RoomDetail');
+              setBackScreenName('RoomDetail');
               navigate('RoomMembers');
             }}>
             <Icon name="chevron-right-outline" />
@@ -233,12 +242,6 @@ export default function RoomDetailScreen() {
         hasPadding
         hasBottomBar
         topBar={__renderTopBar()}>
-        <View style={{gap: 8}}>
-          <Text category="label">Devices</Text>
-          <Text appearance="hint" category="p2">
-            - Soon
-          </Text>
-        </View>
         {__renderRoomActionsBar()}
         {__renderRoomDetails()}
         {__renderRoomModals()}

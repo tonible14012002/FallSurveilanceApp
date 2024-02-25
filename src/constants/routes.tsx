@@ -20,6 +20,8 @@ import {AddHouseScreen} from '~/screens/AddHouse';
 import {RoomDetailScreen} from '~/screens/RoomDetail';
 import {RoomMembers} from '~/screens/RoomMembers';
 import {AddHouseMembers} from '~/screens/AddHouseMembers';
+import AddDevice from '~/screens/AddDevice/AddDevice';
+import {DeviceDetailScreen} from '~/screens/DeviceDetail';
 
 // NOTE: add public screen for Stack navigation here
 // EX: Login, Register, Forget Password, OTP, ...
@@ -37,6 +39,7 @@ export type PrivateRouteParamList = {
   AddHouse: undefined;
   RoomMembers: undefined;
   AddHouseMembers: undefined;
+  AddDevice: undefined;
 };
 
 // NOTE: add private screen for Bottom Tab here
@@ -46,6 +49,7 @@ export type PrivateBottomRouteParamList = {
   Account: undefined;
   HouseDetail: undefined;
   RoomDetail: {roomId: string};
+  DeviceDetail: {deviceId: string};
 };
 
 export type PublicScreenProps<
@@ -125,6 +129,13 @@ const privateRoutes: PrivateRouteItem[] = [
       headerShown: false,
     },
   },
+  {
+    screen: AddDevice,
+    name: 'AddDevice',
+    options: {
+      headerShown: false,
+    },
+  },
 ];
 
 const privateTabRoutes: PrivateTabRouteItem[] = [
@@ -159,6 +170,13 @@ const privateTabRoutes: PrivateTabRouteItem[] = [
   {
     screen: RoomDetailScreen,
     name: 'RoomDetail',
+    options: {
+      headerShown: false,
+    },
+  },
+  {
+    screen: DeviceDetailScreen,
+    name: 'DeviceDetail',
     options: {
       headerShown: false,
     },

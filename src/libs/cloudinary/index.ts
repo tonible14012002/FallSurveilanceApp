@@ -19,7 +19,7 @@ const uploadImage = async (asset: Asset) => {
     });
     return response.json();
   } catch (error) {
-    console.log('Upload error');
+    console.log('Upload error, ', error);
   }
 };
 
