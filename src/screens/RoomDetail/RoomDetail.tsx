@@ -1,9 +1,8 @@
 import {useNavigation} from '@react-navigation/native';
 import {Avatar, Button, Text} from '@ui-kitten/components';
-import {useEffect, useState} from 'react';
 import {Pressable, View} from 'react-native';
+import {DevicesList} from '~/components/HouseDetail';
 import {RoomModal} from '~/components/HouseDetail/RoomModal';
-import {AddMemberModal} from '~/components/common/AddMemberModal';
 import {ProfileDropdown} from '~/components/common/ProfileDropdown';
 import {ItemsSelectModal} from '~/components/core';
 import Icon from '~/components/core/Icon';
@@ -12,16 +11,11 @@ import ScreenLayout from '~/components/core/ScreenLayout';
 import TopBar from '~/components/core/TopBar';
 import UserList from '~/components/core/UserList';
 import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
-import {useDebounce} from '~/libs/hooks/useDebounce';
 import {boringAvatar} from '~/libs/utils';
 import useFetchRoomData from './useFetchRoomData';
 import useModalsDisclosure from './useModalsDisclosure';
-import {DevicesList} from '~/components/HouseDetail';
 
 export default function RoomDetailScreen() {
-  const [searchText, setSearchText] = useState('');
-  const debouncedSearch = useDebounce(searchText, 400);
-
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
   const {
     isOpenProfile,
@@ -30,27 +24,16 @@ export default function RoomDetailScreen() {
     isOpenRoomsSelect,
     onCloseRoomsSelect,
     onOpenRoomsSelect,
-    isOpenAddMember,
-    onCloseAddMember,
-    onToggleAddMember,
     isOpenRoomEdit,
     onCloseRoomEdit,
     onToggleRoomEdit,
   } = useModalsDisclosure();
 
-  const {
-    user,
-    roomId,
-    isLoadingUserCollections,
-    userCollections,
-    roomDetail,
-    rooms,
-  } = useFetchRoomData({
-    isOpenAddMember,
-    debouncedSearch,
-  });
+  const {user, roomId, roomDetail, rooms} = useFetchRoomData();
 
   const devices = roomDetail?.devices ?? [];
+
+  const handleNavigateAddMembers = () => navigate('AddRoomMembers', {roomId});
 
   const __renderTopBar = () => (
     <TopBar
@@ -108,7 +91,7 @@ export default function RoomDetailScreen() {
         <Icon size="small" name="edit-outline" />
       </Button>
       <Button
-        onPress={onToggleAddMember}
+        onPress={handleNavigateAddMembers}
         style={{
           width: 45,
           height: 45,
@@ -180,7 +163,7 @@ export default function RoomDetailScreen() {
             height: 50,
           }}
           status="basic"
-          onPress={onToggleAddMember}>
+          onPress={handleNavigateAddMembers}>
           <Icon name="plus" />
         </Button>
       </UserList>
@@ -215,15 +198,6 @@ export default function RoomDetailScreen() {
         isOpen={isOpenRoomEdit}
         onClose={onCloseRoomEdit}
         data={roomDetail}
-      />
-      <AddMemberModal
-        searchText={searchText}
-        setSearchText={setSearchText}
-        userCollections={userCollections ?? []}
-        isLoading={isLoadingUserCollections}
-        onSave={() => {}}
-        isOpen={isOpenAddMember}
-        onClose={onCloseAddMember}
       />
     </>
   );

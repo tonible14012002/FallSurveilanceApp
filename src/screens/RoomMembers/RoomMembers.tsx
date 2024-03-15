@@ -110,7 +110,7 @@ const sortedPermissions: RoomPermission[] = [
   ROOM_PERMISSIONS.DELETE,
 ];
 
-const roomPermissionsLabelMapper = {
+export const roomPermissionsLabelMapper = {
   [ROOM_PERMISSIONS.ACCESS]: 'Access Room',
   [ROOM_PERMISSIONS.ASSIGN]: 'Assign Room',
   [ROOM_PERMISSIONS.ASSIGN_ROOM_PERMISSION]: 'Update Member Permission',

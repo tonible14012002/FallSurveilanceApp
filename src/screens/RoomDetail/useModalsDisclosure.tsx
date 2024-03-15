@@ -12,11 +12,6 @@ const useModalsDisclosure = () => {
     onOpen: onOpenRoomsSelect,
   } = useDisclosure();
   const {
-    isOpen: isOpenAddMember,
-    onClose: onCloseAddMember,
-    onToggle: onToggleAddMember,
-  } = useDisclosure();
-  const {
     isOpen: isOpenRoomEdit,
     onClose: onCloseRoomEdit,
     onToggle: onToggleRoomEdit,
@@ -34,9 +29,6 @@ const useModalsDisclosure = () => {
     isOpenRoomsSelect,
     onCloseRoomsSelect,
     onOpenRoomsSelect,
-    isOpenAddMember,
-    onCloseAddMember,
-    onToggleAddMember,
     isOpenRoomEdit,
     onCloseRoomEdit,
     onToggleRoomEdit,
