@@ -1,5 +1,4 @@
 import {API, API_PATH} from '~/constants/api';
-import {ROOM_PERMISSIONS} from '~/constants/permissions';
 import {useFetchInfinite} from '~/libs/hooks/useFetchInfinite';
 import {User} from '~/schema/api/identity';
 import {SearchAssignableUsersParams} from '~/schema/api/user';
@@ -12,7 +11,7 @@ interface UseSearchAssignableUsersArgs extends SearchAssignableUsersParams {
   allowFetch?: boolean;
 }
 
-export const useSearchAssignableUsers = (
+export const useSearchRoomAssignableUsers = (
   args: UseSearchAssignableUsersArgs,
 ) => {
   const {roomId, page, pageSize, allowFetch = true, search} = args;
@@ -25,10 +24,9 @@ export const useSearchAssignableUsers = (
       API.FALL_SURVEILANCE.query({
         page: index + 1,
         pageSize: pageSize,
-        exclude_permissions: Object.keys(ROOM_PERMISSIONS.ACCESS),
         search,
       })
-        .get(API_PATH.HOUSE_SERVICES.SEARCH_ASSIGNABLE_USERS(roomId))
+        .get(API_PATH.HOUSE_SERVICES.ASSIGNABLE_ROOM_USERS(roomId))
         .json<BaseResponse<User[]>>(r => r),
   );
 

@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import '@react-native-anywhere/polyfill-base64';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import * as eva from '@eva-design/eva';
 import {NavigationContainer} from '@react-navigation/native';
 import {ApplicationProvider, IconRegistry} from '@ui-kitten/components';
@@ -22,6 +22,11 @@ import BottomTabBar from '~/components/core/BottomTabBar';
 import {HouseDetailContextProvider} from '~/components/HouseDetail';
 import {AuthProvider} from '~/context/auth';
 import AuthGuard from '~/components/auth/AuthGuard';
+import {
+  requestUserPermission,
+  notificationListener,
+  unsubscribe,
+} from '~/libs/notification';
 
 const PrivateTabScreens = () => {
   return (
@@ -66,6 +71,18 @@ const PrivateScreens = () => {
 };
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    requestUserPermission(setIsLoading);
+    notificationListener();
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  // if (isLoading) return <Text>Loading...</Text>;
+
   return (
     <ApplicationProvider {...eva} theme={eva.light}>
       <IconRegistry icons={EvaIconsPack} />

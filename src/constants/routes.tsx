@@ -22,6 +22,7 @@ import {RoomMembers} from '~/screens/RoomMembers';
 import {AddHouseMembers} from '~/screens/AddHouseMembers';
 import AddDevice from '~/screens/AddDevice/AddDevice';
 import {DeviceDetailScreen} from '~/screens/DeviceDetail';
+import {AddRoomMembers} from '~/screens/AddRoomMembers/AddRoomMembers';
 
 // NOTE: add public screen for Stack navigation here
 // EX: Login, Register, Forget Password, OTP, ...
@@ -39,6 +40,7 @@ export type PrivateRouteParamList = {
   AddHouse: undefined;
   RoomMembers: {roomId: string; backScreenName?: string};
   AddHouseMembers: undefined;
+  AddRoomMembers: {roomId: string};
   AddDevice: {roomId: string};
 };
 
@@ -125,6 +127,13 @@ const privateRoutes: PrivateRouteItem[] = [
   {
     screen: AddHouseMembers,
     name: 'AddHouseMembers',
+    options: {
+      headerShown: false,
+    },
+  },
+  {
+    screen: AddRoomMembers,
+    name: 'AddRoomMembers',
     options: {
       headerShown: false,
     },

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "376086303626",
+    "project_id": "fall-surveilance-app",
+    "storage_bucket": "fall-surveilance-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:376086303626:android:3e63c647aa6926c0b8ee73",
+        "android_client_info": {
+          "package_name": "com.fallsurveillance"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkC0xx4DoeG8PiE6XoV3fbsJubR3rUZtI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
