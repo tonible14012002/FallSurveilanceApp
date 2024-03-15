@@ -1,4 +1,4 @@
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {Button, Input, Layout, Modal, Text} from '@ui-kitten/components';
 import {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
@@ -6,7 +6,6 @@ import {StyleSheet, View} from 'react-native';
 import {mutate} from 'swr';
 import {API, API_PATH} from '~/constants/api';
 import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
-import {ROOM_DETAIL_KEY} from '~/hooks/useFetchRoomDetail';
 import {useRenderIcon} from '~/hooks/useRenderIcon';
 import {CreateRoomResponse, Room} from '~/schema/api/house';
 import {BaseResponse} from '~/schema/common';
@@ -68,7 +67,7 @@ export function RoomModal({isOpen, houseId, data, onClose}: RoomModalProps) {
       setValue('name', data.name);
       setValue('description', data.description);
     }
-  }, [data]);
+  }, [data, setValue]);
 
   return (
     <Modal visible={isOpen} onBackdropPress={onClose}>
@@ -76,17 +75,15 @@ export function RoomModal({isOpen, houseId, data, onClose}: RoomModalProps) {
         style={{
           width: 370,
           maxHeight: 380,
-          elevation: 3,
-          borderRadius: 16,
+          elevation: 2,
+          borderRadius: 8,
           overflow: 'hidden',
-          borderWidth: 1,
-          borderColor: 'lightgray',
           padding: 0,
           backgroundColor: 'white',
         }}
         level="3">
         <View style={styles.formContainer}>
-          <Text category="h5" style={{textAlign: 'center', marginBottom: 10}}>
+          <Text category="h6" style={{textAlign: 'center', marginBottom: 8}}>
             {data ? 'Edit Room' : 'Add Room'}
           </Text>
           <View style={{width: '100%'}}>
