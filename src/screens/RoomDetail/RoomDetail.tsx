@@ -204,11 +204,7 @@ export default function RoomDetailScreen() {
 
   return (
     <>
-      <ScreenLayout
-        isScrollable
-        hasPadding
-        hasBottomBar
-        topBar={__renderTopBar()}>
+      <ScreenLayout isScrollable hasPadding topBar={__renderTopBar()}>
         {__renderRoomActionsBar()}
         {__renderRoomDetails()}
         {__renderRoomModals()}

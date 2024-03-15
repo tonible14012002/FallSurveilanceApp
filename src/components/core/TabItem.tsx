@@ -13,6 +13,7 @@ interface TabItemProps {
   level?: string;
   iconPosition?: 'top' | 'bottom';
   onPressHandler?: (event: GestureResponderEvent) => void;
+  disabled?: boolean;
 }
 
 export default function TabItem(props: TabItemProps) {
@@ -23,12 +24,18 @@ export default function TabItem(props: TabItemProps) {
     level = '3',
     iconPosition = 'top',
     onPressHandler = () => {},
+    disabled = false,
   } = props;
 
   const flexDirection = iconPosition === 'bottom' ? 'column-reverse' : 'column';
 
   return (
-    <TouchableOpacity onPress={onPressHandler}>
+    <TouchableOpacity
+      onPress={onPressHandler}
+      disabled={disabled}
+      style={{
+        opacity: disabled ? 0.4 : 1,
+      }}>
       <Layout
         style={[{...styles.container, flexDirection}, containerStyle]}
         level={level}>

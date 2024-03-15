@@ -13,6 +13,7 @@ import ScreenLayout from '~/components/core/ScreenLayout';
 import TopBar from '~/components/core/TopBar';
 import UserList from '~/components/core/UserList';
 import {PAGINATION} from '~/constants/common';
+import {HOUSE_PERMISSIONS} from '~/constants/permissions';
 import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
 import {useAuthContext} from '~/context/auth';
 import {useDisclosure} from '~/hooks/common';
@@ -60,6 +61,12 @@ export default function HouseDetailScreen() {
   const rooms = detail?.rooms ?? [];
   const members = detail?.members ?? [];
 
+  const isAllowEdit = Boolean(detail?.is_owner);
+  const isAllowAddMembers = Boolean(
+    detail?.house_permissions.includes(HOUSE_PERMISSIONS.INVITE_HOUSE_MEMBER),
+  );
+  const isAllowAddRoom = isAllowEdit;
+
   const handleNavigateAddMembers = () => navigate('AddHouseMembers');
 
   useEffect(() => {
@@ -78,22 +85,24 @@ export default function HouseDetailScreen() {
         marginBottom: 15,
       }}>
       <Button
-        onPress={onOpenHouseEdit}
+        onPress={isAllowEdit ? onOpenHouseEdit : undefined}
         style={{
           width: 45,
           height: 45,
           borderRadius: 45,
+          opacity: isAllowEdit ? 1 : 0.3,
         }}
         status="warning"
         appearance="ghost">
         <Icon name="edit-outline" />
       </Button>
       <Button
-        onPress={handleNavigateAddMembers}
+        onPress={isAllowAddMembers ? handleNavigateAddMembers : undefined}
         style={{
           width: 45,
           height: 45,
           borderRadius: 45,
+          opacity: isAllowAddMembers ? 1 : 0.3,
         }}
         appearance="ghost">
         <Icon name="person-add-outline" />
@@ -106,7 +115,6 @@ export default function HouseDetailScreen() {
       <ScreenLayout
         isScrollable
         hasPadding
-        hasBottomBar
         topBar={
           <TopBar
             onBack={() => navigate('Home')}
@@ -195,7 +203,7 @@ export default function HouseDetailScreen() {
           </Button>
         </UserList>
 
-        <RoomsList rooms={rooms} />
+        <RoomsList rooms={rooms} allowAddRoom={isAllowAddRoom} />
       </ScreenLayout>
 
       <ItemsSelectModal

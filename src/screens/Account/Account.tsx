@@ -1,13 +1,15 @@
-import {Button, Layout} from '@ui-kitten/components';
+import {Avatar, Button, Layout} from '@ui-kitten/components';
 import {useMemo, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {Alert, StyleSheet, View} from 'react-native';
 import {Asset} from 'react-native-image-picker';
 import {AvatarSetting, InfoDetails} from '~/components/Account';
+import {ProfileDropdown} from '~/components/common/ProfileDropdown';
 import ScreenLayout from '~/components/core/ScreenLayout';
 import TopBar from '~/components/core/TopBar';
 import {API, API_PATH} from '~/constants/api';
 import {useAuthContext} from '~/context/auth';
+import {useDisclosure} from '~/hooks/common';
 import {uploadImage} from '~/libs/cloudinary';
 import {UpdateProfileResponse} from '~/schema/api/identity';
 import {BaseResponse} from '~/schema/common';
@@ -16,6 +18,7 @@ import {UpdateProfileSchemaType} from '~/schema/form';
 export default function Account() {
   const {user, setUser} = useAuthContext();
   const [updateAvatar, setUpdateAvatar] = useState<Asset | null>(null);
+  const {isOpen, onOpen, onClose} = useDisclosure();
   const {
     handleSubmit,
     control,
@@ -61,11 +64,27 @@ export default function Account() {
   const isInfoChanged = useMemo(
     () =>
       JSON.stringify(watch()) !== JSON.stringify(defaultValues) || updateAvatar,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [watch(), updateAvatar],
   );
 
   return (
-    <ScreenLayout hasPadding isScrollable topBar={<TopBar title="Account" />}>
+    <ScreenLayout
+      hasPadding
+      isScrollable
+      topBar={
+        <TopBar
+          title="Account"
+          rightIcon={
+            <ProfileDropdown
+              onClose={onClose}
+              isOpen={isOpen}
+              onOpen={onOpen}
+              trigger={<Avatar source={{uri: user?.avatar}} />}
+            />
+          }
+        />
+      }>
       <Layout style={styles.wrapper}>
         <AvatarSetting
           avatar={user?.avatar}

@@ -108,7 +108,6 @@ export default function Home() {
       }
       floatEl={<FloatButton pressHandler={onAddButtonPress} />}
       hasPadding
-      hasBottomBar
       isScrollable>
       {owned_houses?.length !== 0 && (
         <>

@@ -11,9 +11,10 @@ import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
 
 interface RoomsListProps {
   rooms: HouseDetailRoom[];
+  allowAddRoom?: boolean;
 }
 
-export const RoomsList = ({rooms}: RoomsListProps) => {
+export const RoomsList = ({rooms, allowAddRoom}: RoomsListProps) => {
   const {isOpen, onOpen, onClose} = useDisclosure();
   const {houseId} = useHouseDetailContext();
   const navigation = useNavigation<PrivateScreenWithBottomBarProps>();
@@ -22,7 +23,9 @@ export const RoomsList = ({rooms}: RoomsListProps) => {
     roomId: string,
     isAccessible: boolean,
   ) => {
-    if (!isAccessible) return;
+    if (!isAccessible) {
+      return;
+    }
 
     navigation.navigate('Main');
     navigation.navigate('RoomDetail', {roomId});
@@ -41,14 +44,16 @@ export const RoomsList = ({rooms}: RoomsListProps) => {
               borderRadius: 1000,
               width: 35,
               height: 35,
+              opacity: allowAddRoom ? 1 : 0.3,
             }}
             status="control"
-            onPress={onOpen}>
+            onPress={allowAddRoom ? onOpen : undefined}>
             <Icon name="plus-outline" />
           </Button>
         }>
         {rooms.map(room => (
           <TabItem
+            disabled={room.accessible === false}
             containerStyle={{width: 110, height: 100}}
             key={room.id}
             title={room.name}
