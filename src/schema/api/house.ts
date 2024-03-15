@@ -5,13 +5,11 @@ export interface Room {
   id: string;
   name: string;
   description: string;
-  house: {
-    id: string;
-    name: string;
-  };
+  house: House;
   devices: Device[];
   members: BasicUser[];
   allow_assign_member: boolean;
+  room_permissions: RoomPermission[];
 }
 
 export interface House {
@@ -24,6 +22,7 @@ export interface House {
 export interface HouseDetailRoom
   extends Pick<Room, 'id' | 'name' | 'description'> {
   accessible: boolean;
+  room_permissions: RoomPermission[];
 }
 
 export interface DeviceSpecification {
@@ -75,11 +74,11 @@ export interface GetHouseDetailResponse {
   members: BasicUser[];
   devices: Device[];
   rooms: HouseDetailRoom[];
+  is_owner: boolean;
+  house_permissions: HousePermission[];
 }
 
-export type GetJoinedHousesResponse = Array<
-  GetHouseDetailResponse & {is_owner: boolean}
->;
+export type GetJoinedHousesResponse = Array<GetHouseDetailResponse>;
 
 export interface CreateRoomResponse extends Room {}
 
