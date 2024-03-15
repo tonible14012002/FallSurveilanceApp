@@ -1,14 +1,12 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {Avatar, Button, Text} from '@ui-kitten/components';
-import {Pressable, View} from 'react-native';
+import {View} from 'react-native';
 import {ConfirmationModal} from '~/components/common/ConfimationModal';
 import Icon from '~/components/core/Icon';
 import ScreenLayout from '~/components/core/ScreenLayout';
 import TopBar from '~/components/core/TopBar';
 import UserList from '~/components/core/UserList';
 import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
-import {useAuthContext} from '~/context/auth';
-import {useDisclosure} from '~/hooks/common';
 import {useFetchDeviceDetail} from '~/hooks/useFetchDeviceDetail';
 import {boringAvatar} from '~/libs/utils';
 import useDeviceUtils from './useDeviceUtils';
@@ -23,7 +21,7 @@ export default function DeviceDetailScreen() {
 
   const {detail} = useFetchDeviceDetail(deviceId, Boolean(deviceId));
 
-  const {id, image, ...spec} = detail?.specification ?? {};
+  const {...spec} = detail?.specification ?? {};
 
   const handleNavigateRoomDetail = () =>
     navigate('RoomDetail', {roomId: detail?.room!});
@@ -86,7 +84,6 @@ export default function DeviceDetailScreen() {
       <ScreenLayout
         isScrollable
         hasPadding
-        hasBottomBar
         topBar={
           <TopBar
             onBack={handleNavigateRoomDetail}

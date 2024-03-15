@@ -7,7 +7,6 @@ interface ScreenLayoutProps extends PropsWithChildren {
   style?: StyleProp<ViewStyle>;
   floatEl?: ReactNode;
   hasPadding?: boolean;
-  hasBottomBar?: boolean;
   isScrollable?: boolean;
 }
 
@@ -18,7 +17,6 @@ export default function ScreenLayout(props: ScreenLayoutProps) {
     style,
     floatEl,
     hasPadding = false,
-    hasBottomBar = false,
     isScrollable = false,
   } = props;
 
@@ -42,6 +40,7 @@ export default function ScreenLayout(props: ScreenLayoutProps) {
           paddingHorizontal: hasPadding ? 12 : 0,
         }}>
         <BodyWrapper
+          showsVerticalScrollIndicator={false}
           style={{
             flex: 1,
           }}>

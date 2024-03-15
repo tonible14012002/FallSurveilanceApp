@@ -106,7 +106,6 @@ export default function HouseDetailScreen() {
       <ScreenLayout
         isScrollable
         hasPadding
-        hasBottomBar
         topBar={
           <TopBar
             onBack={() => navigate('Home')}
