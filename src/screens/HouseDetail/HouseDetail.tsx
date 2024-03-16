@@ -44,6 +44,13 @@ export default function HouseDetailScreen() {
     onOpen: onOpenHousesSelect,
   } = useDisclosure();
 
+  const handleNotificationInboxPressed = () => {
+    if (!houseId) {
+      return;
+    }
+    navigate('HouseNotification', {houseId: houseId});
+  };
+
   const [searchText, setSearchText] = useState('');
   const debouncedSearch = useDebounce(searchText, 400);
 
@@ -96,6 +103,7 @@ export default function HouseDetailScreen() {
         appearance="ghost">
         <Icon name="edit-outline" />
       </Button>
+
       <Button
         onPress={isAllowAddMembers ? handleNavigateAddMembers : undefined}
         style={{
@@ -107,6 +115,31 @@ export default function HouseDetailScreen() {
         appearance="ghost">
         <Icon name="person-add-outline" />
       </Button>
+      <View style={{position: 'relative'}}>
+        <Button
+          onPress={handleNotificationInboxPressed}
+          style={{
+            width: 45,
+            height: 45,
+            borderRadius: 45,
+          }}
+          status="warning"
+          appearance="ghost">
+          <Icon name="bell-outline" />
+        </Button>
+        {/* DOT Indicator */}
+        <View
+          style={{
+            position: 'absolute',
+            top: 4,
+            right: 4,
+            width: 10,
+            height: 10,
+            backgroundColor: 'red',
+            borderRadius: 5,
+          }}
+        />
+      </View>
     </View>
   );
 
