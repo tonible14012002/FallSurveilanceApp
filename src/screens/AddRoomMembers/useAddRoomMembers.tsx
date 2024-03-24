@@ -12,6 +12,7 @@ import {RoomMemberWithPermissions} from '~/schema/api/house';
 import {BasicUser} from '~/schema/api/identity';
 import {BaseResponse} from '~/schema/common';
 import {AddMemberStep} from './AddRoomMembers';
+import {ROOM_DETAIL_KEY} from '~/hooks/useFetchRoomDetail';
 
 interface Props {
   selectedUsers: BasicUser[];
@@ -93,19 +94,22 @@ export const useAddRoomMembers = (props: Props) => {
     try {
       setIsAddLoading(true);
 
+      const body = {
+        add_members: usersWithRoomPermissions.map(({id, room_permissions}) => ({
+          id,
+          room_permissions,
+        })),
+      };
+      console.log(body.add_members);
+
       await API.FALL_SURVEILANCE.post(
-        {
-          add_members: usersWithRoomPermissions.map(
-            ({id, room_permissions}) => ({id, room_permissions}),
-          ),
-          room_id: roomId,
-        },
+        body,
         API_PATH.HOUSE_SERVICES.ADD_ROOM_MEMBERS(roomId!),
       ).json<BaseResponse<any>>(r => r);
 
       Alert.alert('Members added!');
 
-      await mutate(API_PATH.HOUSE_SERVICES.HOUSE_DETAIL);
+      await mutate([roomId, ROOM_DETAIL_KEY]);
       await mutateAssignableUsers();
 
       navigate('RoomDetail', {roomId});
