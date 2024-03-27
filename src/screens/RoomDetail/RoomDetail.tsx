@@ -88,7 +88,7 @@ export default function RoomDetailScreen() {
           borderRadius: 45,
         }}
         appearance="ghost">
-        <Icon size="small" name="edit-outline" />
+        <Icon name="edit-outline" />
       </Button>
       <Button
         onPress={handleNavigateAddMembers}
@@ -98,7 +98,7 @@ export default function RoomDetailScreen() {
           borderRadius: 45,
         }}
         appearance="ghost">
-        <Icon size="small" name="person-add-outline" />
+        <Icon name="person-add-outline" />
       </Button>
     </View>
   );
