@@ -78,6 +78,18 @@ export interface GetHouseDetailResponse {
   house_permissions: HousePermission[];
 }
 
+export interface GetHouseNotificationResponse {
+  id: string;
+  name: string;
+  description: string;
+  address: string;
+  members: BasicUser[];
+  devices: Device[];
+  rooms: HouseDetailRoom[];
+  is_owner: boolean;
+  house_permissions: HousePermission[];
+}
+
 export type GetJoinedHousesResponse = Array<GetHouseDetailResponse>;
 
 export interface CreateRoomResponse extends Room {}

@@ -71,4 +71,8 @@ export const API_PATH = {
     MODIFY_DEVICE: ({roomId, id}: Record<string, string>) =>
       `/device-services/room/${roomId}/devices/${id}/`,
   },
+  NOTIFICATION_SERVICES: {
+    HOUSE: (houseId: string) => `/notification-services/house/${houseId}/`,
+    ROOM: (roomId: string) => `/notification-services/house/${roomId}/`,
+  },
 };

@@ -83,6 +83,29 @@ function App() {
 
   // if (isLoading) return <Text>Loading...</Text>;
 
+  useEffect(() => {
+    const myHeaders = new Headers();
+    myHeaders.append(
+      'Authorization',
+      'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEyNDgyODUxLCJpYXQiOjE3MTE2MTg4NTEsImp0aSI6IjVjYTZmMGI5MzIzNzRlOTFhMTFjZGRkOWViNzMyZGI3IiwidXNlcl9pZCI6IjhiMzA1OGY3LTY1NjQtNGNlMS1iY2U0LWJhNWViN2RkOTE0OSJ9.Fa6Y2OzuxF-t3SC484iuSgW6DAxU4K2Zp7Lhnzd0gVU',
+    );
+
+    const raw = '';
+
+    const requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+    };
+
+    fetch(
+      'http://14.225.204.127/api/house-services/houses/70652d4e-034d-45b4-a527-0929f6afa1fc/add-members/search/?pageSize=20&page=1',
+      requestOptions,
+    )
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.error(error));
+  }, []);
+
   return (
     <ApplicationProvider {...eva} theme={eva.light}>
       <IconRegistry icons={EvaIconsPack} />

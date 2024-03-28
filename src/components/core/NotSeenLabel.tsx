@@ -7,11 +7,8 @@ export default function NotSeenLabel({style = {}}: {style?: Object}) {
 const styles = StyleSheet.create({
   notSeenLabel: {
     position: 'absolute',
-    width: 8,
-    height: 8,
-    top: -4,
-    right: -3,
+    width: 10,
+    height: 10,
     borderRadius: 50,
-    elevation: 4,
   },
 });

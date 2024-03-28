@@ -22,15 +22,17 @@ export const useSearchHouseAssignableMembers = (
       allowFetch
         ? [index, page, pageSize, search, SEARCH_HOUSE_ASSIGNABLE_MEMBERS_KEY]
         : null,
-    ([index, ..._]) =>
-      API.FALL_SURVEILANCE.query({
+    ([index, ..._]) => {
+      console.log({page, pageSize, search});
+
+      return API.FALL_SURVEILANCE.query({
         page: index + 1,
         pageSize: pageSize,
-        exclude_permissions: Object.keys(ROOM_PERMISSIONS.ACCESS),
         search,
       })
         .get(API_PATH.HOUSE_SERVICES.ASSIGNABLE_USERS(houseId))
-        .json<BaseResponse<User[]>>(r => r),
+        .json<BaseResponse<User[]>>(r => r);
+    },
   );
 
   return {

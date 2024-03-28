@@ -11,6 +11,7 @@ import TextFallback from './TextFallback';
 
 interface ListItemProps {
   wrapperStyle?: StyleProp<ViewStyle>;
+  textContentWrapperStyle?: StyleProp<ViewStyle>;
   style?: StyleProp<ViewStyle>;
   leftIcon?: React.ReactNode;
   isLeftIcon?: boolean;
@@ -30,6 +31,7 @@ export default function ListItem(props: ListItemProps) {
     rightEle = null,
     subTitle = null,
     wrapperStyle = {},
+    textContentWrapperStyle = {},
     style = {},
     level = '3',
     size = 'medium',
@@ -44,7 +46,7 @@ export default function ListItem(props: ListItemProps) {
           <Layout style={[styles.container, wrapperStyle]} level={level}>
             <View style={[styles.itemBody, style]}>
               {leftIcon}
-              <View>
+              <View style={textContentWrapperStyle}>
                 <TextFallback category="s2">{title as any}</TextFallback>
                 <TextFallback category="c1">{subTitle as any}</TextFallback>
               </View>

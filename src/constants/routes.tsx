@@ -24,6 +24,7 @@ import AddDevice from '~/screens/AddDevice/AddDevice';
 import {DeviceDetailScreen} from '~/screens/DeviceDetail';
 import {AddRoomMembers} from '~/screens/AddRoomMembers/AddRoomMembers';
 import {HouseNotification} from '~/screens/HouseNotification';
+import {RoomNotification} from '~/screens/RoomNotification';
 
 // NOTE: add public screen for Stack navigation here
 // EX: Login, Register, Forget Password, OTP, ...
@@ -44,6 +45,7 @@ export type PrivateRouteParamList = {
   AddRoomMembers: {roomId: string};
   AddDevice: {roomId: string};
   HouseNotification: {houseId: string};
+  RoomNotification: {roomId: string};
 };
 
 // NOTE: add private screen for Bottom Tab here
@@ -150,6 +152,13 @@ const privateRoutes: PrivateRouteItem[] = [
   {
     screen: HouseNotification,
     name: 'HouseNotification',
+    options: {
+      headerShown: false,
+    },
+  },
+  {
+    screen: RoomNotification,
+    name: 'RoomNotification',
     options: {
       headerShown: false,
     },

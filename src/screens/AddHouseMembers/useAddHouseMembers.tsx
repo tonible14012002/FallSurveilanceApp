@@ -34,6 +34,7 @@ export const useAddHouseMembers = (props: Props) => {
   const [isAddLoading, setIsAddLoading] = useState(false);
 
   const {houseId} = useHouseDetailContext();
+  console.log({houseId});
   const {
     text: searchText,
     debouncedText: debouncedSearchText,
@@ -44,7 +45,7 @@ export const useAddHouseMembers = (props: Props) => {
     isLoading: isLoadingUsers,
     mutate: mutateAssignableUsers,
   } = useSearchHouseAssignableMembers({
-    houseId: houseId!,
+    houseId: houseId ?? '',
     page: 1,
     pageSize: PAGINATION.SMALL,
     allowFetch: Boolean(houseId),
