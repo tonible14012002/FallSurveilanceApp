@@ -1,0 +1,4 @@
+export const HouseNotificationCode = {
+  UPDATE_HOUSE_METADATA: 'UPDATE_HOUSE_METADATA',
+  ADD_MEMBER_TO_HOUSE: 'ADD_MEMBER_TO_HOUSE',
+};

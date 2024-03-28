@@ -7,3 +7,8 @@ export interface SearchUserProfileParams extends PaginationParams {
 export interface SearchAssignableUsersParams extends PaginationParams {
   search?: string;
 }
+
+export interface GetHouseNotificationParams extends PaginationParams {
+  houseId: string;
+  allowFetch?: boolean;
+}

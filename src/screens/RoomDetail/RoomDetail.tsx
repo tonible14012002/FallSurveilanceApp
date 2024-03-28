@@ -35,6 +35,13 @@ export default function RoomDetailScreen() {
 
   const handleNavigateAddMembers = () => navigate('AddRoomMembers', {roomId});
 
+  const handleNotificationInboxPressed = () => {
+    if (!roomId) {
+      return;
+    }
+    navigate('RoomNotification', {roomId});
+  };
+
   const __renderTopBar = () => (
     <TopBar
       onBack={() => navigate('HouseDetail')}
@@ -100,6 +107,31 @@ export default function RoomDetailScreen() {
         appearance="ghost">
         <Icon size="small" name="person-add-outline" />
       </Button>
+      <View style={{position: 'relative'}}>
+        <Button
+          onPress={handleNotificationInboxPressed}
+          style={{
+            width: 45,
+            height: 45,
+            borderRadius: 45,
+          }}
+          status="warning"
+          appearance="ghost">
+          <Icon name="bell-outline" />
+        </Button>
+        {/* DOT Indicator */}
+        <View
+          style={{
+            position: 'absolute',
+            top: 4,
+            right: 4,
+            width: 10,
+            height: 10,
+            backgroundColor: 'red',
+            borderRadius: 5,
+          }}
+        />
+      </View>
     </View>
   );
 
