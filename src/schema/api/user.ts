@@ -12,3 +12,8 @@ export interface GetHouseNotificationParams extends PaginationParams {
   houseId: string;
   allowFetch?: boolean;
 }
+
+export interface GetRoomNotificationParams extends PaginationParams {
+  roomId: string;
+  allowFetch?: boolean;
+}

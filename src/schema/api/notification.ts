@@ -1,4 +1,4 @@
-import {House} from './house';
+import {House, Room} from './house';
 import {BasicUser} from './identity';
 
 export interface Notification<Meta> {
@@ -29,3 +29,20 @@ export type UpdateHouseMetadataNotificationMeta = {
 export type HouseNotificationMeta =
   | AddMemberToHouseNotificationMeta
   | UpdateHouseMetadataNotificationMeta;
+
+export type InviteMemberToRoomNotificationMeta = {
+  new_members: BasicUser[];
+  invitor: BasicUser;
+  description: string;
+};
+
+export type UpdateRoomMetadataNotificationMeta = {
+  room: Room;
+  updator: BasicUser;
+  old_values: string[];
+  update_fields: string[];
+};
+
+export type RoomNotificationMeta =
+  | InviteMemberToRoomNotificationMeta
+  | UpdateRoomMetadataNotificationMeta;

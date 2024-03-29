@@ -73,6 +73,7 @@ export const API_PATH = {
   },
   NOTIFICATION_SERVICES: {
     HOUSE: (houseId: string) => `/notification-services/house/${houseId}/`,
-    ROOM: (roomId: string) => `/notification-services/house/${roomId}/`,
+    ROOM: (roomId: string) => `/notification-services/room/${roomId}/`,
+    PRIVATE: `/notification-services/private/`,
   },
 };

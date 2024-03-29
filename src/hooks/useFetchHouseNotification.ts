@@ -25,7 +25,6 @@ export const useFetchHouseNotification = (
         .get(API_PATH.NOTIFICATION_SERVICES.HOUSE(houseId))
         .json<BaseResponse<Notification<HouseNotificationMeta>[]>>(r => r),
   );
-  console.log({houseId});
 
   return {
     notificationsCollection: data,
