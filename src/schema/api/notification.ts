@@ -10,6 +10,7 @@ export interface Notification<Meta> {
   description: string;
   event_code: string;
   is_seen: boolean;
+  created_at: string;
   meta: Meta;
 }
 
@@ -46,3 +47,19 @@ export type UpdateRoomMetadataNotificationMeta = {
 export type RoomNotificationMeta =
   | InviteMemberToRoomNotificationMeta
   | UpdateRoomMetadataNotificationMeta;
+
+export type InviteToRoomNotificationMeta = {
+  room: Room;
+  invitor: BasicUser;
+  description: string;
+};
+
+export type InviteToHouseNotificationMeta = {
+  house: House;
+  invitor: BasicUser;
+  description: string;
+};
+
+export type PrivateNotificationMeta =
+  | InviteToRoomNotificationMeta
+  | InviteToHouseNotificationMeta;

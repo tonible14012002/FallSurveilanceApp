@@ -17,3 +17,7 @@ export interface GetRoomNotificationParams extends PaginationParams {
   roomId: string;
   allowFetch?: boolean;
 }
+
+export interface GetPrivateNotificationParams extends PaginationParams {
+  allowFetch?: boolean;
+}
