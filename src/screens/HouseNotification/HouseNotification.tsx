@@ -14,9 +14,9 @@ import {
   HouseNotificationMeta,
 } from '~/schema/api/notification';
 import {BaseResponse} from '~/schema/common';
-import {HouseNotificationCode} from './constants';
+import {HOUSE_AVATAR, HOUSE_NOTIFICATION_CODE} from './constants';
 
-type HouseNotificationCodeType = keyof typeof HouseNotificationCode;
+type HouseNotificationCodeType = keyof typeof HOUSE_NOTIFICATION_CODE;
 
 export const HouseNotification = () => {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
@@ -39,10 +39,10 @@ export const HouseNotification = () => {
     let title = '';
     let boldWords = [];
 
-    if (eventCode === 'UPDATE_HOUSE_METADATA') {
+    if (eventCode === HOUSE_NOTIFICATION_CODE.UPDATE_HOUSE_METADATA) {
       title = 'The house updated some meta information';
     }
-    if (eventCode === 'ADD_MEMBER_TO_HOUSE') {
+    if (eventCode === HOUSE_NOTIFICATION_CODE.ADD_MEMBER_TO_HOUSE) {
       const members = (meta as AddMemberToHouseNotificationMeta).member;
       boldWords.push(members[0].nickname);
 
@@ -83,6 +83,12 @@ export const HouseNotification = () => {
         key={item.pageable?.next_page}
         data={data}
         renderItem={({item: noti}) => {
+          const avatar =
+            noti.event_code === HOUSE_NOTIFICATION_CODE.UPDATE_HOUSE_METADATA
+              ? HOUSE_AVATAR
+              : (noti.meta as AddMemberToHouseNotificationMeta).member[0]
+                  .avatar;
+
           return (
             <NotificationItem
               style={{marginBottom: 5}}
@@ -96,7 +102,7 @@ export const HouseNotification = () => {
                   20 minutes ago
                 </Text>
               }
-              avatarUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQI__yjUO07TXv6pLC3g-B5Z5hixZjITUTrJKEs0CmkHA&s"
+              avatarUrl={avatar}
             />
           );
         }}
