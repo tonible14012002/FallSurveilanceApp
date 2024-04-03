@@ -56,10 +56,10 @@ export default function LoginForm() {
               style={{
                 width: '100%',
               }}
-              accessoryLeft={renderIcon('phone')}
+              accessoryLeft={renderIcon('person-outline')}
               size="large"
               status="control"
-              placeholder="Phone number"
+              placeholder="Username"
               onBlur={onBlur}
               onChangeText={val => onChange(val)}
               value={value}
@@ -69,11 +69,11 @@ export default function LoginForm() {
               placeholderTextColor={'rgba(0,0,0,0.5)'}
             />
           )}
-          name="phone"
+          name="username"
         />
-        {errors.phone && (
+        {errors.username && (
           <Text category="s2" status="danger" style={{marginTop: 5}}>
-            {errors.phone.message}
+            {errors.username.message}
           </Text>
         )}
       </View>
