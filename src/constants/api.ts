@@ -28,6 +28,7 @@ export const API_PATH = {
   IDENTITY_SERVICES: {
     ME: '/identity-services/me/',
     LOGIN: '/identity-services/token/',
+    REGISTER: '/identity-services/registration/',
   },
   USER_SERVICES: {
     PROFILE: (id: string) => '/user-services/profile/' + id + '/',

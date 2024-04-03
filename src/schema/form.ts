@@ -20,10 +20,10 @@ export const LoginFormSchema = z.object({
 export type LoginFormSchemaType = z.infer<typeof LoginFormSchema>;
 
 export const RegisterSchema = z.object({
-  fullname: z
+  username: z
     .string()
     .trim()
-    .max(30, 'Fullname only contains at most 30 characters!'),
+    .max(30, 'Username only contains at most 30 characters!'),
   phone: z
     .string()
     .trim()

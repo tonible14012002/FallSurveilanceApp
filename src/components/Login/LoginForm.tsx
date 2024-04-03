@@ -29,7 +29,7 @@ export default function LoginForm() {
     try {
       setIsloading(true);
       const resp = await API.FALL_SURVEILANCE.post(
-        {username: data.phone, password: data.password},
+        data,
         API_PATH.IDENTITY_SERVICES.LOGIN,
       ).json<BaseResponse<LoginResponse>>(r => r);
 

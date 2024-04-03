@@ -1,22 +1,43 @@
 import {zodResolver} from '@hookform/resolvers/zod';
-import {Link} from '@react-navigation/native';
+import {Link, useNavigation} from '@react-navigation/native';
 import {Button, Input, Text} from '@ui-kitten/components';
+import {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {StyleSheet, View} from 'react-native';
+import {API, API_PATH} from '~/constants/api';
+import {PublicScreenProps} from '~/constants/routes';
 import {useRenderIcon} from '~/hooks/useRenderIcon';
+import {RegisterResponse} from '~/schema/api/identity';
+import {BaseResponse} from '~/schema/common';
 import {RegisterSchema, RegisterSchemaType} from '~/schema/form';
 
 export default function RegisterForm() {
+  const [isLoading, setIsloading] = useState(false);
+
+  const navigation = useNavigation<PublicScreenProps>();
   const {renderIcon} = useRenderIcon();
   const {
     handleSubmit,
     control,
     formState: {errors},
   } = useForm<RegisterSchemaType>({
-    resolver: zodResolver(RegisterSchema),
+    // resolver: zodResolver(RegisterSchema),
   });
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    try {
+      setIsloading(true);
+      await API.FALL_SURVEILANCE.post(
+        {...data, password_confirm: data.password},
+        API_PATH.IDENTITY_SERVICES.REGISTER,
+      ).json<BaseResponse<RegisterResponse>>(r => r);
+
+      navigation.navigate('Login');
+    } catch (e) {
+      setIsloading(false);
+      console.log(e);
+    } finally {
+      setIsloading(false);
+    }
   };
 
   return (
@@ -32,7 +53,7 @@ export default function RegisterForm() {
               accessoryLeft={renderIcon('person')}
               size="large"
               status="control"
-              placeholder="Fullname"
+              placeholder="Username"
               onBlur={onBlur}
               onChangeText={value => onChange(value)}
               value={value}
@@ -42,11 +63,11 @@ export default function RegisterForm() {
               placeholderTextColor={'rgba(0,0,0,0.5)'}
             />
           )}
-          name="fullname"
+          name="username"
         />
-        {errors.fullname && (
+        {errors.username && (
           <Text category="s2" status="danger" style={{marginTop: 5}}>
-            {errors.fullname.message}
+            {errors.username.message}
           </Text>
         )}
       </View>
@@ -125,7 +146,8 @@ export default function RegisterForm() {
           marginTop: 10,
         }}
         size="large"
-        onPress={handleSubmit(onSubmit)}>
+        onPress={handleSubmit(onSubmit)}
+        disabled={isLoading}>
         Sign Up
       </Button>
     </View>

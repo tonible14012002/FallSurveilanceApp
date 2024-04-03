@@ -25,4 +25,6 @@ export interface LoginResponse {
   user: User;
 }
 
+export interface RegisterResponse extends User {}
+
 export interface UpdateProfileResponse extends User {}
