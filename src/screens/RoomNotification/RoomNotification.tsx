@@ -15,6 +15,7 @@ import {
   RoomNotificationMeta,
 } from '~/schema/api/notification';
 import {BaseResponse} from '~/schema/common';
+import TimeAgo from '~/components/common/TimeAgo/TimeAgo';
 
 type RoomNotificationCodeType = keyof typeof ROOM_NOTIFICATION_CODE;
 
@@ -97,11 +98,7 @@ export const RoomNotification = () => {
                 noti.event_code as RoomNotificationCodeType,
                 noti.meta,
               )}
-              subTitle={
-                <Text category="p2" style={{color: 'gray'}}>
-                  20 minutes ago
-                </Text>
-              }
+              subTitle={<TimeAgo date={noti.created_at} />}
               avatarUrl={avatar}
             />
           );
