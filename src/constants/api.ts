@@ -12,8 +12,17 @@ const FALL_SURVEILANCE = wretch(
   .addon(AbortAddon())
   .errorType('json');
 
+const FALL_SURVEILANCE_NOTI = wretch(
+  process.env.FALL_SURVEILANCE_NOTI_URL ??
+    'https://fall-surveilance-notification.onrender.com',
+)
+  .addon(QueryStringAddon as typeof queryString) // Temporary fix for wretch type
+  .addon(AbortAddon())
+  .errorType('json');
+
 export const API = {
   FALL_SURVEILANCE,
+  FALL_SURVEILANCE_NOTI,
 };
 
 export const loginApi = (token: string) => {
@@ -28,6 +37,7 @@ export const API_PATH = {
   IDENTITY_SERVICES: {
     ME: '/identity-services/me/',
     LOGIN: '/identity-services/token/',
+    REGISTER: '/identity-services/registration/',
   },
   USER_SERVICES: {
     PROFILE: (id: string) => '/user-services/profile/' + id + '/',
@@ -75,5 +85,6 @@ export const API_PATH = {
     HOUSE: (houseId: string) => `/notification-services/house/${houseId}/`,
     ROOM: (roomId: string) => `/notification-services/room/${roomId}/`,
     PRIVATE: `/notification-services/private/`,
+    REGISTER_TOKEN: '/register-token',
   },
 };

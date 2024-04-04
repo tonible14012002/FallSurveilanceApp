@@ -15,6 +15,7 @@ import {
 } from '~/schema/api/notification';
 import {BaseResponse} from '~/schema/common';
 import {HOUSE_AVATAR, HOUSE_NOTIFICATION_CODE} from './constants';
+import TimeAgo from '~/components/common/TimeAgo/TimeAgo';
 
 type HouseNotificationCodeType = keyof typeof HOUSE_NOTIFICATION_CODE;
 
@@ -97,11 +98,7 @@ export const HouseNotification = () => {
                 noti.event_code as HouseNotificationCodeType,
                 noti.meta,
               )}
-              subTitle={
-                <Text category="p2" style={{color: 'gray'}}>
-                  20 minutes ago
-                </Text>
-              }
+              subTitle={<TimeAgo date={noti.created_at} />}
               avatarUrl={avatar}
             />
           );

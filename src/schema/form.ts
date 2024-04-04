@@ -5,12 +5,11 @@ const phoneRegex = new RegExp(
 );
 
 export const LoginFormSchema = z.object({
-  phone: z
+  username: z
     .string()
     .trim()
-    .regex(phoneRegex, 'Phone is not valid!')
-    .min(10, 'Phone must contains at least 10 characters!')
-    .max(10, 'Phone is not valid!'),
+    .min(1, 'Username is required!')
+    .max(30, 'Username is not valid!'),
   password: z
     .string()
     .trim()
@@ -21,10 +20,10 @@ export const LoginFormSchema = z.object({
 export type LoginFormSchemaType = z.infer<typeof LoginFormSchema>;
 
 export const RegisterSchema = z.object({
-  fullname: z
+  username: z
     .string()
     .trim()
-    .max(30, 'Fullname only contains at most 30 characters!'),
+    .max(30, 'Username only contains at most 30 characters!'),
   phone: z
     .string()
     .trim()

@@ -18,6 +18,7 @@ import {
 } from '~/schema/api/notification';
 import {BaseResponse} from '~/schema/common';
 import {PRIVATE_NOTIFICATION_CODE} from './constants';
+import TimeAgo from '~/components/common/TimeAgo/TimeAgo';
 
 const TABS = ['Detection', 'Invite'];
 
@@ -92,11 +93,7 @@ export default function PrivateNotification() {
                 noti.event_code as PrivateNotificationCodeType,
                 noti.meta,
               )}
-              subTitle={
-                <Text category="p2" style={{color: 'gray'}}>
-                  {noti.created_at}
-                </Text>
-              }
+              subTitle={<TimeAgo date={noti.created_at} />}
               avatarUrl={avatar}
             />
           );

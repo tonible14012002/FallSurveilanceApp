@@ -11,10 +11,12 @@ import {LoginResponse} from '~/schema/api/identity';
 import {useAuthContext} from '~/context/auth';
 import jwtManager from '~/libs/jwt/jwtManager';
 import {PublicScreenProps} from '~/constants/routes';
+import {requestUserPermission} from '~/libs/notification';
 
 export default function LoginForm() {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsloading] = useState(false);
+
   const {setUser} = useAuthContext();
   const navigation = useNavigation<PublicScreenProps>();
   const {renderIcon} = useRenderIcon();
@@ -29,7 +31,7 @@ export default function LoginForm() {
     try {
       setIsloading(true);
       const resp = await API.FALL_SURVEILANCE.post(
-        {username: data.phone, password: data.password},
+        data,
         API_PATH.IDENTITY_SERVICES.LOGIN,
       ).json<BaseResponse<LoginResponse>>(r => r);
 
@@ -38,8 +40,18 @@ export default function LoginForm() {
       jwtManager.setToken(access);
       jwtManager.setRefreshToken(refresh);
       navigation.navigate('Private');
+
+      const token = await requestUserPermission();
+      if (token) {
+        await API.FALL_SURVEILANCE_NOTI.post(
+          {
+            userId: user.id,
+            token,
+          },
+          API_PATH.NOTIFICATION_SERVICES.REGISTER_TOKEN,
+        ).json<BaseResponse<any>>(r => r);
+      }
     } catch (e) {
-      setIsloading(false);
       console.log(e);
     } finally {
       setIsloading(false);
@@ -56,10 +68,10 @@ export default function LoginForm() {
               style={{
                 width: '100%',
               }}
-              accessoryLeft={renderIcon('phone')}
+              accessoryLeft={renderIcon('person-outline')}
               size="large"
               status="control"
-              placeholder="Phone number"
+              placeholder="Username"
               onBlur={onBlur}
               onChangeText={val => onChange(val)}
               value={value}
@@ -69,11 +81,11 @@ export default function LoginForm() {
               placeholderTextColor={'rgba(0,0,0,0.5)'}
             />
           )}
-          name="phone"
+          name="username"
         />
-        {errors.phone && (
+        {errors.username && (
           <Text category="s2" status="danger" style={{marginTop: 5}}>
-            {errors.phone.message}
+            {errors.username.message}
           </Text>
         )}
       </View>
