@@ -11,10 +11,12 @@ import {LoginResponse} from '~/schema/api/identity';
 import {useAuthContext} from '~/context/auth';
 import jwtManager from '~/libs/jwt/jwtManager';
 import {PublicScreenProps} from '~/constants/routes';
+import {requestUserPermission} from '~/libs/notification';
 
 export default function LoginForm() {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsloading] = useState(false);
+
   const {setUser} = useAuthContext();
   const navigation = useNavigation<PublicScreenProps>();
   const {renderIcon} = useRenderIcon();
@@ -38,6 +40,17 @@ export default function LoginForm() {
       jwtManager.setToken(access);
       jwtManager.setRefreshToken(refresh);
       navigation.navigate('Private');
+
+      const token = await requestUserPermission();
+      if (token) {
+        await API.FALL_SURVEILANCE_NOTI.post(
+          {
+            userId: user.id,
+            token,
+          },
+          API_PATH.NOTIFICATION_SERVICES.REGISTER_TOKEN,
+        ).json<BaseResponse<any>>(r => r);
+      }
     } catch (e) {
       console.log(e);
     } finally {

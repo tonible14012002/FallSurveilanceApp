@@ -1,15 +1,20 @@
-import 'react-native-gesture-handler';
-import '@react-native-anywhere/polyfill-base64';
-import React, {useEffect, useState} from 'react';
 import * as eva from '@eva-design/eva';
+import '@react-native-anywhere/polyfill-base64';
 import {NavigationContainer} from '@react-navigation/native';
 import {ApplicationProvider, IconRegistry} from '@ui-kitten/components';
+import {EvaIconsPack} from '@ui-kitten/eva-icons';
+import React from 'react';
+import 'react-native-gesture-handler';
+import {HouseDetailContextProvider} from '~/components/HouseDetail';
+import AuthGuard from '~/components/auth/AuthGuard';
+import BottomTabBar from '~/components/core/BottomTabBar';
 import {
   privateRoutes,
   privateTabRoutes,
   publicRoutes,
 } from '~/constants/routes';
-import {EvaIconsPack} from '@ui-kitten/eva-icons';
+import {AuthProvider} from '~/context/auth';
+import PopupProvider from '~/context/popup';
 import {
   PrivateNavigator,
   PrivateScreen,
@@ -18,15 +23,6 @@ import {
   PublicNavigator,
   PublicScreen,
 } from '~/libs/navigation';
-import BottomTabBar from '~/components/core/BottomTabBar';
-import {HouseDetailContextProvider} from '~/components/HouseDetail';
-import {AuthProvider} from '~/context/auth';
-import AuthGuard from '~/components/auth/AuthGuard';
-import {
-  requestUserPermission,
-  notificationListener,
-  unsubscribe,
-} from '~/libs/notification';
 
 const PrivateTabScreens = () => {
   return (
@@ -71,38 +67,28 @@ const PrivateScreens = () => {
 };
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    requestUserPermission(setIsLoading);
-    notificationListener();
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
-  // if (isLoading) return <Text>Loading...</Text>;
-
   return (
     <ApplicationProvider {...eva} theme={eva.light}>
       <IconRegistry icons={EvaIconsPack} />
       <NavigationContainer>
-        <PublicNavigator>
-          {publicRoutes.map(route => (
+        <PopupProvider>
+          <PublicNavigator>
+            {publicRoutes.map(route => (
+              <PublicScreen
+                key={route.name}
+                name={route.name}
+                component={route.screen}
+                options={route?.options}
+              />
+            ))}
             <PublicScreen
-              key={route.name}
-              name={route.name}
-              component={route.screen}
-              options={route?.options}
+              key="Private"
+              name="Private"
+              component={PrivateScreens}
+              options={{headerShown: false}}
             />
-          ))}
-          <PublicScreen
-            key="Private"
-            name="Private"
-            component={PrivateScreens}
-            options={{headerShown: false}}
-          />
-        </PublicNavigator>
+          </PublicNavigator>
+        </PopupProvider>
       </NavigationContainer>
     </ApplicationProvider>
   );
