@@ -39,7 +39,6 @@ export default function LoginForm() {
       jwtManager.setRefreshToken(refresh);
       navigation.navigate('Private');
     } catch (e) {
-      setIsloading(false);
       console.log(e);
     } finally {
       setIsloading(false);

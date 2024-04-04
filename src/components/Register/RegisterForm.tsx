@@ -33,7 +33,6 @@ export default function RegisterForm() {
 
       navigation.navigate('Login');
     } catch (e) {
-      setIsloading(false);
       console.log(e);
     } finally {
       setIsloading(false);
