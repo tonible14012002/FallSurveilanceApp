@@ -236,22 +236,20 @@ export default function RoomDetailScreen() {
     </>
   );
 
-  const {localVideoRef, remoteVideoRef} = useVideoStreaming();
-  console.log(localVideoRef.current, remoteVideoRef.current);
+  const {localStream} = useVideoStreaming();
+
   return (
     <>
       <ScreenLayout isScrollable hasPadding topBar={__renderTopBar()}>
         {__renderRoomActionsBar()}
         {__renderRoomDetails()}
         {__renderRoomModals()}
-        <RTCView
-          streamURL={(localVideoRef.current as any)?.srcObject}
-          style={{width: 200, height: 200}}
-        />
-        <RTCView
-          streamURL={(remoteVideoRef.current as any)?.srcObject}
-          style={{width: 200, height: 200}}
-        />
+        {localStream && (
+          <RTCView
+            streamURL={(localStream as any).toURL()}
+            style={{width: 400, height: 200}}
+          />
+        )}
       </ScreenLayout>
     </>
   );

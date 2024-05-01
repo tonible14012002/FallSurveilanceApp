@@ -1,35 +1,23 @@
-import {useRef, useEffect, useState} from 'react';
+import {useRoute} from '@react-navigation/native';
+import {useEffect, useState} from 'react';
+import {RTCPeerConnection, RTCSessionDescription} from 'react-native-webrtc';
 import {io} from 'socket.io-client';
-import {
-  RTCPeerConnection,
-  RTCIceCandidate,
-  RTCSessionDescription,
-} from 'react-native-webrtc';
-
-interface User {
-  username?: string;
-  // Add other user properties if needed
-}
-
-interface SendDataType {
-  type: string;
-  candidate?: RTCIceCandidate;
-  // Add other data types if needed
-}
 
 export function useVideoStreaming() {
-  const room = 1;
+  const room = '1';
   const user = {
     username: 'khoa',
   };
-  const localVideoRef = useRef(null);
-  const remoteVideoRef = useRef(null);
+  const [localStream, setLocalStream] = useState(null);
+
+  const route = useRoute();
+  const {roomId} = route.params as {roomId: string};
 
   const socket = io('https://signaling-server-pfm2.onrender.com/', {
     transports: ['websocket'],
   });
 
-  let pc: RTCPeerConnection; // For RTCPeerConnection Object
+  let pc: RTCPeerConnection;
 
   const signalingDataHandler = (data: any) => {
     if (data.type === 'answer') {
@@ -84,8 +72,6 @@ export function useVideoStreaming() {
           username: user.username,
           room: room,
         });
-        console.log('Offer sent');
-        console.log(offer);
       })
       .catch(e => {
         console.log('Error negotiate, ', e);
@@ -111,75 +97,13 @@ export function useVideoStreaming() {
 
     pc.addEventListener('track', (evt: any) => {
       if (evt.track.kind === 'video') {
-        (localVideoRef.current as any).srcObject = evt.streams[0];
+        console.log('hello, ', evt.streams[0]);
+        setLocalStream(evt.streams[0]);
       }
     });
 
     negotiate();
   }
-
-  // function stop() {
-  //   document.getElementById('stop').style.display = 'none';
-
-  //   // close peer connection
-  //   setTimeout(() => {
-  //     pc.close();
-  //   }, 500);
-  // }
-
-  const startConnection = () => {
-    try {
-      socket.connect();
-      socket.emit('join', {username: user.username, room: room});
-      // start();
-      console.log('Socket connection successful');
-    } catch (error) {
-      console.error('Socket connection failed: ', error);
-    }
-    // Listen for connection errors
-  };
-
-  const sendData = (data: any) => {
-    // eslint-disable-next-line no-restricted-globals
-    console.log('Sending data: ', data);
-    socket.emit('data', {
-      username: user.username,
-      room: room,
-      data: data,
-    });
-  };
-
-  socket.on('offer', data => {
-    console.log('Offer received');
-    signalingDataHandler(data);
-  });
-
-  socket.on('answer', data => {
-    console.log('Answer received');
-    console.log(data);
-    signalingDataHandler(data);
-  });
-
-  // useEffect(() => {
-  //   startConnection();
-
-  //   socket.on('connect_error', error => {
-  //     console.error('Connection error: ', error);
-  //   });
-
-  //   // Listen for other errors
-  //   socket.on('error', error => {
-  //     console.error('An error occurred: ', error);
-  //   });
-  //   return () => {
-  //     pc?.close();
-
-  //     socket.off('connect_error');
-  //     socket.off('error');
-  //     socket.off('offer');
-  //     socket.off('answer');
-  //   };
-  // }, []);
 
   const [isConnected, setIsConnected] = useState(false);
   const [transport, setTransport] = useState('N/A');
@@ -192,7 +116,8 @@ export function useVideoStreaming() {
     function onConnect() {
       setIsConnected(true);
       setTransport(socket.io.engine.transport.name);
-
+      socket.emit('join', {username: user.username, room: room});
+      start();
       socket.io.engine.on('upgrade', transport => {
         setTransport(transport.name);
       });
@@ -206,11 +131,37 @@ export function useVideoStreaming() {
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
 
+    socket.on('offer', data => {
+      console.log('Offer received');
+      signalingDataHandler(data);
+    });
+
+    socket.on('answer', data => {
+      console.log('Answer received');
+
+      signalingDataHandler(data);
+    });
+
+    // socket.on('connect_error', error => {
+    //   console.error('Connection error: ', error);
+    // });
+
+    // socket.on('error', error => {
+    //   console.error('An error occurred: ', error);
+    // });
+
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
-    };
-  }, []);
+      socket.off('offer');
+      socket.off('answer');
+      onDisconnect();
+      // socket.off('connect_error');
+      // socket.off('error');
 
-  return {localVideoRef, remoteVideoRef}; // Return only the startConnection function
+      pc?.close();
+    };
+  }, [roomId]);
+
+  return {localStream};
 }
