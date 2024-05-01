@@ -14,6 +14,8 @@ import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
 import {boringAvatar} from '~/libs/utils';
 import useFetchRoomData from './useFetchRoomData';
 import useModalsDisclosure from './useModalsDisclosure';
+import {useVideoStreaming} from '~/libs/hooks/useVideoStreaming';
+import {RTCView} from 'react-native-webrtc';
 
 export default function RoomDetailScreen() {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
@@ -234,12 +236,22 @@ export default function RoomDetailScreen() {
     </>
   );
 
+  const {localVideoRef, remoteVideoRef} = useVideoStreaming();
+  console.log(localVideoRef.current, remoteVideoRef.current);
   return (
     <>
       <ScreenLayout isScrollable hasPadding topBar={__renderTopBar()}>
         {__renderRoomActionsBar()}
         {__renderRoomDetails()}
         {__renderRoomModals()}
+        <RTCView
+          streamURL={(localVideoRef.current as any)?.srcObject}
+          style={{width: 200, height: 200}}
+        />
+        <RTCView
+          streamURL={(remoteVideoRef.current as any)?.srcObject}
+          style={{width: 200, height: 200}}
+        />
       </ScreenLayout>
     </>
   );
