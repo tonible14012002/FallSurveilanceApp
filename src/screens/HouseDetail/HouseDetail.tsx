@@ -5,6 +5,7 @@ import {Pressable, View} from 'react-native';
 import {RoomsList, useHouseDetailContext} from '~/components/HouseDetail';
 import {EditHouseModal} from '~/components/HouseDetail/EditHouseModal';
 import {AddMemberModal} from '~/components/common/AddMemberModal';
+import {ConfirmationModal} from '~/components/common/ConfimationModal';
 import {ProfileDropdown} from '~/components/common/ProfileDropdown';
 import {ItemsSelectModal} from '~/components/core';
 import Icon from '~/components/core/Icon';
@@ -22,10 +23,15 @@ import {useFetchJoinedHouses} from '~/hooks/useFetchJoinedHouses';
 import {useSearchUsers} from '~/hooks/useSearchUsers';
 import {useDebounce} from '~/libs/hooks/useDebounce';
 import {boringAvatar} from '~/libs/utils';
+import {mutate} from 'swr';
+import {API, API_PATH} from '~/constants/api';
+import {err} from 'react-native-svg';
+import {BaseResponse} from '~/schema/common';
 
 export default function HouseDetailScreen() {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
   const {user} = useAuthContext();
+
   const {houseId, setHouseId} = useHouseDetailContext();
   const {
     isOpen: isOpenProfile,
@@ -52,6 +58,11 @@ export default function HouseDetailScreen() {
   };
 
   const [searchText, setSearchText] = useState('');
+  const {
+    isOpen: isOpenConfirmationModal,
+    onOpen: onOpenConfirmationModal,
+    onClose: onCloseConfirmationModal,
+  } = useDisclosure();
   const debouncedSearch = useDebounce(searchText, 400);
 
   const {userCollections, isLoading: isLoadingUserCollections} = useSearchUsers(
@@ -74,6 +85,20 @@ export default function HouseDetailScreen() {
   );
   const isAllowAddRoom = isAllowEdit;
 
+  const onDelete = async () => {
+    try {
+      await API.FALL_SURVEILANCE.delete(
+        API_PATH.HOUSE_SERVICES.DELETE(houseId!),
+      ).json<BaseResponse<any>>(r => r);
+      navigate('Main');
+      navigate('Home');
+      mutate(API_PATH.HOUSE_SERVICES.HOUSE_DETAIL);
+    } catch (error) {
+      console.log(err);
+    }
+    onCloseConfirmationModal();
+  };
+
   const handleNavigateAddMembers = () => navigate('AddHouseMembers');
 
   useEffect(() => {
@@ -91,6 +116,17 @@ export default function HouseDetailScreen() {
         gap: 5,
         marginBottom: 15,
       }}>
+      <Button
+        onPress={onOpenConfirmationModal}
+        style={{
+          width: 45,
+          height: 45,
+          borderRadius: 45,
+        }}
+        appearance="ghost">
+        <Icon name="trash-outline" fill="red" />
+      </Button>
+
       <Button
         onPress={isAllowEdit ? onOpenHouseEdit : undefined}
         style={{
@@ -273,6 +309,14 @@ export default function HouseDetailScreen() {
         isOpen={isOpenHouseEdit}
         data={detail}
         onClose={onCloseHouseEdit}
+      />
+
+      <ConfirmationModal
+        title="Do you want to delete this house?"
+        isLoading={false}
+        isOpen={isOpenConfirmationModal}
+        onAccept={onDelete}
+        onCancel={onCloseConfirmationModal}
       />
     </>
   );

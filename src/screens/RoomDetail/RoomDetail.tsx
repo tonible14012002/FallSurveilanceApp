@@ -16,6 +16,10 @@ import useFetchRoomData from './useFetchRoomData';
 import useModalsDisclosure from './useModalsDisclosure';
 import {useVideoStreaming} from '~/libs/hooks/useVideoStreaming';
 import {RTCView} from 'react-native-webrtc';
+import {API, API_PATH} from '~/constants/api';
+import {BaseResponse} from '~/schema/common';
+import {mutate} from 'swr';
+import {ConfirmationModal} from '~/components/common/ConfimationModal';
 
 export default function RoomDetailScreen() {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
@@ -29,6 +33,9 @@ export default function RoomDetailScreen() {
     isOpenRoomEdit,
     onCloseRoomEdit,
     onToggleRoomEdit,
+    isOpenConfirmationModal,
+    onOpenConfirmationModal,
+    onCloseConfirmationModal,
   } = useModalsDisclosure();
 
   const {user, roomId, roomDetail, rooms} = useFetchRoomData();
@@ -42,6 +49,19 @@ export default function RoomDetailScreen() {
       return;
     }
     navigate('RoomNotification', {roomId});
+  };
+
+  const onDelete = async () => {
+    try {
+      await API.FALL_SURVEILANCE.delete(
+        API_PATH.HOUSE_SERVICES.DELETE_ROOM(roomDetail?.house.id!, roomId),
+      ).json<BaseResponse<any>>(r => r);
+      navigate('HouseDetail');
+      mutate(API_PATH.HOUSE_SERVICES.HOUSE_DETAIL);
+    } catch (error) {
+      console.log(error);
+    }
+    onCloseConfirmationModal();
   };
 
   const __renderTopBar = () => (
@@ -89,6 +109,16 @@ export default function RoomDetailScreen() {
         justifyContent: 'flex-end',
         gap: 5,
       }}>
+      <Button
+        onPress={onOpenConfirmationModal}
+        style={{
+          width: 45,
+          height: 45,
+          borderRadius: 45,
+        }}
+        appearance="ghost">
+        <Icon name="trash-outline" fill="red" />
+      </Button>
       <Button
         onPress={onToggleRoomEdit}
         style={{
@@ -232,6 +262,14 @@ export default function RoomDetailScreen() {
         isOpen={isOpenRoomEdit}
         onClose={onCloseRoomEdit}
         data={roomDetail}
+      />
+
+      <ConfirmationModal
+        title="Do you want to delete this room?"
+        isLoading={false}
+        isOpen={isOpenConfirmationModal}
+        onAccept={onDelete}
+        onCancel={onCloseConfirmationModal}
       />
     </>
   );

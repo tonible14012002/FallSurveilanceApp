@@ -20,7 +20,7 @@ export default function DeviceDetailScreen() {
   const {deviceId} = route.params as {deviceId: string};
 
   const {detail} = useFetchDeviceDetail(deviceId, Boolean(deviceId));
-
+  console.log({deviceId});
   const {...spec} = detail?.specification ?? {};
 
   const handleNavigateRoomDetail = () =>

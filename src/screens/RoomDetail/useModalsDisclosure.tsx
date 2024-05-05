@@ -21,6 +21,11 @@ const useModalsDisclosure = () => {
     onClose: onCloseUserPermission,
     onToggle: onToggleUserPermission,
   } = useDisclosure();
+  const {
+    isOpen: isOpenConfirmationModal,
+    onOpen: onOpenConfirmationModal,
+    onClose: onCloseConfirmationModal,
+  } = useDisclosure();
 
   return {
     isOpenProfile,
@@ -35,6 +40,9 @@ const useModalsDisclosure = () => {
     isOpenUserPermission,
     onCloseUserPermission,
     onToggleUserPermission,
+    isOpenConfirmationModal,
+    onOpenConfirmationModal,
+    onCloseConfirmationModal,
   };
 };
 
