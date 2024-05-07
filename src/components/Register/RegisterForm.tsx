@@ -6,14 +6,18 @@ import {Controller, useForm} from 'react-hook-form';
 import {StyleSheet, View} from 'react-native';
 import {API, API_PATH} from '~/constants/api';
 import {PublicScreenProps} from '~/constants/routes';
+import {POPUPS, usePopupContext} from '~/context/popup';
 import {useRenderIcon} from '~/hooks/useRenderIcon';
 import {RegisterResponse} from '~/schema/api/identity';
 import {BaseResponse} from '~/schema/common';
 import {RegisterSchema, RegisterSchemaType} from '~/schema/form';
+import Icon from '../core/Icon';
+import {formatFieldErrorMessage} from '~/libs/utils';
 
 export default function RegisterForm() {
   const [isLoading, setIsloading] = useState(false);
 
+  const {showPopup} = usePopupContext();
   const navigation = useNavigation<PublicScreenProps>();
   const {renderIcon} = useRenderIcon();
   const {
@@ -27,12 +31,27 @@ export default function RegisterForm() {
     try {
       setIsloading(true);
       await API.FALL_SURVEILANCE.post(
-        {...data, password_confirm: data.password},
+        {...data, password_confirm: data.password ?? 'pw'},
         API_PATH.IDENTITY_SERVICES.REGISTER,
       ).json<BaseResponse<RegisterResponse>>(r => r);
 
       navigation.navigate('Login');
-    } catch (e) {
+    } catch (e: any) {
+      if (e?.response.status == 400) {
+        showPopup(POPUPS.ALERT, {
+          icon: (
+            <Icon
+              size="superGiant"
+              name="alert-circle-outline"
+              fill="#E72929"
+            />
+          ),
+          title: 'Invalid information!',
+          description: formatFieldErrorMessage(e?.json.data ?? {}),
+        });
+        return;
+      }
+
       console.log(e);
     } finally {
       setIsloading(false);

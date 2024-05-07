@@ -30,7 +30,12 @@ export const NotificationPopup = ({notification}: NotificationProps) => {
         </Button>
         <Button
           onPress={() => {
-            navigate('Notification');
+            const deviceId = notification?.android?.smallIcon;
+            if (deviceId) {
+              navigate('DeviceDetail', {deviceId});
+            } else {
+              navigate('Notification');
+            }
             closePopup();
           }}
           style={{width: 100}}

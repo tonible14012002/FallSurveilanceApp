@@ -45,6 +45,7 @@ export const API_PATH = {
   },
   HOUSE_SERVICES: {
     CREATE: '/house-services/houses/',
+    DELETE: (id: string) => '/house-services/houses/' + id + '/',
     JOINED_HOUSES: '/house-services/houses/joined/',
     HOUSE_DETAIL: (id: string) => '/house-services/houses/' + id + '/',
     HOUSE_MEMBERS: (houseId: string) =>
@@ -52,6 +53,8 @@ export const API_PATH = {
     ASSIGNABLE_USERS: (houseId: string) =>
       '/house-services/houses/' + houseId + '/add-members/search/',
     CREATE_ROOM: (id: string) => '/house-services/houses/' + id + '/rooms/',
+    DELETE_ROOM: (houseId: string, roomId: string) =>
+      '/house-services/houses/' + houseId + '/rooms/' + roomId + '/',
     HOUSE_ROOMS: (id: string) => '/house-services/houses/' + id + '/rooms/',
     ROOM_DETAIL: (id: string) =>
       '/house-services/houses/room-detail/' + id + '/',

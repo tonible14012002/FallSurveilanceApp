@@ -12,12 +12,15 @@ import {useAuthContext} from '~/context/auth';
 import jwtManager from '~/libs/jwt/jwtManager';
 import {PublicScreenProps} from '~/constants/routes';
 import {requestUserPermission} from '~/libs/notification';
+import {POPUPS, usePopupContext} from '~/context/popup';
+import Icon from '../core/Icon';
+import {formatFieldErrorMessage} from '~/libs/utils';
 
 export default function LoginForm() {
-  const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsloading] = useState(false);
 
   const {setUser} = useAuthContext();
+  const {showPopup} = usePopupContext();
   const navigation = useNavigation<PublicScreenProps>();
   const {renderIcon} = useRenderIcon();
   const {
@@ -51,7 +54,31 @@ export default function LoginForm() {
           API_PATH.NOTIFICATION_SERVICES.REGISTER_TOKEN,
         ).json<BaseResponse<any>>(r => r);
       }
-    } catch (e) {
+    } catch (e: any) {
+      if (e?.response.status == 400) {
+        showPopup(POPUPS.ALERT, {
+          icon: <Icon size="superGiant" name="alert-circle-outline" />,
+          title: 'Invalid information!',
+          description: formatFieldErrorMessage(e?.json.data ?? {}),
+        });
+        return;
+      }
+
+      if (e?.response.status == 401) {
+        showPopup(POPUPS.ALERT, {
+          icon: (
+            <Icon
+              size="superGiant"
+              name="alert-circle-outline"
+              fill="#E72929"
+            />
+          ),
+          title: 'Invalid credentials!',
+          description: 'Please provide valid account credentials',
+        });
+        return;
+      }
+
       console.log(e);
     } finally {
       setIsloading(false);
@@ -118,7 +145,7 @@ export default function LoginForm() {
           </Text>
         )}
       </View>
-      <View
+      {/* <View
         style={{
           ...styles.flexContainer,
           justifyContent: 'space-between',
@@ -127,7 +154,7 @@ export default function LoginForm() {
           Remember me
         </CheckBox>
         <Link to={''}>Forgot password?</Link>
-      </View>
+      </View> */}
       <View
         style={{
           ...styles.flexContainer,
