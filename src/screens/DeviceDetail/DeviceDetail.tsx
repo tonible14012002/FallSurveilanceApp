@@ -20,11 +20,18 @@ export default function DeviceDetailScreen() {
   const {deviceId} = route.params as {deviceId: string};
 
   const {detail} = useFetchDeviceDetail(deviceId, Boolean(deviceId));
-  console.log({deviceId});
+
   const {...spec} = detail?.specification ?? {};
 
   const handleNavigateRoomDetail = () =>
     navigate('RoomDetail', {roomId: detail?.room!});
+
+  const handleNotificationInboxPressed = () => {
+    if (!deviceId) {
+      return;
+    }
+    navigate('DeviceNotification', {deviceId});
+  };
 
   const {
     isOpenEditDeviceModal,
@@ -76,6 +83,31 @@ export default function DeviceDetailScreen() {
         appearance="ghost">
         <Icon name="trash-outline" fill="red" />
       </Button>
+      <View style={{position: 'relative'}}>
+        <Button
+          onPress={handleNotificationInboxPressed}
+          style={{
+            width: 45,
+            height: 45,
+            borderRadius: 45,
+          }}
+          status="warning"
+          appearance="ghost">
+          <Icon name="bell-outline" />
+        </Button>
+        {/* DOT Indicator */}
+        <View
+          style={{
+            position: 'absolute',
+            top: 4,
+            right: 4,
+            width: 10,
+            height: 10,
+            backgroundColor: 'red',
+            borderRadius: 5,
+          }}
+        />
+      </View>
     </View>
   );
 
