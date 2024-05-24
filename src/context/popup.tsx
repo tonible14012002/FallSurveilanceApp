@@ -8,6 +8,7 @@ import {
   useMemo,
 } from 'react';
 import {AlertPopup} from '~/components/Popups/AlertPopup';
+import {FallDetectedPopup} from '~/components/Popups/FallDetectedPopup';
 import {NotificationPopup} from '~/components/Popups/NotificationPopup';
 import {PopUpLayout} from '~/components/Popups/PopupLayout';
 import {useDisclosure} from '~/hooks/common';
@@ -15,6 +16,7 @@ import {useDisclosure} from '~/hooks/common';
 export enum POPUPS {
   NOTIFICATION = 'notification',
   ALERT = 'alert',
+  FALL_DETECTED = 'fall_detected',
 }
 
 type PopupContextValues = {
@@ -26,6 +28,9 @@ type PopupContextValues = {
 const POPUP_ELEMENTS: Record<POPUPS, ReactElement> = {
   [POPUPS.NOTIFICATION]: <NotificationPopup />,
   [POPUPS.ALERT]: <AlertPopup title="" description="" />,
+  [POPUPS.FALL_DETECTED]: (
+    <FallDetectedPopup title="" description="" image="" />
+  ),
 };
 
 const defaultPopupContextValues: PopupContextValues = {

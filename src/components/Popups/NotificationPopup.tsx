@@ -30,9 +30,11 @@ export const NotificationPopup = ({notification}: NotificationProps) => {
         </Button>
         <Button
           onPress={() => {
-            const deviceId = notification?.android?.smallIcon;
+            const deviceInfo = notification?.android?.smallIcon ?? '';
+            const [roomName, deviceId] = deviceInfo?.split(';');
+
             if (deviceId) {
-              navigate('DeviceDetail', {deviceId});
+              navigate('DeviceDetail', {roomName, deviceId});
             } else {
               navigate('Notification');
             }

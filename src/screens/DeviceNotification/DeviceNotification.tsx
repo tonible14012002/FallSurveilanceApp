@@ -2,55 +2,45 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {List, Text} from '@ui-kitten/components';
 import {TouchableOpacity} from 'react-native';
 import {NotificationItem} from '~/components/common/NotificationItem';
+import TimeAgo from '~/components/common/TimeAgo/TimeAgo';
 import ScreenLayout from '~/components/core/ScreenLayout';
 import TopBar from '~/components/core/TopBar';
 import {PAGINATION} from '~/constants/common';
 import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
-import {useFetchRoomDetail} from '~/hooks/useFetchRoomDetail';
-import {useFetchRoomNotification} from '~/hooks/useFetchRoomNotification';
-import {ROOM_AVATAR, ROOM_NOTIFICATION_CODE} from './constants';
-import {
-  InviteMemberToRoomNotificationMeta,
-  Notification,
-  RoomNotificationMeta,
-} from '~/schema/api/notification';
+import {useFetchDeviceDetail} from '~/hooks/useFetchDeviceDetail';
+import {useFetchDeviceNotification} from '~/hooks/useFetchDeviceNotification';
+import {Notification, DeviceNotificationMeta} from '~/schema/api/notification';
 import {BaseResponse} from '~/schema/common';
-import TimeAgo from '~/components/common/TimeAgo/TimeAgo';
+import {DEVICE_NOTIFICATION_CODE} from './constants';
+import {POPUPS, usePopupContext} from '~/context/popup';
+import Icon from '~/components/core/Icon';
+import {formatDate} from 'date-fns';
 
-type RoomNotificationCodeType = keyof typeof ROOM_NOTIFICATION_CODE;
+type DeviceNotificationCodeType = keyof typeof DEVICE_NOTIFICATION_CODE;
 
-export const RoomNotification = () => {
+export const DeviceNotification = () => {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
   const route = useRoute();
-  const {roomId} = route.params as {roomId: string};
+  const {deviceId} = route.params as {deviceId: string};
 
-  const {detail, isFirstLoading} = useFetchRoomDetail(roomId, true);
+  const {detail, isFirstLoading} = useFetchDeviceDetail(deviceId, !!deviceId);
+  const {showPopup} = usePopupContext();
 
-  const {notificationsCollection} = useFetchRoomNotification({
-    roomId,
-    allowFetch: !!roomId,
+  const {notificationsCollection} = useFetchDeviceNotification({
+    deviceId,
+    allowFetch: !!deviceId,
     page: 1,
     pageSize: PAGINATION.SMALL,
   });
 
   const __renderNotificationText = (
-    eventCode: RoomNotificationCodeType,
-    meta: RoomNotificationMeta,
+    eventCode: DeviceNotificationCodeType,
+    meta: DeviceNotificationMeta,
   ) => {
     let title = '';
-    let boldWords = [];
 
-    if (eventCode === ROOM_NOTIFICATION_CODE.UPDATE_ROOM_METADATA) {
-      title = 'The room updated some meta information';
-    }
-    if (eventCode === ROOM_NOTIFICATION_CODE.INVITE_MEMBER_TO_ROOM) {
-      const members = (meta as InviteMemberToRoomNotificationMeta).new_members;
-      boldWords.push(members[0].nickname);
-
-      const membersLength = members.length;
-      if (membersLength > 1) boldWords.push(`${membersLength - 1} others`);
-
-      title += ' added to the room!';
+    if (eventCode === DEVICE_NOTIFICATION_CODE.FALL_DETECTED) {
+      title = 'Human fall detected';
     }
 
     return (
@@ -59,16 +49,7 @@ export const RoomNotification = () => {
         numberOfLines={1}
         ellipsizeMode="tail"
         style={{maxWidth: 270}}>
-        <Text style={{fontWeight: '800'}}>{boldWords[0]}</Text>
-        {boldWords.length > 1 ? (
-          <>
-            <Text> and </Text>
-            <Text style={{fontWeight: '800'}}>{boldWords[1]}</Text>
-          </>
-        ) : (
-          ''
-        )}
-        {title}
+        <Text style={{fontWeight: '800'}}>{title}</Text>
       </Text>
     );
   };
@@ -76,7 +57,7 @@ export const RoomNotification = () => {
   const __renderNotificationsCollection = ({
     item,
   }: {
-    item: BaseResponse<Notification<RoomNotificationMeta>[]>;
+    item: BaseResponse<Notification<DeviceNotificationMeta>[]>;
   }) => {
     const {data} = item;
 
@@ -89,25 +70,30 @@ export const RoomNotification = () => {
 
     return (
       <List
-        key={item.pageable?.next_page}
+        key={'device-noti-' + item.pageable?.next_page}
         data={data}
         renderItem={({item: noti}) => {
-          const avatar =
-            noti.event_code === ROOM_NOTIFICATION_CODE.UPDATE_ROOM_METADATA
-              ? ROOM_AVATAR
-              : (noti.meta as InviteMemberToRoomNotificationMeta).new_members[0]
-                  .avatar;
-
           return (
             <NotificationItem
               style={{marginBottom: 5}}
               isNotSeen={!noti.is_seen}
               title={__renderNotificationText(
-                noti.event_code as RoomNotificationCodeType,
+                noti.event_code as DeviceNotificationCodeType,
                 noti.meta,
               )}
               subTitle={<TimeAgo date={noti.created_at} />}
-              avatarUrl={avatar}
+              avatarUrl={noti.meta.image}
+              onPress={() =>
+                showPopup(POPUPS.FALL_DETECTED, {
+                  icon: <Icon size="superGiant" name="alert-circle-outline" />,
+                  title: 'Fall detected',
+                  description: `Fall detected at ${formatDate(
+                    noti.created_at,
+                    'dd/MM/yyyy HH:MM',
+                  )}`,
+                  image: noti.meta.image,
+                })
+              }
             />
           );
         }}
@@ -125,7 +111,7 @@ export const RoomNotification = () => {
       hasPadding
       topBar={
         <TopBar
-          onBack={() => navigate('HouseDetail')}
+          onBack={() => navigate('DeviceDetail', {deviceId})}
           title={`${detail?.name} Notification`}
         />
       }>

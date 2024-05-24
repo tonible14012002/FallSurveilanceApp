@@ -13,18 +13,30 @@ import useDeviceUtils from './useDeviceUtils';
 import {EditDeviceModal} from './EditDeviceModal';
 import {mutate} from 'swr';
 import {API_PATH} from '~/constants/api';
+import {useVideoStreaming} from '~/libs/hooks/useVideoStreaming';
+import {RTCView} from 'react-native-webrtc';
 
 export default function DeviceDetailScreen() {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
   const route = useRoute();
-  const {deviceId} = route.params as {deviceId: string};
-
+  const {deviceId, roomName} = route.params as {
+    deviceId: string;
+    roomName: string;
+  };
   const {detail} = useFetchDeviceDetail(deviceId, Boolean(deviceId));
-  console.log({deviceId});
+  console.log({detail});
+
   const {...spec} = detail?.specification ?? {};
 
   const handleNavigateRoomDetail = () =>
     navigate('RoomDetail', {roomId: detail?.room!});
+
+  const handleNotificationInboxPressed = () => {
+    if (!deviceId) {
+      return;
+    }
+    navigate('DeviceNotification', {deviceId});
+  };
 
   const {
     isOpenEditDeviceModal,
@@ -76,8 +88,35 @@ export default function DeviceDetailScreen() {
         appearance="ghost">
         <Icon name="trash-outline" fill="red" />
       </Button>
+      <View style={{position: 'relative'}}>
+        <Button
+          onPress={handleNotificationInboxPressed}
+          style={{
+            width: 45,
+            height: 45,
+            borderRadius: 45,
+          }}
+          status="warning"
+          appearance="ghost">
+          <Icon name="bell-outline" />
+        </Button>
+        {/* DOT Indicator */}
+        <View
+          style={{
+            position: 'absolute',
+            top: 4,
+            right: 4,
+            width: 10,
+            height: 10,
+            backgroundColor: 'red',
+            borderRadius: 5,
+          }}
+        />
+      </View>
     </View>
   );
+
+  const {localStream} = useVideoStreaming();
 
   return (
     <>
@@ -101,11 +140,45 @@ export default function DeviceDetailScreen() {
           />
         }>
         <View>{__renderHouseActionsBar()}</View>
+        {/* <View style={{width: 400, height: 200, borderr}}> */}
+
+        {/* </View> */}
         <View style={{gap: 16}}>
+          {localStream && (
+            <View
+              style={{
+                marginLeft: 3,
+                borderWidth: 7,
+                borderColor: '#000',
+                padding: 0,
+                width: '98%',
+                borderRadius: 8,
+              }}>
+              <RTCView
+                streamURL={(localStream as any).toURL()}
+                style={{
+                  width: '100%',
+                  height: 200,
+                }}
+              />
+            </View>
+          )}
+
           <View style={{gap: 8}}>
             <Text category="label">Name</Text>
             {detail?.name ? (
               <Text category="s2">{detail?.name}</Text>
+            ) : (
+              <Text category="s2" appearance="hint">
+                - Empty
+              </Text>
+            )}
+          </View>
+
+          <View style={{gap: 8}}>
+            <Text category="label">Room</Text>
+            {detail?.room ? (
+              <Text category="s2">{roomName ?? ''}</Text>
             ) : (
               <Text category="s2" appearance="hint">
                 - Empty

@@ -79,12 +79,20 @@ export default function PrivateNotification() {
     item: BaseResponse<Notification<PrivateNotificationMeta>[]>;
   }) => {
     const {data} = item;
+
+    if (!!!data.length)
+      return (
+        <Text style={{textAlign: 'center', marginTop: 20}}>
+          No notifications found!
+        </Text>
+      );
+
     return (
       <List
         key={item.pageable?.next_page}
         data={data}
         renderItem={({item: noti}) => {
-          const avatar = noti.meta.invitor.avatar;
+          const avatar = noti.meta.invitor?.avatar ?? '';
           return (
             <NotificationItem
               style={{marginBottom: 5}}

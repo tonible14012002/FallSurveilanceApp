@@ -1,5 +1,5 @@
-import {useRoute} from '@react-navigation/native';
-import {useEffect, useState} from 'react';
+import {useRoute, useNavigation} from '@react-navigation/native';
+import {useEffect, useState, useRef} from 'react';
 import {RTCPeerConnection, RTCSessionDescription} from 'react-native-webrtc';
 import {io} from 'socket.io-client';
 
@@ -11,62 +11,71 @@ export function useVideoStreaming() {
   const [localStream, setLocalStream] = useState(null);
 
   const route = useRoute();
-  const {roomId} = route.params as {roomId: string};
+  const {deviceId} = route.params as {deviceId: string};
 
-  const socket = io('https://signaling-server-pfm2.onrender.com/', {
-    transports: ['websocket'],
-  });
-
-  let pc: RTCPeerConnection;
+  const socketRef = useRef(
+    io('https://signaling-server-pfm2.onrender.com/', {
+      transports: ['websocket'],
+    }),
+  );
+  const pcRef = useRef<RTCPeerConnection>();
 
   const signalingDataHandler = (data: any) => {
     if (data.type === 'answer') {
-      console.log('pc.signalingState: ', pc.signalingState);
-      if (pc.signalingState === 'have-local-offer') {
+      console.log('pc.signalingState: ', pcRef.current?.signalingState);
+      if (pcRef.current?.signalingState === 'have-local-offer') {
         const rtc_data = {
-          type: data['type'],
-          sdp: data['sdp'],
+          type: data.type,
+          sdp: data.sdp,
         };
-        pc.setRemoteDescription(new RTCSessionDescription(rtc_data)).catch(
-          error => console.error('Error setting remote description: ', error),
-        );
+        pcRef.current
+          ?.setRemoteDescription(new RTCSessionDescription(rtc_data))
+          .catch(error =>
+            console.error('Error setting remote description: ', error),
+          );
       } else {
         console.log(
           'Cannot handle answer in current state: ',
-          pc.signalingState,
+          pcRef.current?.signalingState,
         );
       }
     }
   };
 
   function negotiate() {
-    pc.addTransceiver('video', {direction: 'recvonly'});
-    pc.addTransceiver('audio', {direction: 'recvonly'});
-    return pc
-      .createOffer({})
+    pcRef.current?.addTransceiver('video', {direction: 'recvonly'});
+    pcRef.current?.addTransceiver('audio', {direction: 'recvonly'});
+    return pcRef.current
+      ?.createOffer({})
       .then(offer => {
-        return pc.setLocalDescription(offer);
+        return pcRef.current?.setLocalDescription(offer);
       })
       .then(() => {
         // wait for ICE gathering to complete
         return new Promise(resolve => {
-          if (pc.iceGatheringState === 'complete') {
+          if (pcRef.current?.iceGatheringState === 'complete') {
             resolve(true);
           } else {
             const checkState = () => {
-              if (pc.iceGatheringState === 'complete') {
-                pc.removeEventListener('icegatheringstatechange', checkState);
+              if (pcRef.current?.iceGatheringState === 'complete') {
+                pcRef.current?.removeEventListener(
+                  'icegatheringstatechange',
+                  checkState,
+                );
                 resolve(true);
               }
             };
-            pc.addEventListener('icegatheringstatechange', checkState);
+            pcRef.current?.addEventListener(
+              'icegatheringstatechange',
+              checkState,
+            );
           }
         });
       })
       .then(() => {
-        const offer = pc.localDescription as any;
+        const offer = pcRef.current?.localDescription as RTCSessionDescription;
         // send the offer to the signaling server
-        socket.emit('offer', {
+        socketRef.current.emit('offer', {
           sdp: offer.sdp,
           type: offer.type,
           username: user.username,
@@ -93,9 +102,9 @@ export function useVideoStreaming() {
       },
     ];
 
-    pc = new RTCPeerConnection(config);
+    pcRef.current = new RTCPeerConnection(config);
 
-    pc.addEventListener('track', (evt: any) => {
+    pcRef.current.addEventListener('track', (evt: any) => {
       if (evt.track.kind === 'video') {
         console.log('hello, ', evt.streams[0]);
         setLocalStream(evt.streams[0]);
@@ -108,10 +117,13 @@ export function useVideoStreaming() {
   const [isConnected, setIsConnected] = useState(false);
   const [transport, setTransport] = useState('N/A');
 
+  const disconnect = () => {};
+
   useEffect(() => {
-    if (socket.connected) {
-      onConnect();
-    }
+    if (!deviceId) return;
+
+    const socket = socketRef.current;
+    const pc = pcRef.current;
 
     function onConnect() {
       setIsConnected(true);
@@ -128,6 +140,10 @@ export function useVideoStreaming() {
       setTransport('N/A');
     }
 
+    if (socket.active) {
+      onConnect();
+    }
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
 
@@ -138,17 +154,8 @@ export function useVideoStreaming() {
 
     socket.on('answer', data => {
       console.log('Answer received');
-
       signalingDataHandler(data);
     });
-
-    // socket.on('connect_error', error => {
-    //   console.error('Connection error: ', error);
-    // });
-
-    // socket.on('error', error => {
-    //   console.error('An error occurred: ', error);
-    // });
 
     return () => {
       socket.off('connect', onConnect);
@@ -156,12 +163,12 @@ export function useVideoStreaming() {
       socket.off('offer');
       socket.off('answer');
       onDisconnect();
-      // socket.off('connect_error');
-      // socket.off('error');
-
-      pc?.close();
+      socket.disconnect(); // Manually disconnect the socket
+      pc?.close(); // Manually close the RTCPeerConnection
+      socketRef.current.disconnect();
+      pcRef.current?.close();
     };
-  }, [roomId]);
+  }, [deviceId]);
 
   return {localStream};
 }
