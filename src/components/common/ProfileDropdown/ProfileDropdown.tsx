@@ -31,6 +31,7 @@ export const ProfileDropdown = (props: ProfileDropdownProps) => {
       <Layout>
         <ListItem
           size="small"
+          level="1"
           leftIcon={
             <Avatar
               size="large"

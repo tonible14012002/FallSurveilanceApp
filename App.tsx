@@ -4,8 +4,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import {ApplicationProvider, IconRegistry} from '@ui-kitten/components';
 import {EvaIconsPack} from '@ui-kitten/eva-icons';
 import React from 'react';
-import {View} from 'react-native';
 import 'react-native-gesture-handler';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {HouseDetailContextProvider} from '~/components/HouseDetail';
 import AuthGuard from '~/components/auth/AuthGuard';
 import BottomTabBar from '~/components/core/BottomTabBar';
@@ -70,7 +70,7 @@ const PrivateScreens = () => {
 
 function App() {
   return (
-    <View style={{flex: 1}}>
+    <GestureHandlerRootView style={{flex: 1}}>
       <ToastUtils />
       <ApplicationProvider {...eva} theme={eva.light}>
         <IconRegistry icons={EvaIconsPack} />
@@ -96,7 +96,7 @@ function App() {
           </PopupProvider>
         </NavigationContainer>
       </ApplicationProvider>
-    </View>
+    </GestureHandlerRootView>
   );
 }
 

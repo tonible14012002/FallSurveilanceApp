@@ -1,7 +1,8 @@
 import {useNavigation} from '@react-navigation/native';
+import {useTheme} from '@ui-kitten/components';
 import {Button, Text} from '@ui-kitten/components';
 import {Avatar} from '~/components/core/v2/Avatar';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {Pressable, View} from 'react-native';
 import {RoomsList, useHouseDetailContext} from '~/components/HouseDetail';
 import {EditHouseModal} from '~/components/HouseDetail/EditHouseModal';
@@ -19,7 +20,10 @@ import {HOUSE_PERMISSIONS} from '~/constants/permissions';
 import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
 import {useAuthContext} from '~/context/auth';
 import {useDisclosure} from '~/hooks/common';
-import {useFetchHouseDetail} from '~/hooks/useFetchHouseDetail';
+import {
+  useFetchHouseDetail,
+  useMutateHouseDetail,
+} from '~/hooks/useFetchHouseDetail';
 import {useFetchJoinedHouses} from '~/hooks/useFetchJoinedHouses';
 import {useSearchUsers} from '~/hooks/useSearchUsers';
 import {useDebounce} from '~/libs/hooks/useDebounce';
@@ -29,8 +33,11 @@ import {API, API_PATH} from '~/constants/api';
 import {err} from 'react-native-svg';
 import {BaseResponse} from '~/schema/common';
 import {getUserFullName} from '~/utils/user';
+import {EditableText} from '~/components/core/EditableText';
+import {IconButton} from '~/components/core/IconButton';
 
 export default function HouseDetailScreen() {
+  const theme = useTheme();
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
   const {user} = useAuthContext();
 
@@ -76,6 +83,8 @@ export default function HouseDetailScreen() {
     },
   );
   const {detail} = useFetchHouseDetail(houseId, Boolean(houseId));
+
+  const mutateHouseDetail = useMutateHouseDetail(houseId ?? '');
   const {houses} = useFetchJoinedHouses(!houseId || isOpenHousesSelect);
 
   const rooms = detail?.rooms ?? [];
@@ -86,6 +95,27 @@ export default function HouseDetailScreen() {
     detail?.house_permissions.includes(HOUSE_PERMISSIONS.INVITE_HOUSE_MEMBER),
   );
   const isAllowAddRoom = isAllowEdit;
+
+  const handleUpdateHouseName = useCallback(
+    async (value: string) => {
+      if (!detail || value.length < 3) {
+        return;
+      }
+      const newHouseValue = {...detail, name: value};
+      mutateHouseDetail(newHouseValue, false); // update cache only
+      console.log('newHouseValue', value);
+      try {
+        await API.FALL_SURVEILANCE.patch(
+          {
+            name: value,
+          },
+          API_PATH.HOUSE_SERVICES.HOUSE_DETAIL(detail?.id as string),
+        ).json<BaseResponse<any>>(r => r);
+      } catch (e) {}
+      mutateHouseDetail(newHouseValue);
+    },
+    [detail, mutateHouseDetail],
+  );
 
   const onDelete = async () => {
     try {
@@ -115,56 +145,36 @@ export default function HouseDetailScreen() {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        gap: 5,
-        marginBottom: 15,
+        gap: 16,
       }}>
-      <Button
+      <IconButton
+        icon={<Icon size="medium" name="trash-outline" />}
         onPress={onOpenConfirmationModal}
+        width={42}
+        height={42}
         style={{
-          width: 45,
-          height: 45,
-          borderRadius: 45,
+          backgroundColor: theme['color-basic-200'],
         }}
-        appearance="ghost">
-        <Icon name="trash-outline" fill="red" />
-      </Button>
-
-      <Button
+      />
+      <IconButton
+        icon={<Icon size="medium" name="edit-outline" />}
         onPress={isAllowEdit ? onOpenHouseEdit : undefined}
+        width={42}
+        height={42}
         style={{
-          width: 45,
-          height: 45,
-          borderRadius: 45,
-          opacity: isAllowEdit ? 1 : 0.3,
+          backgroundColor: theme['color-basic-200'],
         }}
-        status="warning"
-        appearance="ghost">
-        <Icon name="edit-outline" />
-      </Button>
-
-      <Button
-        onPress={isAllowAddMembers ? handleNavigateAddMembers : undefined}
-        style={{
-          width: 45,
-          height: 45,
-          borderRadius: 45,
-          opacity: isAllowAddMembers ? 1 : 0.3,
-        }}
-        appearance="ghost">
-        <Icon name="person-add-outline" />
-      </Button>
+      />
       <View style={{position: 'relative'}}>
-        <Button
+        <IconButton
+          icon={<Icon size="medium" name="bell-outline" />}
           onPress={handleNotificationInboxPressed}
+          width={42}
+          height={42}
           style={{
-            width: 45,
-            height: 45,
-            borderRadius: 45,
+            backgroundColor: theme['color-basic-200'],
           }}
-          status="warning"
-          appearance="ghost">
-          <Icon name="bell-outline" />
-        </Button>
+        />
         {/* DOT Indicator */}
         <View
           style={{
@@ -229,9 +239,31 @@ export default function HouseDetailScreen() {
             flexDirection: 'row',
             alignItems: 'flex-start',
           }}>
-          <View style={{gap: 4}}>
-            <Text category="s1">Welcome Back!</Text>
-            <Text category="h4">{user?.nickname}</Text>
+          <View style={{gap: 8}}>
+            <Text category="s1" style={{opacity: 0.7}}>
+              Welcome Back!
+            </Text>
+            <View style={{position: 'relative'}}>
+              <View
+                style={{
+                  position: 'absolute',
+                  top: -4,
+                  right: -8,
+                }}>
+                <Icon size="tiny" name="edit-outline" />
+              </View>
+              <EditableText
+                style={{
+                  fontWeight: 'bold',
+                  color: 'black',
+                  fontSize: 28,
+                }}
+                value={detail?.name}
+                onUpdate={value => {
+                  handleUpdateHouseName(value);
+                }}
+              />
+            </View>
           </View>
           <View>{__renderHouseActionsBar()}</View>
         </View>
@@ -241,6 +273,7 @@ export default function HouseDetailScreen() {
           title={<Text category="label">Members</Text>}
           detailNavigator={
             <Button
+              onPress={isAllowAddMembers ? handleNavigateAddMembers : undefined}
               style={{
                 borderRadius: 1000,
                 width: 35,
@@ -248,7 +281,7 @@ export default function HouseDetailScreen() {
               }}
               appearance="ghost"
               status="basic">
-              <Icon name="chevron-right-outline" />
+              <Icon name="plus" />
             </Button>
           }>
           {members.map(mem => (

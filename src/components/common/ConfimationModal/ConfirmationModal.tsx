@@ -1,10 +1,5 @@
-import {Button, Input, Modal, Text} from '@ui-kitten/components';
-import {useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {UserPicker} from '~/components/UserPicker';
-import Icon from '~/components/core/Icon';
-import {BasicUser, User} from '~/schema/api/identity';
-import {BaseResponse} from '~/schema/common';
+import {Button, Modal, Text} from '@ui-kitten/components';
+import {Dimensions, StyleSheet, View} from 'react-native';
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -26,14 +21,11 @@ export function ConfirmationModal({
   return (
     <Modal visible={isOpen} onBackdropPress={onCancel}>
       <View style={styles.wrapper}>
-        <Text category="h5" style={{textAlign: 'center', marginBottom: 15}}>
+        <Text category="h6" style={{textAlign: 'center'}}>
           {title}
         </Text>
-
         {description && (
-          <Text style={{textAlign: 'center', marginBottom: 15}}>
-            {description}
-          </Text>
+          <Text style={{textAlign: 'center'}}>{description}</Text>
         )}
 
         <View style={{flexDirection: 'row', gap: 10, flex: 1, marginTop: 40}}>
@@ -56,11 +48,12 @@ export function ConfirmationModal({
 const styles = StyleSheet.create({
   wrapper: {
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 16,
+    elevation: 8,
     borderColor: 'lightgray',
-    width: 365,
-    paddingVertical: 25,
-    paddingHorizontal: 20,
+    width: Dimensions.get('screen').width - 32,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
     backgroundColor: 'white',
   },
 });

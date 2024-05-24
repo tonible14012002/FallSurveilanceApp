@@ -1,4 +1,4 @@
-import {Button, Layout, List, Text} from '@ui-kitten/components';
+import {Layout, List, Text} from '@ui-kitten/components';
 import {Avatar} from '~/components/core/v2/Avatar';
 import Icon from '~/components/core/Icon';
 import {Dimensions, StyleSheet, View} from 'react-native';
@@ -17,6 +17,7 @@ import {GetJoinedHousesResponse} from '~/schema/api/house';
 import {useAuthContext} from '~/context/auth';
 import {Skeleton} from '~/components/core/Skeleton';
 import {getUserFullName} from '~/utils/user';
+import TabItem from '~/components/core/TabItem';
 
 export default function Home() {
   const navigation = useNavigation<PrivateScreenWithBottomBarProps>();
@@ -53,7 +54,7 @@ export default function Home() {
         <ListItem
           onPressHandler={() => onHomeItemPress(`${detail.id}`)}
           wrapperStyle={{
-            borderRadius: 24,
+            borderRadius: 28,
           }}
           size="large"
           leftIcon={<Icon name="home" />}
@@ -62,7 +63,7 @@ export default function Home() {
             <Layout
               level="1"
               style={{
-                borderRadius: 1000,
+                borderRadius: 990,
                 padding: 10,
               }}>
               <Icon name="chevron-right-outline" />
@@ -87,6 +88,8 @@ export default function Home() {
     },
     [onHomeItemPress],
   );
+
+  const hasSomeHouse = Boolean(owned_houses?.length || joined_houses?.length);
 
   const renderScreenLayout = (child: ReactNode) => (
     <ScreenLayout
@@ -115,7 +118,7 @@ export default function Home() {
           }
         />
       }
-      floatEl={<FloatButton pressHandler={onAddButtonPress} />}
+      floatEl={hasSomeHouse && <FloatButton pressHandler={onAddButtonPress} />}
       hasPadding
       isScrollable>
       {child}
@@ -146,18 +149,17 @@ export default function Home() {
 
   return renderScreenLayout(
     <>
-      {owned_houses === undefined && joined_houses === undefined && (
-        <View style={{gap: 32}}>
+      {!hasSomeHouse && (
+        <View style={{gap: 24}}>
           <Text style={{fontSize: 16, fontWeight: '700'}}>
             Oops! You haven't joined any houses.
           </Text>
-          <Button
-            appearance="outline"
-            status="basic"
-            size="large"
-            onPress={onAddButtonPress}>
-            Setup your first house
-          </Button>
+          <TabItem
+            icon={<Icon name="home" />}
+            containerStyle={{width: 140}}
+            onPressHandler={onAddButtonPress}
+            title="Setup A House"
+          />
         </View>
       )}
       {(owned_houses?.length ?? 0) !== 0 && (
