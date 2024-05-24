@@ -59,6 +59,6 @@ export default function ScreenLayout(props: ScreenLayoutProps) {
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    height: '100%',
+    flex: 1,
   },
 });

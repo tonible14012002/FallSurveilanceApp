@@ -8,7 +8,7 @@ export function useFetchWithCache<Data = any, Error = any>(
   config?: SWRConfiguration<Data, Error>,
 ) {
   const {data, error, ...rest} = useSWR<Data, Error>(key, fn, config);
-  const [internalData, setInternalData] = useState<Data>();
+  const [internalData, setInternalData] = useState<Data | undefined>(data);
 
   const isFirstLoading = !internalData && !error;
   const loading = !data && !error;

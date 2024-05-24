@@ -35,7 +35,7 @@ export const DeviceNotification = () => {
 
   const __renderNotificationText = (
     eventCode: DeviceNotificationCodeType,
-    meta: DeviceNotificationMeta,
+    _: DeviceNotificationMeta,
   ) => {
     let title = '';
 
@@ -61,12 +61,13 @@ export const DeviceNotification = () => {
   }) => {
     const {data} = item;
 
-    if (!!!data.length)
+    if (!data.length) {
       return (
         <Text style={{textAlign: 'center', marginTop: 20}}>
           No notifications found!
         </Text>
       );
+    }
 
     return (
       <List
@@ -116,10 +117,7 @@ export const DeviceNotification = () => {
         />
       }>
       <TouchableOpacity style={{alignItems: 'flex-end'}}>
-        <Text
-          category="s2"
-          status="primary"
-          style={{textDecorationLine: 'underline'}}>
+        <Text category="s2" status="primary">
           Mark all as read
         </Text>
       </TouchableOpacity>

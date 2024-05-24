@@ -20,7 +20,9 @@ export function useNotificationListener() {
 
     messaging().onMessage(
       async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
-        if (!remoteMessage?.notification) return;
+        if (!remoteMessage?.notification) {
+          return;
+        }
 
         showPopup(POPUPS.NOTIFICATION, {
           notification: {
@@ -49,5 +51,6 @@ export function useNotificationListener() {
     return () => {
       unsubscribe();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }

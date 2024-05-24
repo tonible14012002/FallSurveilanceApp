@@ -1,4 +1,4 @@
-import {useRoute, useNavigation} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 import {useEffect, useState, useRef} from 'react';
 import {RTCPeerConnection, RTCSessionDescription} from 'react-native-webrtc';
 import {io} from 'socket.io-client';
@@ -120,7 +120,9 @@ export function useVideoStreaming() {
   const disconnect = () => {};
 
   useEffect(() => {
-    if (!deviceId) return;
+    if (!deviceId) {
+      return;
+    }
 
     const socket = socketRef.current;
     const pc = pcRef.current;

@@ -1,9 +1,12 @@
-import {Layout, List, Avatar, Text} from '@ui-kitten/components';
+import {Layout, List, Text} from '@ui-kitten/components';
+import {Avatar} from './core/v2/Avatar';
 import {Pressable, StyleProp, View, ViewStyle} from 'react-native';
 import Icon from '~/components/core/Icon';
 import ListItem from '~/components/core/ListItem';
 import {BasicUser, User} from '~/schema/api/identity';
 import {BaseResponse} from '~/schema/common';
+import {getUserFullName} from '~/utils/user';
+import {Skeleton} from './core/Skeleton';
 
 export interface UserPickerProps {
   selectedUsers?: BasicUser[];
@@ -27,6 +30,7 @@ export const UserPicker = (props: UserPickerProps) => {
     previewStyle,
     wrapperStyle,
     enableScroll = true,
+    loading,
   } = props;
 
   const onUserItemPress = (user: BasicUser, included?: boolean) => {
@@ -39,6 +43,38 @@ export const UserPicker = (props: UserPickerProps) => {
     }
   };
 
+  if (loading) {
+    return (
+      <Layout style={[{gap: 16, flex: 1}, wrapperStyle]} level="1">
+        <List
+          style={[
+            {
+              backgroundColor: 'transparent',
+              flexGrow: 0,
+              paddingTop: 8,
+              marginBottom: 16,
+            },
+            previewStyle,
+          ]}
+          scrollEnabled
+          showsHorizontalScrollIndicator={false}
+          data={new Array(5).fill(null)}
+          renderItem={_props => (
+            <View
+              style={{
+                width: '100%',
+                gap: 16,
+                flexDirection: 'row',
+                marginVertical: 8,
+              }}>
+              <Skeleton width={50} height={50} radius={900} />
+              <Skeleton width={70} height={50} style={{flex: 1}} radius={16} />
+            </View>
+          )}
+        />
+      </Layout>
+    );
+  }
   const renderUserCollection = ({item}: {item: BaseResponse<BasicUser[]>}) => {
     const {data} = item;
     return (
@@ -65,6 +101,7 @@ export const UserPicker = (props: UserPickerProps) => {
               isRightIcon
               leftIcon={
                 <Avatar
+                  label={getUserFullName(user)}
                   source={{
                     uri: user.avatar,
                   }}
@@ -101,7 +138,11 @@ export const UserPicker = (props: UserPickerProps) => {
               key={user.id}>
               <View style={{alignItems: 'center', paddingHorizontal: 8}}>
                 <View style={{position: 'relative'}}>
-                  <Avatar size="large" source={{uri: user.avatar}} />
+                  <Avatar
+                    size="large"
+                    source={{uri: user.avatar}}
+                    label={getUserFullName(user)}
+                  />
                   <View
                     style={{
                       position: 'absolute',

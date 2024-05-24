@@ -3,11 +3,13 @@ import messaging from '@react-native-firebase/messaging';
 import {PermissionsAndroid, Platform} from 'react-native';
 
 export async function requestUserPermission() {
-  if (Platform.OS == 'android')
+  if (Platform.OS === 'android') {
     await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
     );
-  else await messaging().requestPermission();
+  } else {
+    await messaging().requestPermission();
+  }
 
   return await getToken();
 }

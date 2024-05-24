@@ -1,6 +1,6 @@
 import {Layout, Popover, Text} from '@ui-kitten/components';
-import React, {ReactNode, useRef} from 'react';
-import {Dimensions, StyleSheet, View} from 'react-native';
+import React, {ReactNode} from 'react';
+import {Dimensions, StyleSheet} from 'react-native';
 
 type PopupLayoutProps = {
   children: ReactNode;
@@ -14,7 +14,9 @@ export const PopUpLayout = (props: PopupLayoutProps) => {
   const {children, isOpen, onClose} = props;
   const renderTrigger = () => <Text />;
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <Layout style={styles.wrapper}>

@@ -6,6 +6,7 @@ import {
   ReactElement,
   ReactNode,
   useMemo,
+  useCallback,
 } from 'react';
 import {AlertPopup} from '~/components/Popups/AlertPopup';
 import {FallDetectedPopup} from '~/components/Popups/FallDetectedPopup';
@@ -45,20 +46,26 @@ const PopupProvider = ({children}: {children: ReactNode}) => {
   const {isOpen, onOpen, onClose} = useDisclosure();
   const [component, setComponent] = useState<ReactElement | null>(null);
 
-  const showPopup = (name: POPUPS, props = {}) => {
-    onOpen();
-    setComponent(cloneElement(POPUP_ELEMENTS[name], props));
-  };
+  const showPopup = useCallback(
+    (name: POPUPS, props = {}) => {
+      onOpen();
+      setComponent(cloneElement(POPUP_ELEMENTS[name], props));
+    },
+    [onOpen],
+  );
 
-  const showPopupComponent = (element: ReactElement) => {
-    onOpen();
-    setComponent(element);
-  };
+  const showPopupComponent = useCallback(
+    (element: ReactElement) => {
+      onOpen();
+      setComponent(element);
+    },
+    [onOpen],
+  );
 
-  const closePopup = () => {
+  const closePopup = useCallback(() => {
     onClose();
     setComponent(null);
-  };
+  }, [onClose]);
 
   const value: PopupContextValues = useMemo(
     () => ({
@@ -66,7 +73,7 @@ const PopupProvider = ({children}: {children: ReactNode}) => {
       showPopupComponent,
       closePopup,
     }),
-    [],
+    [closePopup, showPopup, showPopupComponent],
   );
 
   return (

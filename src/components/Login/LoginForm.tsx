@@ -1,5 +1,5 @@
 import {Link, useNavigation} from '@react-navigation/native';
-import {Button, CheckBox, Input, Text} from '@ui-kitten/components';
+import {Button, Input, Text} from '@ui-kitten/components';
 import {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {StyleSheet, View} from 'react-native';
@@ -12,24 +12,21 @@ import {useAuthContext} from '~/context/auth';
 import jwtManager from '~/libs/jwt/jwtManager';
 import {PublicScreenProps} from '~/constants/routes';
 import {requestUserPermission} from '~/libs/notification';
-import {POPUPS, usePopupContext} from '~/context/popup';
-import Icon from '../core/Icon';
 import {formatFieldErrorMessage} from '~/libs/utils';
+import {showToast} from '~/libs/toast';
+import {ToastColorEnum} from '../ToastMessage/ToastColorEnum';
 
 export default function LoginForm() {
   const [isLoading, setIsloading] = useState(false);
 
   const {setUser} = useAuthContext();
-  const {showPopup} = usePopupContext();
   const navigation = useNavigation<PublicScreenProps>();
   const {renderIcon} = useRenderIcon();
   const {
     handleSubmit,
     control,
     formState: {errors},
-  } = useForm<LoginFormSchemaType>({
-    // resolver: zodResolver(LoginFormSchema),
-  });
+  } = useForm<LoginFormSchemaType>({});
   const onSubmit = async (data: any) => {
     try {
       setIsloading(true);
@@ -40,6 +37,7 @@ export default function LoginForm() {
 
       const {user, access, refresh} = resp.data;
       setUser(user);
+      showToast('Login Succeed', ToastColorEnum.Succes);
       jwtManager.setToken(access);
       jwtManager.setRefreshToken(refresh);
       navigation.navigate('Private');
@@ -55,27 +53,16 @@ export default function LoginForm() {
         ).json<BaseResponse<any>>(r => r);
       }
     } catch (e: any) {
-      if (e?.response.status == 400 && e?.json.data) {
-        showPopup(POPUPS.ALERT, {
-          icon: <Icon size="superGiant" name="alert-circle-outline" />,
-          title: 'Invalid information!',
-          description: formatFieldErrorMessage(e?.json.data ?? {}),
-        });
+      if (e?.response?.status === '400' && e?.json.data) {
+        showToast(
+          `Invalid information\n${formatFieldErrorMessage(e?.json.data ?? {})}`,
+          ToastColorEnum.Error,
+        );
         return;
       }
 
-      if (e?.response.status == 401) {
-        showPopup(POPUPS.ALERT, {
-          icon: (
-            <Icon
-              size="superGiant"
-              name="alert-circle-outline"
-              fill="#E72929"
-            />
-          ),
-          title: 'Invalid credentials!',
-          description: 'Please provide valid account credentials',
-        });
+      if (e?.response.status === 401) {
+        showToast('Invalid credentials', ToastColorEnum.Error);
         return;
       }
 
@@ -97,15 +84,10 @@ export default function LoginForm() {
               }}
               accessoryLeft={renderIcon('person-outline')}
               size="large"
-              status="control"
               placeholder="Username"
               onBlur={onBlur}
               onChangeText={val => onChange(val)}
               value={value}
-              textStyle={{
-                color: '#000',
-              }}
-              placeholderTextColor={'rgba(0,0,0,0.5)'}
             />
           )}
           name="username"
@@ -124,17 +106,12 @@ export default function LoginForm() {
               style={{
                 width: '100%',
               }}
-              status="control"
               accessoryLeft={renderIcon('lock')}
               size="large"
               placeholder="Password"
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
-              textStyle={{
-                color: '#000',
-              }}
-              placeholderTextColor={'rgba(0,0,0,0.5)'}
             />
           )}
           name="password"
@@ -145,16 +122,6 @@ export default function LoginForm() {
           </Text>
         )}
       </View>
-      {/* <View
-        style={{
-          ...styles.flexContainer,
-          justifyContent: 'space-between',
-        }}>
-        <CheckBox checked={rememberMe} onChange={value => setRememberMe(value)}>
-          Remember me
-        </CheckBox>
-        <Link to={''}>Forgot password?</Link>
-      </View> */}
       <View
         style={{
           ...styles.flexContainer,

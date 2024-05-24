@@ -50,7 +50,6 @@ export default function Avatar(props: AvatarProps) {
         )}
         {text}
       </View>
-      <TouchableOpacity></TouchableOpacity>
     </Wrapper>
   );
 }

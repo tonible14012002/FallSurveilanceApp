@@ -1,5 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
-import {Avatar, Button, Text} from '@ui-kitten/components';
+import {Button, Text} from '@ui-kitten/components';
+import {Avatar} from '~/components/core/v2/Avatar';
 import {Pressable, View} from 'react-native';
 import {mutate} from 'swr';
 import {DevicesList} from '~/components/HouseDetail';
@@ -18,6 +19,7 @@ import {boringAvatar} from '~/libs/utils';
 import {BaseResponse} from '~/schema/common';
 import useFetchRoomData from './useFetchRoomData';
 import useModalsDisclosure from './useModalsDisclosure';
+import {getUserFullName} from '~/utils/user';
 
 export default function RoomDetailScreen() {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
@@ -212,6 +214,7 @@ export default function RoomDetailScreen() {
         }>
         {(roomDetail?.members ?? []).map(mem => (
           <Avatar
+            label={getUserFullName(user)}
             key={mem.id}
             source={{
               uri: mem.avatar,

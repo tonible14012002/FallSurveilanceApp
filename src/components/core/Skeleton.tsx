@@ -1,40 +1,35 @@
-import {Layout} from '@ui-kitten/components';
+import {useTheme} from '@ui-kitten/components';
 import {useEffect, useRef} from 'react';
 import {Animated, StyleProp, ViewStyle} from 'react-native';
+import {CreatePulseAnimation} from '~/utils/animation';
 
 interface SkeletonProps {
   width?: number;
   height?: number;
   style?: StyleProp<ViewStyle>;
+  radius?: number;
 }
 
 export const Skeleton = (props: SkeletonProps) => {
-  const {width, height, style} = props;
-  const opacity = useRef(new Animated.Value(0.4));
+  const {width, height, style, radius} = props;
+  const theme = useTheme();
+  const opacity = useRef(new Animated.Value(0.5)).current;
   useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(opacity.current, {
-          toValue: 0.8,
-          useNativeDriver: true,
-          duration: 500,
-        }),
-        Animated.timing(opacity.current, {
-          toValue: 0.4,
-          useNativeDriver: true,
-          duration: 500,
-        }),
-      ]),
-    );
+    CreatePulseAnimation(opacity, 0.5, 1).start();
   }, [opacity]);
 
   return (
     <Animated.View
       style={[
-        {opacity: opacity.current, height, width, borderRadius: 24},
+        {
+          opacity: opacity,
+          height,
+          width,
+          borderRadius: radius ?? 8,
+          backgroundColor: theme['color-basic-400'],
+        },
         style,
-      ]}>
-      <Layout />
-    </Animated.View>
+      ]}
+    />
   );
 };

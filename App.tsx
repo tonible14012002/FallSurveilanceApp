@@ -4,6 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {ApplicationProvider, IconRegistry} from '@ui-kitten/components';
 import {EvaIconsPack} from '@ui-kitten/eva-icons';
 import React from 'react';
+import {View} from 'react-native';
 import 'react-native-gesture-handler';
 import {HouseDetailContextProvider} from '~/components/HouseDetail';
 import AuthGuard from '~/components/auth/AuthGuard';
@@ -15,6 +16,7 @@ import {
 } from '~/constants/routes';
 import {AuthProvider} from '~/context/auth';
 import PopupProvider from '~/context/popup';
+import ToastUtils, {includeToast} from '~/context/toast';
 import {
   PrivateNavigator,
   PrivateScreen,
@@ -26,12 +28,12 @@ import {
 
 const PrivateTabScreens = () => {
   return (
-    <PrivateTabNavigator tabBar={BottomTabBar}>
+    <PrivateTabNavigator tabBar={BottomTabBar} initialRouteName="Home">
       {privateTabRoutes.map(route => (
         <PrivateTabScreen
           key={route.name}
           name={route.name}
-          component={route.screen}
+          component={includeToast(route.screen)} // TODO: Fix toast cannot be displayed if specify on context layer
           options={route?.options}
         />
       ))}
@@ -44,7 +46,7 @@ const PrivateScreens = () => {
     <AuthProvider>
       <AuthGuard>
         <HouseDetailContextProvider>
-          <PrivateNavigator>
+          <PrivateNavigator initialRouteName="Main">
             <PrivateScreen
               key="Main"
               name="Main"
@@ -68,29 +70,33 @@ const PrivateScreens = () => {
 
 function App() {
   return (
-    <ApplicationProvider {...eva} theme={eva.light}>
-      <IconRegistry icons={EvaIconsPack} />
-      <NavigationContainer>
-        <PopupProvider>
-          <PublicNavigator>
-            {publicRoutes.map(route => (
+    <View style={{flex: 1}}>
+      <ToastUtils />
+      <ApplicationProvider {...eva} theme={eva.light}>
+        <IconRegistry icons={EvaIconsPack} />
+        <NavigationContainer>
+          <PopupProvider>
+            <ToastUtils />
+            <PublicNavigator initialRouteName="Private">
+              {publicRoutes.map(route => (
+                <PublicScreen
+                  key={route.name}
+                  name={route.name}
+                  component={route.screen} // TODO: Fix toast cannot be displayed if specify on context layer
+                  options={route?.options}
+                />
+              ))}
               <PublicScreen
-                key={route.name}
-                name={route.name}
-                component={route.screen}
-                options={route?.options}
+                key="Private"
+                name="Private"
+                component={PrivateScreens}
+                options={{headerShown: false}}
               />
-            ))}
-            <PublicScreen
-              key="Private"
-              name="Private"
-              component={PrivateScreens}
-              options={{headerShown: false}}
-            />
-          </PublicNavigator>
-        </PopupProvider>
-      </NavigationContainer>
-    </ApplicationProvider>
+            </PublicNavigator>
+          </PopupProvider>
+        </NavigationContainer>
+      </ApplicationProvider>
+    </View>
   );
 }
 

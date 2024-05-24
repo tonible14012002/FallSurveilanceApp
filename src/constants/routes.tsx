@@ -48,6 +48,8 @@ export type PrivateRouteParamList = {
   HouseNotification: {houseId: string};
   RoomNotification: {roomId: string};
   DeviceNotification: {deviceId: string};
+  RoomDetail: {roomId: string};
+  DeviceDetail: {deviceId: string; roomName?: string};
 };
 
 // NOTE: add private screen for Bottom Tab here
@@ -56,8 +58,6 @@ export type PrivateBottomRouteParamList = {
   Notification: undefined;
   Account: undefined;
   HouseDetail: undefined;
-  RoomDetail: {roomId: string};
-  DeviceDetail: {deviceId: string; roomName: string};
 };
 
 export type PublicScreenProps<
@@ -172,6 +172,20 @@ const privateRoutes: PrivateRouteItem[] = [
       headerShown: false,
     },
   },
+  {
+    screen: RoomDetailScreen,
+    name: 'RoomDetail',
+    options: {
+      headerShown: false,
+    },
+  },
+  {
+    screen: DeviceDetailScreen,
+    name: 'DeviceDetail',
+    options: {
+      headerShown: false,
+    },
+  },
 ];
 
 const privateTabRoutes: PrivateTabRouteItem[] = [
@@ -199,20 +213,6 @@ const privateTabRoutes: PrivateTabRouteItem[] = [
   {
     screen: AccountScreen,
     name: 'Account',
-    options: {
-      headerShown: false,
-    },
-  },
-  {
-    screen: RoomDetailScreen,
-    name: 'RoomDetail',
-    options: {
-      headerShown: false,
-    },
-  },
-  {
-    screen: DeviceDetailScreen,
-    name: 'DeviceDetail',
     options: {
       headerShown: false,
     },

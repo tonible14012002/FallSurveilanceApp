@@ -29,7 +29,7 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
     setUser(undefined);
     jwtManager.clearRefreshToken();
     jwtManager.clearToken();
-    mutate(key => true, undefined, {revalidate: false});
+    mutate(() => true, undefined, false);
   }, []);
 
   const authState = useMemo(

@@ -1,10 +1,6 @@
 import {API, API_PATH} from '~/constants/api';
 import {useFetchInfinite} from '~/libs/hooks/useFetchInfinite';
-import {
-  DeviceNotificationMeta,
-  Notification,
-  RoomNotificationMeta,
-} from '~/schema/api/notification';
+import {DeviceNotificationMeta, Notification} from '~/schema/api/notification';
 import {GetDeviceNotificationParams} from '~/schema/api/user';
 import {BaseResponse} from '~/schema/common';
 

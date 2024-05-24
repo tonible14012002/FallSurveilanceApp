@@ -1,4 +1,3 @@
-import {zodResolver} from '@hookform/resolvers/zod';
 import {Link, useNavigation} from '@react-navigation/native';
 import {Button, Input, Text} from '@ui-kitten/components';
 import {useState} from 'react';
@@ -10,7 +9,7 @@ import {POPUPS, usePopupContext} from '~/context/popup';
 import {useRenderIcon} from '~/hooks/useRenderIcon';
 import {RegisterResponse} from '~/schema/api/identity';
 import {BaseResponse} from '~/schema/common';
-import {RegisterSchema, RegisterSchemaType} from '~/schema/form';
+import {RegisterSchemaType} from '~/schema/form';
 import Icon from '../core/Icon';
 import {formatFieldErrorMessage} from '~/libs/utils';
 
@@ -70,7 +69,6 @@ export default function RegisterForm() {
               }}
               accessoryLeft={renderIcon('person')}
               size="large"
-              status="control"
               placeholder="Username"
               onBlur={onBlur}
               onChangeText={value => onChange(value)}
@@ -99,7 +97,6 @@ export default function RegisterForm() {
               }}
               accessoryLeft={renderIcon('phone')}
               size="large"
-              status="control"
               placeholder="Phone number"
               onBlur={onBlur}
               onChangeText={value => onChange(value)}
@@ -126,7 +123,6 @@ export default function RegisterForm() {
               style={{
                 width: '100%',
               }}
-              status="control"
               accessoryLeft={renderIcon('lock')}
               size="large"
               placeholder="Password"

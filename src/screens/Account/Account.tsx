@@ -1,4 +1,5 @@
-import {Avatar, Button, Layout} from '@ui-kitten/components';
+import {Button, Layout} from '@ui-kitten/components';
+import {Avatar} from '~/components/core/v2/Avatar';
 import {useMemo, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {Alert, StyleSheet, View} from 'react-native';
@@ -14,6 +15,7 @@ import {uploadImage} from '~/libs/cloudinary';
 import {UpdateProfileResponse} from '~/schema/api/identity';
 import {BaseResponse} from '~/schema/common';
 import {UpdateProfileSchemaType} from '~/schema/form';
+import {getUserFullName} from '~/utils/user';
 
 export default function Account() {
   const {user, setUser} = useAuthContext();
@@ -80,7 +82,12 @@ export default function Account() {
               onClose={onClose}
               isOpen={isOpen}
               onOpen={onOpen}
-              trigger={<Avatar source={{uri: user?.avatar}} />}
+              trigger={
+                <Avatar
+                  source={{uri: user?.avatar}}
+                  label={getUserFullName(user)}
+                />
+              }
             />
           }
         />

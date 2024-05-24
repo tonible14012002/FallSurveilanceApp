@@ -1,5 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
-import {Avatar, Button, Text} from '@ui-kitten/components';
+import {Button, Text} from '@ui-kitten/components';
+import {Avatar} from '~/components/core/v2/Avatar';
 import {useEffect, useState} from 'react';
 import {Pressable, View} from 'react-native';
 import {RoomsList, useHouseDetailContext} from '~/components/HouseDetail';
@@ -27,6 +28,7 @@ import {mutate} from 'swr';
 import {API, API_PATH} from '~/constants/api';
 import {err} from 'react-native-svg';
 import {BaseResponse} from '~/schema/common';
+import {getUserFullName} from '~/utils/user';
 
 export default function HouseDetailScreen() {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
@@ -194,6 +196,7 @@ export default function HouseDetailScreen() {
                 onOpen={onOpenProfile}
                 trigger={
                   <Avatar
+                    label={getUserFullName(user)}
                     source={{
                       uri: user?.avatar,
                     }}
@@ -224,9 +227,9 @@ export default function HouseDetailScreen() {
           style={{
             justifyContent: 'space-between',
             flexDirection: 'row',
-            alignItems: 'center',
+            alignItems: 'flex-start',
           }}>
-          <View>
+          <View style={{gap: 4}}>
             <Text category="s1">Welcome Back!</Text>
             <Text category="h4">{user?.nickname}</Text>
           </View>
@@ -251,6 +254,7 @@ export default function HouseDetailScreen() {
           {members.map(mem => (
             <Avatar
               key={mem.id}
+              label={getUserFullName(user)}
               source={{
                 uri: mem.avatar,
               }}

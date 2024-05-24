@@ -1,11 +1,12 @@
-import {Avatar, Layout, List, Text} from '@ui-kitten/components';
+import {Button, Layout, List, Text} from '@ui-kitten/components';
+import {Avatar} from '~/components/core/v2/Avatar';
 import Icon from '~/components/core/Icon';
-import {StyleSheet, View} from 'react-native';
+import {Dimensions, StyleSheet, View} from 'react-native';
 import FloatButton from '~/components/core/FloatButton';
 import ListItem from '~/components/core/ListItem';
 import ScreenLayout from '~/components/core/ScreenLayout';
 import TopBar from '~/components/core/TopBar';
-import {useCallback, useMemo} from 'react';
+import {ReactNode, useCallback, useMemo} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
 import {useHouseDetailContext} from '~/components/HouseDetail';
@@ -14,13 +15,15 @@ import {useDisclosure} from '~/hooks/common';
 import {useFetchJoinedHouses} from '~/hooks/useFetchJoinedHouses';
 import {GetJoinedHousesResponse} from '~/schema/api/house';
 import {useAuthContext} from '~/context/auth';
+import {Skeleton} from '~/components/core/Skeleton';
+import {getUserFullName} from '~/utils/user';
 
 export default function Home() {
   const navigation = useNavigation<PrivateScreenWithBottomBarProps>();
   const {isOpen, onOpen, onClose} = useDisclosure();
   const {user} = useAuthContext();
   const {setHouseId} = useHouseDetailContext();
-  const {houses} = useFetchJoinedHouses();
+  const {houses, isFirstLoading} = useFetchJoinedHouses();
 
   const owned_houses = useMemo(
     () => houses?.filter(house => house.is_owner),
@@ -85,7 +88,7 @@ export default function Home() {
     [onHomeItemPress],
   );
 
-  return (
+  const renderScreenLayout = (child: ReactNode) => (
     <ScreenLayout
       topBar={
         <TopBar
@@ -97,6 +100,12 @@ export default function Home() {
               onOpen={onOpen}
               trigger={
                 <Avatar
+                  label={getUserFullName(
+                    user ?? {
+                      first_name: 'Unknown',
+                      last_name: 'User',
+                    },
+                  )}
                   source={{
                     uri: user?.avatar,
                   }}
@@ -109,12 +118,53 @@ export default function Home() {
       floatEl={<FloatButton pressHandler={onAddButtonPress} />}
       hasPadding
       isScrollable>
-      {owned_houses?.length !== 0 && (
+      {child}
+    </ScreenLayout>
+  );
+
+  if (isFirstLoading) {
+    return renderScreenLayout(
+      <View style={{gap: 16}}>
+        <Skeleton
+          width={Dimensions.get('screen').width - 24}
+          height={80}
+          radius={1000}
+        />
+        <Skeleton
+          width={Dimensions.get('screen').width - 24}
+          height={80}
+          radius={1000}
+        />
+        <Skeleton
+          width={Dimensions.get('screen').width - 24}
+          height={80}
+          radius={1000}
+        />
+      </View>,
+    );
+  }
+
+  return renderScreenLayout(
+    <>
+      {owned_houses === undefined && joined_houses === undefined && (
+        <View style={{gap: 32}}>
+          <Text style={{fontSize: 16, fontWeight: '700'}}>
+            Oops! You haven't joined any houses.
+          </Text>
+          <Button
+            appearance="outline"
+            status="basic"
+            size="large"
+            onPress={onAddButtonPress}>
+            Setup your first house
+          </Button>
+        </View>
+      )}
+      {(owned_houses?.length ?? 0) !== 0 && (
         <>
           <Text category="label">Owned Houses</Text>
           <List
             style={{backgroundColor: 'transparent', marginVertical: 18}}
-            // eslint-disable-next-line react/no-unstable-nested-components
             ItemSeparatorComponent={() => <View style={{height: 12}} />}
             scrollEnabled={false}
             data={owned_houses}
@@ -123,12 +173,11 @@ export default function Home() {
           />
         </>
       )}
-      {joined_houses?.length !== 0 && (
+      {(joined_houses?.length ?? 0) !== 0 && (
         <>
           <Text category="label">Joined Houses</Text>
           <List
             style={{backgroundColor: 'transparent', marginTop: 18}}
-            // eslint-disable-next-line react/no-unstable-nested-components
             ItemSeparatorComponent={() => <View style={{height: 12}} />}
             scrollEnabled={false}
             data={joined_houses}
@@ -137,7 +186,7 @@ export default function Home() {
           />
         </>
       )}
-    </ScreenLayout>
+    </>,
   );
 }
 

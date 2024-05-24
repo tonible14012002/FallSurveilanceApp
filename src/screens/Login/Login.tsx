@@ -5,7 +5,7 @@ import Logo from '~/components/core/Logo';
 
 export default function Login() {
   return (
-    <Layout level="3" style={styles.container}>
+    <Layout level="1" style={styles.container}>
       <Logo />
       <LoginForm />
     </Layout>

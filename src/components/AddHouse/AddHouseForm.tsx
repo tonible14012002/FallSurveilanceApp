@@ -4,18 +4,25 @@ import {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {StyleSheet, View} from 'react-native';
 import {API, API_PATH} from '~/constants/api';
-import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
+import {
+  PrivateScreenWithBottomBarProps,
+  PrivateScreenWithoutBottomBarProps,
+} from '~/constants/routes';
 import {useAuthContext} from '~/context/auth';
 import {useRenderIcon} from '~/hooks/useRenderIcon';
 import {BaseResponse} from '~/schema/common';
 import {AddHouseSchemaType} from '~/schema/form';
 import {useHouseDetailContext} from '../HouseDetail';
+import {showToast} from '~/libs/toast';
+import {ToastColorEnum} from '../ToastMessage/ToastColorEnum';
 
 export default function AddHouseForm() {
   const [isLoading, setIsloading] = useState(false);
   const {user} = useAuthContext();
   const {renderIcon} = useRenderIcon();
-  const navigation = useNavigation<PrivateScreenWithBottomBarProps>();
+  const navigation = useNavigation<
+    PrivateScreenWithBottomBarProps & PrivateScreenWithoutBottomBarProps
+  >();
   const {
     handleSubmit,
     control,
@@ -31,6 +38,7 @@ export default function AddHouseForm() {
         API_PATH.HOUSE_SERVICES.CREATE,
       ).json<BaseResponse<any>>(r => r);
       setHouseId(respData.id);
+      showToast('House created successfully', ToastColorEnum.Succes);
       navigation.navigate('Main');
       navigation.navigate('HouseDetail');
     } catch (e) {
@@ -90,12 +98,6 @@ export default function AddHouseForm() {
             {errors.address.message}
           </Text>
         )}
-      </View>
-      <View>
-        {/* <AddMemberBottomSheet /> */}
-        <Button onPress={() => navigation.navigate('UserPicker')}>
-          ADd Members
-        </Button>
       </View>
       <Button
         disabled={isLoading}

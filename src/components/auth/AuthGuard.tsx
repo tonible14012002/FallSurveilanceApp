@@ -55,8 +55,8 @@ export const AuthGuard = ({children}: PropsWithChildren) => {
       };
       await getMyProfile();
     } else {
-      console.log('not Authed');
       setIsAuthenticated(false);
+      setIsLoading(false);
     }
   }, [isMounted, setUser, user]);
 
@@ -65,7 +65,6 @@ export const AuthGuard = ({children}: PropsWithChildren) => {
   }, [handleTokenGuard]);
 
   useEffect(() => {
-    console.log({isLoading, isAuthenticated});
     if (!isLoading && !isAuthenticated) {
       navigation.navigate('Login');
     }

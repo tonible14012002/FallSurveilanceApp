@@ -1,4 +1,5 @@
-import {Avatar, List, Text} from '@ui-kitten/components';
+import {List, Text} from '@ui-kitten/components';
+import {Avatar} from '~/components/core/v2/Avatar';
 import {useState} from 'react';
 import {Pressable, TouchableOpacity, View} from 'react-native';
 import {NotificationItem} from '~/components/common/NotificationItem';
@@ -19,6 +20,7 @@ import {
 import {BaseResponse} from '~/schema/common';
 import {PRIVATE_NOTIFICATION_CODE} from './constants';
 import TimeAgo from '~/components/common/TimeAgo/TimeAgo';
+import {getUserFullName} from '~/utils/user';
 
 const TABS = ['Detection', 'Invite'];
 
@@ -80,12 +82,13 @@ export default function PrivateNotification() {
   }) => {
     const {data} = item;
 
-    if (!!!data.length)
+    if (!data.length) {
       return (
         <Text style={{textAlign: 'center', marginTop: 20}}>
           No notifications found!
         </Text>
       );
+    }
 
     return (
       <List
@@ -128,6 +131,7 @@ export default function PrivateNotification() {
                 onOpen={onOpen}
                 trigger={
                   <Avatar
+                    label={getUserFullName(user)}
                     source={{
                       uri: user?.avatar,
                     }}
