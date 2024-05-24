@@ -79,6 +79,14 @@ export const RoomNotification = () => {
     item: BaseResponse<Notification<RoomNotificationMeta>[]>;
   }) => {
     const {data} = item;
+
+    if (!!!data.length)
+      return (
+        <Text style={{textAlign: 'center', marginTop: 20}}>
+          No notifications found!
+        </Text>
+      );
+
     return (
       <List
         key={item.pageable?.next_page}

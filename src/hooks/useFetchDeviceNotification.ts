@@ -1,6 +1,10 @@
 import {API, API_PATH} from '~/constants/api';
 import {useFetchInfinite} from '~/libs/hooks/useFetchInfinite';
-import {Notification, RoomNotificationMeta} from '~/schema/api/notification';
+import {
+  DeviceNotificationMeta,
+  Notification,
+  RoomNotificationMeta,
+} from '~/schema/api/notification';
 import {GetDeviceNotificationParams} from '~/schema/api/user';
 import {BaseResponse} from '~/schema/common';
 
@@ -23,7 +27,10 @@ export const useFetchDeviceNotification = (
         pageSize: pageSize,
       })
         .get(API_PATH.NOTIFICATION_SERVICES.DEVICE(deviceId))
-        .json<BaseResponse<Notification<RoomNotificationMeta>[]>>(r => r),
+        .json<BaseResponse<Notification<DeviceNotificationMeta>[]>>(r => r),
+    {
+      refreshInterval: 5000,
+    },
   );
 
   return {

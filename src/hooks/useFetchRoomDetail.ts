@@ -6,12 +6,10 @@ import {GetRoomDetailResponse} from '~/schema/api/house';
 export const ROOM_DETAIL_KEY = 'ROOM_DETAIL_KEY';
 
 export const useFetchRoomDetail = (id?: string, allowFetch?: boolean) => {
-  const {data, ...rest} = useFetchWithCache(
-    allowFetch ? [id, ROOM_DETAIL_KEY] : null,
-    () =>
-      API.FALL_SURVEILANCE.get(
-        API_PATH.HOUSE_SERVICES.ROOM_DETAIL(id as string),
-      ).json<BaseResponse<GetRoomDetailResponse>>(u => u),
+  const {data, ...rest} = useFetchWithCache(allowFetch ? [id] : null, () =>
+    API.FALL_SURVEILANCE.get(
+      API_PATH.HOUSE_SERVICES.ROOM_DETAIL(id as string),
+    ).json<BaseResponse<GetRoomDetailResponse>>(u => u),
   );
 
   return {

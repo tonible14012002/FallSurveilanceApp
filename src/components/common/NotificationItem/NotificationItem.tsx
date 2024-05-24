@@ -58,16 +58,25 @@ interface NotificationItemProps {
   subTitle?: React.ReactNode;
   isNotSeen?: boolean;
   style?: ViewStyle;
+  onPress?: () => void;
 }
 
 export function NotificationItem(props: NotificationItemProps) {
-  const {avatarUrl, title, subTitle, isNotSeen = false, style = {}} = props;
+  const {
+    avatarUrl,
+    title,
+    subTitle,
+    isNotSeen = false,
+    style = {},
+    onPress = () => {},
+  } = props;
 
   const {isOpen, onOpen, onClose} = useDisclosure();
 
   return (
     <Layout style={style}>
       <ListItem
+        onPressHandler={onPress}
         title={title}
         subTitle={subTitle}
         style={{gap: 10}}

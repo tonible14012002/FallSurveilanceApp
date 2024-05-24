@@ -8,10 +8,11 @@ import TabItem from '../core/TabItem';
 
 interface DevicesListProps {
   roomId: string;
+  roomName: string;
   devices: Device[];
 }
 
-export const DevicesList = ({devices, roomId}: DevicesListProps) => {
+export const DevicesList = ({devices, roomName, roomId}: DevicesListProps) => {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
 
   const isDevicesEmpty = !devices.length;
@@ -23,7 +24,7 @@ export const DevicesList = ({devices, roomId}: DevicesListProps) => {
 
   const handleNavigateToDeviceDetail = (deviceId: string) => {
     navigate('Main');
-    navigate('DeviceDetail', {deviceId});
+    navigate('DeviceDetail', {deviceId, roomName});
   };
 
   return (

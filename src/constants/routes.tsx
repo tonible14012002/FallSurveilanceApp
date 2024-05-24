@@ -57,7 +57,7 @@ export type PrivateBottomRouteParamList = {
   Account: undefined;
   HouseDetail: undefined;
   RoomDetail: {roomId: string};
-  DeviceDetail: {deviceId: string};
+  DeviceDetail: {deviceId: string; roomName: string};
 };
 
 export type PublicScreenProps<

@@ -55,7 +55,7 @@ export default function LoginForm() {
         ).json<BaseResponse<any>>(r => r);
       }
     } catch (e: any) {
-      if (e?.response.status == 400) {
+      if (e?.response.status == 400 && e?.json.data) {
         showPopup(POPUPS.ALERT, {
           icon: <Icon size="superGiant" name="alert-circle-outline" />,
           title: 'Invalid information!',

@@ -13,13 +13,18 @@ import useDeviceUtils from './useDeviceUtils';
 import {EditDeviceModal} from './EditDeviceModal';
 import {mutate} from 'swr';
 import {API_PATH} from '~/constants/api';
+import {useVideoStreaming} from '~/libs/hooks/useVideoStreaming';
+import {RTCView} from 'react-native-webrtc';
 
 export default function DeviceDetailScreen() {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
   const route = useRoute();
-  const {deviceId} = route.params as {deviceId: string};
-
+  const {deviceId, roomName} = route.params as {
+    deviceId: string;
+    roomName: string;
+  };
   const {detail} = useFetchDeviceDetail(deviceId, Boolean(deviceId));
+  console.log({detail});
 
   const {...spec} = detail?.specification ?? {};
 
@@ -111,6 +116,8 @@ export default function DeviceDetailScreen() {
     </View>
   );
 
+  const {localStream} = useVideoStreaming();
+
   return (
     <>
       <ScreenLayout
@@ -133,11 +140,45 @@ export default function DeviceDetailScreen() {
           />
         }>
         <View>{__renderHouseActionsBar()}</View>
+        {/* <View style={{width: 400, height: 200, borderr}}> */}
+
+        {/* </View> */}
         <View style={{gap: 16}}>
+          {localStream && (
+            <View
+              style={{
+                marginLeft: 3,
+                borderWidth: 7,
+                borderColor: '#000',
+                padding: 0,
+                width: '98%',
+                borderRadius: 8,
+              }}>
+              <RTCView
+                streamURL={(localStream as any).toURL()}
+                style={{
+                  width: '100%',
+                  height: 200,
+                }}
+              />
+            </View>
+          )}
+
           <View style={{gap: 8}}>
             <Text category="label">Name</Text>
             {detail?.name ? (
               <Text category="s2">{detail?.name}</Text>
+            ) : (
+              <Text category="s2" appearance="hint">
+                - Empty
+              </Text>
+            )}
+          </View>
+
+          <View style={{gap: 8}}>
+            <Text category="label">Room</Text>
+            {detail?.room ? (
+              <Text category="s2">{roomName ?? ''}</Text>
             ) : (
               <Text category="s2" appearance="hint">
                 - Empty
