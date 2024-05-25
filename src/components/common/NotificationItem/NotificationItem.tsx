@@ -8,7 +8,7 @@ import {
 } from '@ui-kitten/components';
 import {PopoverPlacement} from '@ui-kitten/components/ui/popover/type';
 import {ReactNode} from 'react';
-import {StyleSheet, TouchableOpacity, ViewStyle} from 'react-native';
+import {StyleSheet, TouchableOpacity, View, ViewStyle} from 'react-native';
 import Icon from '~/components/core/Icon';
 import ListItem from '~/components/core/ListItem';
 import {useDisclosure} from '~/hooks/common';
@@ -66,6 +66,7 @@ interface NotificationItemProps {
   isNotSeen?: boolean;
   style?: ViewStyle;
   onPress?: () => void;
+  danger?: boolean;
 }
 
 export function NotificationItem(props: NotificationItemProps) {
@@ -76,14 +77,14 @@ export function NotificationItem(props: NotificationItemProps) {
     isNotSeen = false,
     style = {},
     onPress = () => {},
+    danger,
   } = props;
 
   const {isOpen, onOpen, onClose} = useDisclosure();
 
   const theme = useTheme();
   return (
-    <Layout
-      style={[{marginVertical: 8, backgroundColor: 'transparent'}, style]}>
+    <View style={[{marginVertical: 8, backgroundColor: 'transparent'}, style]}>
       <ListItem
         onPressHandler={onPress}
         title={title}
@@ -92,6 +93,12 @@ export function NotificationItem(props: NotificationItemProps) {
         textContentWrapperStyle={{gap: 4}}
         wrapperStyle={{
           backgroundColor: isNotSeen ? theme['color-basic-300'] : 'transparent',
+          borderWidth: danger ? 1 : 0,
+          borderColor: danger
+            ? isNotSeen
+              ? theme['color-danger-400']
+              : theme['color-danger-300']
+            : 'transparent',
           borderRadius: 32,
           padding: 16,
         }}
@@ -113,7 +120,7 @@ export function NotificationItem(props: NotificationItemProps) {
           />
         }
       />
-    </Layout>
+    </View>
   );
 }
 

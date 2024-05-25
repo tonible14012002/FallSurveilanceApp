@@ -92,7 +92,9 @@ export const RoomNotification = () => {
 
     return (
       <List
+        style={{backgroundColor: 'transparent'}}
         key={item.pageable?.next_page}
+        scrollEnabled={false}
         data={data}
         renderItem={({item: noti}) => {
           const avatar =
@@ -124,7 +126,7 @@ export const RoomNotification = () => {
 
   return (
     <ScreenLayout
-      isScrollable
+      isScrollable={false}
       hasPadding
       topBar={
         <TopBar
@@ -139,7 +141,7 @@ export const RoomNotification = () => {
       </TouchableOpacity>
       <List
         showsVerticalScrollIndicator={false}
-        style={[{flex: 1, backgroundColor: 'transparent', marginTop: 10}]}
+        style={[{flex: 1, backgroundColor: 'transparent', marginTop: 16}]}
         scrollEnabled
         data={notificationsCollection ?? []}
         renderItem={__renderNotificationsCollection}

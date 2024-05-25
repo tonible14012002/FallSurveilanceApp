@@ -21,7 +21,7 @@ export const FallDetectedPopup = ({
   return (
     <View style={styles.notificationContainer}>
       {Icon}
-      <Text category="h5">{title}</Text>
+      <Text category="h6">{title}</Text>
       <Image
         style={{width: '100%', height: 200, objectFit: 'cover'}}
         source={{

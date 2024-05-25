@@ -73,10 +73,11 @@ export const DeviceNotification = () => {
       <List
         key={'device-noti-' + item.pageable?.next_page}
         data={data}
+        scrollEnabled={false}
+        style={{backgroundColor: 'transparent'}}
         renderItem={({item: noti}) => {
           return (
             <NotificationItem
-              style={{marginBottom: 5}}
               isNotSeen={!noti.is_seen}
               title={__renderNotificationText(
                 noti.event_code as DeviceNotificationCodeType,
@@ -108,7 +109,7 @@ export const DeviceNotification = () => {
 
   return (
     <ScreenLayout
-      isScrollable
+      isScrollable={false}
       hasPadding
       topBar={
         <TopBar
@@ -123,7 +124,7 @@ export const DeviceNotification = () => {
       </TouchableOpacity>
       <List
         showsVerticalScrollIndicator={false}
-        style={[{flex: 1, backgroundColor: 'transparent', marginTop: 10}]}
+        style={[{flex: 1, backgroundColor: 'transparent', marginTop: 16}]}
         scrollEnabled
         data={notificationsCollection ?? []}
         renderItem={__renderNotificationsCollection}

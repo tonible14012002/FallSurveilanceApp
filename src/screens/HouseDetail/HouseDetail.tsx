@@ -250,19 +250,24 @@ export default function HouseDetailScreen() {
                   Welcome Back!
                 </Text>
                 <View style={{position: 'relative'}}>
-                  <View
-                    style={{
-                      position: 'absolute',
-                      top: -4,
-                      right: -8,
-                    }}>
-                    <Icon size="tiny" name="edit-outline" />
-                  </View>
+                  {isAllowEdit && (
+                    <View
+                      style={{
+                        position: 'absolute',
+                        top: -4,
+                        right: -8,
+                      }}>
+                      <Icon size="tiny" name="edit-outline" />
+                    </View>
+                  )}
                   <EditableText
+                    disabled={!isAllowEdit}
+                    numberOfLines={2}
                     style={{
                       fontWeight: 'bold',
                       color: 'black',
                       fontSize: 28,
+                      flexWrap: 'wrap',
                     }}
                     value={detail?.name}
                     onUpdate={value => {
@@ -271,7 +276,7 @@ export default function HouseDetailScreen() {
                   />
                 </View>
               </View>
-              <View>{__renderHouseActionsBar()}</View>
+              <View style={{flexShrink: 0}}>{__renderHouseActionsBar()}</View>
             </View>
             <UserList
               containerStyle={{marginBottom: 30}}
@@ -332,12 +337,27 @@ export default function HouseDetailScreen() {
               setHouseId(String(item.id));
               onCloseHousesSelect();
             }}
-            title={item.name}
+            title={<Text style={{fontWeight: '700'}}>{item.name}</Text>}
             subTitle={`${item.members.length} members`}
             rightEle={
-              houseId === String(item.id) ? (
-                <Icon size="small" name="checkmark-outline" />
-              ) : null
+              <View style={{flexDirection: 'row'}}>
+                {item.is_owner && (
+                  <View
+                    style={{
+                      backgroundColor: theme['color-primary-400'],
+                      paddingHorizontal: 8,
+                      paddingVertical: 4,
+                      borderRadius: 32,
+                    }}>
+                    <Text category="label" style={{color: 'white'}}>
+                      Owner
+                    </Text>
+                  </View>
+                )}
+                {houseId === String(item.id) ? (
+                  <Icon size="small" name="checkmark-outline" />
+                ) : null}
+              </View>
             }
             level="1"
           />

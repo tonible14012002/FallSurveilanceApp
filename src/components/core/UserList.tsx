@@ -26,7 +26,10 @@ export default function UserList(props: UserListProps) {
         <TextFallback category="s2">{title as any}</TextFallback>
         {detailNavigator}
       </View>
-      <ScrollView horizontal contentContainerStyle={[styles.list, listStyle]}>
+      <ScrollView
+        horizontal
+        contentContainerStyle={[styles.list, listStyle]}
+        showsHorizontalScrollIndicator={false}>
         {children}
       </ScrollView>
     </View>

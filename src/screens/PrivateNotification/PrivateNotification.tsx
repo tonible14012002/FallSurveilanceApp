@@ -1,11 +1,9 @@
 import {List, Text} from '@ui-kitten/components';
 import {Avatar} from '~/components/core/v2/Avatar';
-import {useState} from 'react';
 import {Pressable, TouchableOpacity, View} from 'react-native';
 import {NotificationItem} from '~/components/common/NotificationItem';
 import {ProfileDropdown} from '~/components/common/ProfileDropdown';
 import ScreenLayout from '~/components/core/ScreenLayout';
-import TabsRow from '~/components/core/TabsRow';
 import TopBar from '~/components/core/TopBar';
 import {PAGINATION} from '~/constants/common';
 import {useAuthContext} from '~/context/auth';
@@ -15,21 +13,22 @@ import {
   InviteToHouseNotificationMeta,
   InviteToRoomNotificationMeta,
   Notification,
+  PrivateFallDetectedNotificationMeta,
   PrivateNotificationMeta,
 } from '~/schema/api/notification';
 import {BaseResponse} from '~/schema/common';
 import {PRIVATE_NOTIFICATION_CODE} from './constants';
 import TimeAgo from '~/components/common/TimeAgo/TimeAgo';
 import {getUserFullName} from '~/utils/user';
-
-const TABS = ['Detection', 'Invite'];
+import {useNavigation} from '@react-navigation/native';
+import {PrivateScreenWithBottomBarProps} from '~/constants/routes';
 
 type PrivateNotificationCodeType = keyof typeof PRIVATE_NOTIFICATION_CODE;
 
 export default function PrivateNotification() {
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const {isOpen, onOpen, onClose} = useDisclosure();
   const {user} = useAuthContext();
+  const navigation = useNavigation<PrivateScreenWithBottomBarProps>();
 
   const {notificationsCollection} = useFetchPrivateNotification({
     allowFetch: !!user,
@@ -43,6 +42,13 @@ export default function PrivateNotification() {
   ) => {
     let title = '';
     let boldWords = [];
+    if (
+      eventCode === PRIVATE_NOTIFICATION_CODE.NOTIFY_USER_DEVICE_FALL_DETECTED
+    ) {
+      meta = meta as PrivateFallDetectedNotificationMeta;
+      boldWords.push(meta.device.name);
+      title += ' detected a human fall';
+    }
 
     if (eventCode === PRIVATE_NOTIFICATION_CODE.INVITED_TO_HOUSE) {
       const invitor = (meta as InviteToHouseNotificationMeta).invitor;
@@ -92,13 +98,30 @@ export default function PrivateNotification() {
 
     return (
       <List
+        scrollEnabled={false}
         key={item.pageable?.next_page}
+        style={{backgroundColor: 'transparent'}}
         data={data}
         renderItem={({item: noti}) => {
-          const avatar = noti.meta.invitor?.avatar ?? '';
+          const avatar = (noti.meta as any)?.invitor?.avatar ?? '';
           return (
             <NotificationItem
-              style={{marginBottom: 5}}
+              onPress={() => {
+                if (
+                  noti.event_code ===
+                  PRIVATE_NOTIFICATION_CODE.NOTIFY_USER_DEVICE_FALL_DETECTED
+                ) {
+                  navigation.navigate('DeviceDetail', {
+                    deviceId: (noti.meta as PrivateFallDetectedNotificationMeta)
+                      .device.id,
+                  });
+                }
+              }}
+              danger={
+                noti.event_code ===
+                PRIVATE_NOTIFICATION_CODE.NOTIFY_USER_DEVICE_FALL_DETECTED
+              }
+              style={{marginBottom: 8}}
               isNotSeen={!noti.is_seen}
               title={__renderNotificationText(
                 noti.event_code as PrivateNotificationCodeType,
@@ -115,6 +138,8 @@ export default function PrivateNotification() {
 
   return (
     <ScreenLayout
+      isScrollable={false}
+      hasPadding
       topBar={
         <TopBar
           title="Notification"
@@ -147,17 +172,11 @@ export default function PrivateNotification() {
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          paddingHorizontal: 8,
+          paddingVertical: 16,
         }}>
-        <TabsRow
-          selectedIndex={selectedIndex}
-          setSelectedIndex={setSelectedIndex}
-          tabs={TABS}
-        />
+        <View style={{flex: 1}} />
         <TouchableOpacity>
-          <Text category="s2" status="primary">
-            Mark all as read
-          </Text>
+          <Text category="s2">Mark all as read</Text>
         </TouchableOpacity>
       </View>
 
@@ -167,8 +186,6 @@ export default function PrivateNotification() {
           {
             flex: 1,
             backgroundColor: 'transparent',
-            marginTop: 10,
-            paddingHorizontal: 8,
           },
         ]}
         scrollEnabled

@@ -67,6 +67,12 @@ export type InviteToHouseNotificationMeta = {
   description: string;
 };
 
+export type PrivateFallDetectedNotificationMeta = {
+  device: Device;
+  description: string;
+};
+
 export type PrivateNotificationMeta =
   | InviteToRoomNotificationMeta
-  | InviteToHouseNotificationMeta;
+  | InviteToHouseNotificationMeta
+  | PrivateFallDetectedNotificationMeta;

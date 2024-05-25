@@ -1,5 +1,6 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {Avatar, Button, Spinner, Text} from '@ui-kitten/components';
+import {Button, Spinner, Text, useTheme} from '@ui-kitten/components';
+import {Avatar} from '~/components/core/v2/Avatar';
 import {View} from 'react-native';
 import {ConfirmationModal} from '~/components/common/ConfimationModal';
 import Icon from '~/components/core/Icon';
@@ -16,6 +17,11 @@ import {API_PATH} from '~/constants/api';
 import {useVideoStreaming} from '~/libs/hooks/useVideoStreaming';
 import {RTCView} from 'react-native-webrtc';
 import {Skeleton} from '~/components/core/Skeleton';
+import {getUserFullName} from '~/utils/user';
+import {useAuthContext} from '~/context/auth';
+import {ProfileDropdown} from '~/components/common/ProfileDropdown';
+import {useDisclosure} from '~/hooks/common';
+import {IconButton} from '~/components/core/IconButton';
 
 export default function DeviceDetailScreen() {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
@@ -24,10 +30,12 @@ export default function DeviceDetailScreen() {
     deviceId: string;
     roomName: string;
   };
+  const {user} = useAuthContext();
+  const theme = useTheme();
   const {detail} = useFetchDeviceDetail(deviceId, Boolean(deviceId));
-  console.log({detail});
 
   const {...spec} = detail?.specification ?? {};
+  const {isOpen, onOpen, onClose} = useDisclosure();
 
   const handleNavigateRoomDetail = () =>
     navigate('RoomDetail', {roomId: detail?.room!});
@@ -66,41 +74,38 @@ export default function DeviceDetailScreen() {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        marginBottom: 15,
+        marginBottom: 16,
+        gap: 16,
       }}>
-      <Button
-        onPress={onOpenEditDeviceModal}
-        style={{
-          width: 45,
-          height: 45,
-          borderRadius: 45,
-        }}
-        status="warning"
-        appearance="ghost">
-        <Icon name="edit-outline" />
-      </Button>
-      <Button
+      <IconButton
+        icon={<Icon size="medium" name="trash-outline" />}
         onPress={onOpenConfirmationModal}
+        width={42}
+        height={42}
         style={{
-          width: 45,
-          height: 45,
-          borderRadius: 45,
+          backgroundColor: theme['color-basic-200'],
         }}
-        appearance="ghost">
-        <Icon name="trash-outline" fill="red" />
-      </Button>
+      />
+      <IconButton
+        icon={<Icon size="medium" name="edit-outline" />}
+        onPress={onOpenEditDeviceModal}
+        width={42}
+        height={42}
+        style={{
+          backgroundColor: theme['color-basic-200'],
+        }}
+      />
+
       <View style={{position: 'relative'}}>
-        <Button
+        <IconButton
           onPress={handleNotificationInboxPressed}
+          icon={<Icon size="medium" name="bell-outline" />}
+          width={42}
+          height={42}
           style={{
-            width: 45,
-            height: 45,
-            borderRadius: 45,
+            backgroundColor: theme['color-basic-200'],
           }}
-          status="warning"
-          appearance="ghost">
-          <Icon name="bell-outline" />
-        </Button>
+        />
         {/* DOT Indicator */}
         <View
           style={{
@@ -138,6 +143,26 @@ export default function DeviceDetailScreen() {
                 <Text category="h6">Device Detail</Text>
               </View>
             }
+            rightIcon={
+              <ProfileDropdown
+                onClose={onClose}
+                isOpen={isOpen}
+                onOpen={onOpen}
+                trigger={
+                  <Avatar
+                    label={getUserFullName(
+                      user ?? {
+                        first_name: 'Unknown',
+                        last_name: 'User',
+                      },
+                    )}
+                    source={{
+                      uri: user?.avatar,
+                    }}
+                  />
+                }
+              />
+            }
           />
         }>
         <View>{__renderHouseActionsBar()}</View>
@@ -168,8 +193,10 @@ export default function DeviceDetailScreen() {
                       position: 'absolute',
                       left: 0,
                       right: 0,
+                      transform: [{scaleX: 1.5}],
                       bottom: 0,
                       top: 0,
+                      backgroundColor: theme['color-basic-200'],
                     }}
                   />
                 ) : (
@@ -215,8 +242,10 @@ export default function DeviceDetailScreen() {
           <View style={{gap: 8}}>
             <Text category="label">Specification</Text>
             {Object.entries(spec ?? {}).map(([key, value]) => (
-              <View style={{flexDirection: 'row', gap: 10}}>
-                <Text category="c2">{key}: </Text>
+              <View style={{flexDirection: 'row', gap: 8}} key={key}>
+                <Text category="c2" style={{textTransform: 'capitalize'}}>
+                  {key.replace(/_/g, ' ')}:
+                </Text>
                 <Text category="label">{value}</Text>
               </View>
             ))}
@@ -251,6 +280,7 @@ export default function DeviceDetailScreen() {
                 source={{
                   uri: mem.avatar,
                 }}
+                label={getUserFullName(mem)}
                 style={{width: 50, height: 50}}
                 loadingIndicatorSource={{
                   uri: boringAvatar(mem.first_name),

@@ -84,7 +84,7 @@ export const HouseNotification = () => {
 
     if (!data.length) {
       return (
-        <Text style={{textAlign: 'center', marginTop: 20}}>
+        <Text style={{textAlign: 'center', marginTop: 20, opacity: 0.7}}>
           No notifications found!
         </Text>
       );
@@ -125,7 +125,7 @@ export const HouseNotification = () => {
 
   return (
     <ScreenLayout
-      isScrollable
+      isScrollable={false}
       hasPadding
       topBar={
         <TopBar
@@ -133,11 +133,13 @@ export const HouseNotification = () => {
           title={`${detail?.name} Notification`}
         />
       }>
-      <TouchableOpacity style={{alignItems: 'flex-end'}}>
-        <Text category="s2" status="primary">
-          Mark all as read
-        </Text>
-      </TouchableOpacity>
+      {notificationsCollection?.length === 0 && (
+        <TouchableOpacity style={{alignItems: 'flex-end'}}>
+          <Text category="s2" status="primary">
+            Mark all as read
+          </Text>
+        </TouchableOpacity>
+      )}
       <List
         showsVerticalScrollIndicator={false}
         style={[{flex: 1, backgroundColor: 'transparent', marginTop: 10}]}

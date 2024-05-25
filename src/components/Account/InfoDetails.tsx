@@ -1,16 +1,8 @@
-import {Link, useNavigation} from '@react-navigation/native';
-import {Button, CheckBox, Input, Text} from '@ui-kitten/components';
-import {useState} from 'react';
-import {Control, Controller, FieldErrors, useForm} from 'react-hook-form';
+import {Input, Text} from '@ui-kitten/components';
+import {Control, Controller, FieldErrors} from 'react-hook-form';
 import {StyleSheet, View} from 'react-native';
 import {useRenderIcon} from '~/hooks/useRenderIcon';
-import {LoginFormSchemaType, UpdateProfileSchemaType} from '~/schema/form';
-import {API, API_PATH} from '~/constants/api';
-import {BaseResponse} from '~/schema/common';
-import {LoginResponse} from '~/schema/api/identity';
-import {useAuthContext} from '~/context/auth';
-import jwtManager from '~/libs/jwt/jwtManager';
-import {PublicScreenProps} from '~/constants/routes';
+import {UpdateProfileSchemaType} from '~/schema/form';
 
 interface InfoDetailsProps {
   control: Control<UpdateProfileSchemaType>;
@@ -18,10 +10,6 @@ interface InfoDetailsProps {
 }
 
 export const InfoDetails = ({control, errors}: InfoDetailsProps) => {
-  const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsloading] = useState(false);
-  const {setUser} = useAuthContext();
-  const navigation = useNavigation<PublicScreenProps>();
   const {renderIcon} = useRenderIcon();
 
   return (

@@ -1,7 +1,7 @@
-import {useNavigation} from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {PropsWithChildren, useCallback, useEffect, useState} from 'react';
 import {API, API_PATH, loginApi} from '~/constants/api';
-import {PublicScreenProps} from '~/constants/routes';
+import {PublicRouteParamList, PublicScreenProps} from '~/constants/routes';
 import {useAuthContext} from '~/context/auth';
 import {useIsMounted} from '~/hooks/common';
 import jwtManager from '~/libs/jwt/jwtManager';
@@ -15,22 +15,25 @@ export const AuthGuard = ({children}: PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const isMounted = useIsMounted();
+  const route = useRoute<RouteProp<PublicRouteParamList, 'Login'>>();
 
   const handleTokenGuard = useCallback(async () => {
+    // NOTE: check token and refresh token
     const token = await jwtManager.getToken();
     const tokenIsValid = Boolean(token) && (await jwtManager.isTokenValid());
     const refreshTokenIsValid =
       Boolean(await jwtManager.getRefreshToken()) &&
       (await jwtManager.isRefreshTokenValid());
-    const isAuth = tokenIsValid || refreshTokenIsValid;
+    const isAuth = tokenIsValid || refreshTokenIsValid; // isAuth -> check expired
 
     if (isAuth) {
       if (user) {
+        // check if user is already logged in
         setIsAuthenticated(true);
         setIsLoading(false);
         return;
       }
-
+      // get user object
       const getMyProfile = async () => {
         setIsLoading(true);
         loginApi(token as string);
@@ -63,28 +66,47 @@ export const AuthGuard = ({children}: PropsWithChildren) => {
     setUser,
     user,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    jwtManager.getToken(),
+    jwtManager.getToken() || '',
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    jwtManager.getRefreshToken(),
+    jwtManager.getRefreshToken() || '',
   ]);
 
   useEffect(() => {
+    console.log('checking');
     handleTokenGuard();
   }, [handleTokenGuard]);
 
   useEffect(() => {
+    console.log('checking');
     if (!isLoading && !isAuthenticated) {
+      console.log('navigate to login');
       logout?.();
       navigation.navigate('Login');
-    } else {
-      navigation.navigate('Private');
     }
   }, [isAuthenticated, isLoading, logout, navigation]);
 
-  if (isLoading || user === undefined) {
+  useEffect(() => {
+    console.log('checking');
+    if (
+      !isLoading &&
+      isAuthenticated &&
+      ['Login', 'Register'].includes(route.name)
+    ) {
+      navigation.navigate('Private');
+    }
+  }, [isAuthenticated, isLoading, navigation, route.name]);
+
+  if (isLoading) {
     return <ScreenSkeleton />;
   }
   return <>{children}</>;
 };
 
 export default AuthGuard;
+
+export const withAuthGuard = (Component: React.FC) => () =>
+  (
+    <AuthGuard>
+      <Component />
+    </AuthGuard>
+  );

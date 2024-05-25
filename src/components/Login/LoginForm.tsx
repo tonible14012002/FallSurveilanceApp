@@ -34,11 +34,11 @@ export default function LoginForm() {
       ).json<BaseResponse<LoginResponse>>(r => r);
 
       const {user, access, refresh} = resp.data;
-      console.log({user});
-      setUser(user);
-      showToast('Login Succeed', ToastColorEnum.Succes);
       jwtManager.setToken(access);
       jwtManager.setRefreshToken(refresh);
+
+      setUser(user);
+      showToast('Login Succeed', ToastColorEnum.Succes);
 
       try {
         const token = await requestUserPermission();
@@ -65,8 +65,6 @@ export default function LoginForm() {
         showToast('Invalid credentials', ToastColorEnum.Error);
         return;
       }
-
-      console.log(e);
     } finally {
       setIsloading(false);
     }

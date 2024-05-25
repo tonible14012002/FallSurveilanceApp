@@ -8,7 +8,7 @@ import {LogBox} from 'react-native';
 import 'react-native-gesture-handler';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {HouseDetailContextProvider} from '~/components/HouseDetail';
-import AuthGuard from '~/components/auth/AuthGuard';
+import AuthGuard, {withAuthGuard} from '~/components/auth/AuthGuard';
 import AutoRevalidateSWRConfig from '~/components/core/AutoRevalidateSWRConfig';
 import BottomTabBar from '~/components/core/BottomTabBar';
 import {
@@ -30,7 +30,7 @@ import {
 
 LogBox.ignoreLogs([
   'source.uri should not be an empty string',
-  'ReactImageView: Image source "" doesn\'t exist',
+  /^ReactImageView:.*?"([^"]*)"/,
 ]); // Ignore log notification by message
 
 const PrivateTabScreens = () => {
@@ -40,7 +40,7 @@ const PrivateTabScreens = () => {
         <PrivateTabScreen
           key={route.name}
           name={route.name}
-          component={includeToast(route.screen)} // TODO: Fix toast cannot be displayed if specify on context layer
+          component={includeToast(route.screen)}
           options={route?.options}
         />
       ))}
@@ -50,28 +50,26 @@ const PrivateTabScreens = () => {
 
 const PrivateScreens = () => {
   return (
-    <AuthProvider>
-      <AuthGuard>
-        <HouseDetailContextProvider>
-          <PrivateNavigator initialRouteName="Main">
+    <AuthGuard>
+      <HouseDetailContextProvider>
+        <PrivateNavigator initialRouteName="Main">
+          <PrivateScreen
+            key="Main"
+            name="Main"
+            component={PrivateTabScreens}
+            options={{headerShown: false}}
+          />
+          {privateRoutes.map(route => (
             <PrivateScreen
-              key="Main"
-              name="Main"
-              component={PrivateTabScreens}
-              options={{headerShown: false}}
+              key={route.name}
+              name={route.name}
+              component={route.screen}
+              options={route?.options}
             />
-            {privateRoutes.map(route => (
-              <PrivateScreen
-                key={route.name}
-                name={route.name}
-                component={route.screen}
-                options={route?.options}
-              />
-            ))}
-          </PrivateNavigator>
-        </HouseDetailContextProvider>
-      </AuthGuard>
-    </AuthProvider>
+          ))}
+        </PrivateNavigator>
+      </HouseDetailContextProvider>
+    </AuthGuard>
   );
 };
 
@@ -81,28 +79,32 @@ function App() {
       <AutoRevalidateSWRConfig />
       <ToastUtils />
       <ApplicationProvider {...eva} theme={eva.light}>
-        <IconRegistry icons={EvaIconsPack} />
-        <NavigationContainer>
-          <PopupProvider>
-            <ToastUtils />
-            <PublicNavigator initialRouteName="Private">
-              {publicRoutes.map(route => (
+        <AuthProvider>
+          <IconRegistry icons={EvaIconsPack} />
+          <NavigationContainer>
+            <PopupProvider>
+              <ToastUtils />
+              <PublicNavigator initialRouteName="Private">
+                {publicRoutes.map(route => {
+                  return (
+                    <PublicScreen
+                      key={route.name}
+                      name={route.name}
+                      component={withAuthGuard(route.screen)}
+                      options={route?.options}
+                    />
+                  );
+                })}
                 <PublicScreen
-                  key={route.name}
-                  name={route.name}
-                  component={route.screen} // TODO: Fix toast cannot be displayed if specify on context layer
-                  options={route?.options}
+                  key="Private"
+                  name="Private"
+                  component={PrivateScreens}
+                  options={{headerShown: false}}
                 />
-              ))}
-              <PublicScreen
-                key="Private"
-                name="Private"
-                component={PrivateScreens}
-                options={{headerShown: false}}
-              />
-            </PublicNavigator>
-          </PopupProvider>
-        </NavigationContainer>
+              </PublicNavigator>
+            </PopupProvider>
+          </NavigationContainer>
+        </AuthProvider>
       </ApplicationProvider>
     </GestureHandlerRootView>
   );

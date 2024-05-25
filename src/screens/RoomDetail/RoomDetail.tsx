@@ -1,4 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
+import {useTheme} from '@ui-kitten/components';
 import {Button, Text} from '@ui-kitten/components';
 import {Avatar} from '~/components/core/v2/Avatar';
 import {Pressable, View} from 'react-native';
@@ -20,6 +21,7 @@ import {BaseResponse} from '~/schema/common';
 import useFetchRoomData from './useFetchRoomData';
 import useModalsDisclosure from './useModalsDisclosure';
 import {getUserFullName} from '~/utils/user';
+import {IconButton} from '~/components/core/IconButton';
 
 export default function RoomDetailScreen() {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
@@ -40,6 +42,7 @@ export default function RoomDetailScreen() {
 
   const {user, roomId, roomDetail, rooms} = useFetchRoomData();
 
+  const theme = useTheme();
   const devices = roomDetail?.devices ?? [];
 
   const handleNavigateAddMembers = () => navigate('AddRoomMembers', {roomId});
@@ -74,6 +77,7 @@ export default function RoomDetailScreen() {
           onOpen={onOpenProfile}
           trigger={
             <Avatar
+              label={getUserFullName(user)}
               source={{
                 uri: user?.avatar,
               }}
@@ -107,50 +111,47 @@ export default function RoomDetailScreen() {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        gap: 5,
+        gap: 16,
       }}>
-      <Button
+      <IconButton
+        icon={<Icon size="medium" name="trash-outline" />}
         onPress={onOpenConfirmationModal}
+        width={42}
+        height={42}
         style={{
-          width: 45,
-          height: 45,
-          borderRadius: 45,
+          backgroundColor: theme['color-basic-200'],
         }}
-        appearance="ghost">
-        <Icon name="trash-outline" fill="red" />
-      </Button>
-      <Button
+      />
+      <IconButton
+        icon={<Icon size="medium" name="edit-outline" />}
         onPress={onToggleRoomEdit}
+        width={42}
+        height={42}
         style={{
-          width: 45,
-          height: 45,
-          borderRadius: 45,
+          backgroundColor: theme['color-basic-200'],
         }}
-        appearance="ghost">
-        <Icon name="edit-outline" />
-      </Button>
-      <Button
+      />
+
+      <IconButton
+        icon={<Icon size="medium" name="person-add-outline" />}
         onPress={handleNavigateAddMembers}
+        width={42}
+        height={42}
         style={{
-          width: 45,
-          height: 45,
-          borderRadius: 45,
+          backgroundColor: theme['color-basic-200'],
         }}
-        appearance="ghost">
-        <Icon name="person-add-outline" />
-      </Button>
+      />
+
       <View style={{position: 'relative'}}>
-        <Button
+        <IconButton
           onPress={handleNotificationInboxPressed}
+          icon={<Icon size="medium" name="bell-outline" />}
+          width={42}
+          height={42}
           style={{
-            width: 45,
-            height: 45,
-            borderRadius: 45,
+            backgroundColor: theme['color-basic-200'],
           }}
-          status="warning"
-          appearance="ghost">
-          <Icon name="bell-outline" />
-        </Button>
+        />
         {/* DOT Indicator */}
         <View
           style={{

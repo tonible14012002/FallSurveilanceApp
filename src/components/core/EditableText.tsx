@@ -1,4 +1,11 @@
-import {Pressable, StyleProp, StyleSheet, Text, TextStyle} from 'react-native';
+import {
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextInputProps,
+  TextStyle,
+} from 'react-native';
 import {TextInput} from 'react-native';
 import {useEffect, useRef, useState} from 'react';
 import {useDisclosure} from '~/hooks/common';
@@ -7,10 +14,12 @@ interface EditableTextProps {
   value?: string;
   onUpdate: (value: string) => void;
   style?: StyleProp<TextStyle>;
+  numberOfLines?: number;
+  disabled?: boolean;
 }
 
 export const EditableText = (props: EditableTextProps) => {
-  const {value = '', onUpdate, style} = props;
+  const {value = '', onUpdate, style, numberOfLines, disabled} = props;
   const [internalValue, setValue] = useState<string>(value);
   const {isOpen, onOpen, onClose} = useDisclosure();
 
@@ -20,6 +29,9 @@ export const EditableText = (props: EditableTextProps) => {
     setValue(value);
   };
   const handlePress = () => {
+    if (disabled) {
+      return;
+    }
     onOpen();
   };
   useEffect(() => {
@@ -36,11 +48,11 @@ export const EditableText = (props: EditableTextProps) => {
   return (
     <Pressable onPress={handlePress}>
       {_ => {
-        console.log('isOpen', isOpen);
         return (
           <>
             <TextInput
               ref={inputRef}
+              numberOfLines={1}
               style={[
                 {display: isOpen ? 'flex' : 'none'},
                 styles.textInput,
@@ -52,6 +64,7 @@ export const EditableText = (props: EditableTextProps) => {
               onChangeText={setValue}
             />
             <Text
+              numberOfLines={numberOfLines}
               style={[
                 {
                   display: isOpen ? 'none' : 'flex',

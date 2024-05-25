@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
     paddingBottom: 400,
     borderRadius: 8,
+    backgroundColor: 'transparent',
   },
   popoverContainer: {
     maxHeight: height,
