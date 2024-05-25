@@ -1,4 +1,4 @@
-import {Link, useNavigation} from '@react-navigation/native';
+import {Link} from '@react-navigation/native';
 import {Button, Input, Text} from '@ui-kitten/components';
 import {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
@@ -10,7 +10,6 @@ import {BaseResponse} from '~/schema/common';
 import {LoginResponse} from '~/schema/api/identity';
 import {useAuthContext} from '~/context/auth';
 import jwtManager from '~/libs/jwt/jwtManager';
-import {PublicScreenProps} from '~/constants/routes';
 import {requestUserPermission} from '~/libs/notification';
 import {formatFieldErrorMessage} from '~/libs/utils';
 import {showToast} from '~/libs/toast';
@@ -20,7 +19,6 @@ export default function LoginForm() {
   const [isLoading, setIsloading] = useState(false);
 
   const {setUser} = useAuthContext();
-  const navigation = useNavigation<PublicScreenProps>();
   const {renderIcon} = useRenderIcon();
   const {
     handleSubmit,
@@ -36,22 +34,24 @@ export default function LoginForm() {
       ).json<BaseResponse<LoginResponse>>(r => r);
 
       const {user, access, refresh} = resp.data;
+      console.log({user});
       setUser(user);
       showToast('Login Succeed', ToastColorEnum.Succes);
       jwtManager.setToken(access);
       jwtManager.setRefreshToken(refresh);
-      navigation.navigate('Private');
 
-      const token = await requestUserPermission();
-      if (token) {
-        await API.FALL_SURVEILANCE_NOTI.post(
-          {
-            userId: user.id,
-            token,
-          },
-          API_PATH.NOTIFICATION_SERVICES.REGISTER_TOKEN,
-        ).json<BaseResponse<any>>(r => r);
-      }
+      try {
+        const token = await requestUserPermission();
+        if (token) {
+          await API.FALL_SURVEILANCE_NOTI.post(
+            {
+              userId: user.id,
+              token,
+            },
+            API_PATH.NOTIFICATION_SERVICES.REGISTER_TOKEN,
+          ).json<BaseResponse<any>>(r => r);
+        }
+      } catch (e) {}
     } catch (e: any) {
       if (e?.response?.status === '400' && e?.json.data) {
         showToast(
@@ -61,7 +61,7 @@ export default function LoginForm() {
         return;
       }
 
-      if (e?.response.status === 401) {
+      if (e?.response?.status === 401) {
         showToast('Invalid credentials', ToastColorEnum.Error);
         return;
       }
@@ -130,11 +130,7 @@ export default function LoginForm() {
           marginTop: 5,
         }}>
         <Text category="s2">New user?</Text>
-        <Link
-          to={{screen: 'Register'}}
-          style={{textDecorationLine: 'underline'}}>
-          Register
-        </Link>
+        <Link to={{screen: 'Register'}}>Register</Link>
       </View>
       <Button
         disabled={isLoading}

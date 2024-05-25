@@ -155,10 +155,7 @@ export default function PrivateNotification() {
           tabs={TABS}
         />
         <TouchableOpacity>
-          <Text
-            category="s2"
-            status="primary"
-            style={{textDecorationLine: 'underline'}}>
+          <Text category="s2" status="primary">
             Mark all as read
           </Text>
         </TouchableOpacity>

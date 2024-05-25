@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@eva-design/eva": "^2.2.0",
-    "@gorhom/bottom-sheet": "4.6.1",
     "@hookform/resolvers": "^3.3.2",
     "@react-native-anywhere/polyfill-base64": "^0.0.1-alpha.0",
     "@react-native-async-storage/async-storage": "^1.22.2",

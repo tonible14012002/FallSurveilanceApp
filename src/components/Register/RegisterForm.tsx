@@ -151,9 +151,7 @@ export default function RegisterForm() {
           marginTop: 5,
         }}>
         <Text category="s2">Already has an account?</Text>
-        <Link to={{screen: 'Login'}} style={{textDecorationLine: 'underline'}}>
-          Login
-        </Link>
+        <Link to={{screen: 'Login'}}>Login</Link>
       </View>
       <Button
         style={{

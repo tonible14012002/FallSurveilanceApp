@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 
-export const toastHeight = 100;
+export const toastHeight = 80;
 
 export const styles = StyleSheet.create({
   root: {

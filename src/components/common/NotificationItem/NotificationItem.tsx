@@ -1,4 +1,11 @@
-import {Avatar, Divider, Layout, Popover, Text} from '@ui-kitten/components';
+import {
+  Avatar,
+  Divider,
+  Layout,
+  Popover,
+  Text,
+  useTheme,
+} from '@ui-kitten/components';
 import {PopoverPlacement} from '@ui-kitten/components/ui/popover/type';
 import {ReactNode} from 'react';
 import {StyleSheet, TouchableOpacity, ViewStyle} from 'react-native';
@@ -73,21 +80,20 @@ export function NotificationItem(props: NotificationItemProps) {
 
   const {isOpen, onOpen, onClose} = useDisclosure();
 
+  const theme = useTheme();
   return (
-    <Layout style={style}>
+    <Layout
+      style={[{marginVertical: 8, backgroundColor: 'transparent'}, style]}>
       <ListItem
         onPressHandler={onPress}
         title={title}
         subTitle={subTitle}
-        style={{gap: 10}}
-        textContentWrapperStyle={{gap: 5}}
+        style={{gap: 16}}
+        textContentWrapperStyle={{gap: 4}}
         wrapperStyle={{
-          backgroundColor: isNotSeen ? '#E4F1FF' : 'transparent',
-          borderRadius: 10,
-          borderWidth: isNotSeen ? 3 : 1,
-          borderColor: '#6499E9',
-          paddingVertical: 10,
-          paddingHorizontal: 10,
+          backgroundColor: isNotSeen ? theme['color-basic-300'] : 'transparent',
+          borderRadius: 32,
+          padding: 16,
         }}
         leftIcon={
           avatarUrl && (
@@ -115,7 +121,7 @@ const styles = StyleSheet.create({
   popoverContainer: {
     width: 120,
     elevation: 2,
-    borderRadius: 8,
+    borderRadius: 16,
     overflow: 'hidden',
   },
 });

@@ -10,7 +10,7 @@ import type {User} from '~/schema/api/identity';
 import {ScreenSkeleton} from './ScreenSkeleton';
 
 export const AuthGuard = ({children}: PropsWithChildren) => {
-  const {user, setUser} = useAuthContext();
+  const {user, setUser, logout} = useAuthContext();
   const navigation = useNavigation<PublicScreenProps>();
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -58,7 +58,15 @@ export const AuthGuard = ({children}: PropsWithChildren) => {
       setIsAuthenticated(false);
       setIsLoading(false);
     }
-  }, [isMounted, setUser, user]);
+  }, [
+    isMounted,
+    setUser,
+    user,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    jwtManager.getToken(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    jwtManager.getRefreshToken(),
+  ]);
 
   useEffect(() => {
     handleTokenGuard();
@@ -66,11 +74,14 @@ export const AuthGuard = ({children}: PropsWithChildren) => {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
+      logout?.();
       navigation.navigate('Login');
+    } else {
+      navigation.navigate('Private');
     }
-  }, [isAuthenticated, isLoading, navigation]);
+  }, [isAuthenticated, isLoading, logout, navigation]);
 
-  if (isLoading) {
+  if (isLoading || user === undefined) {
     return <ScreenSkeleton />;
   }
   return <>{children}</>;

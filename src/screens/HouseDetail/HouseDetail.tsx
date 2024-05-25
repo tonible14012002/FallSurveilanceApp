@@ -228,88 +228,98 @@ export default function HouseDetailScreen() {
                   gap: 4,
                 })}>
                 <Text category="h6">{detail?.name ?? ''}</Text>
-                <Icon name="chevron-down-outline" />
+                {houseId === undefined ? null : (
+                  <Icon name="chevron-down-outline" />
+                )}
               </Pressable>
             }
           />
         }>
-        <View
-          style={{
-            justifyContent: 'space-between',
-            flexDirection: 'row',
-            alignItems: 'flex-start',
-          }}>
-          <View style={{gap: 8}}>
-            <Text category="s1" style={{opacity: 0.7}}>
-              Welcome Back!
-            </Text>
-            <View style={{position: 'relative'}}>
-              <View
-                style={{
-                  position: 'absolute',
-                  top: -4,
-                  right: -8,
-                }}>
-                <Icon size="tiny" name="edit-outline" />
-              </View>
-              <EditableText
-                style={{
-                  fontWeight: 'bold',
-                  color: 'black',
-                  fontSize: 28,
-                }}
-                value={detail?.name}
-                onUpdate={value => {
-                  handleUpdateHouseName(value);
-                }}
-              />
-            </View>
-          </View>
-          <View>{__renderHouseActionsBar()}</View>
-        </View>
-        <UserList
-          containerStyle={{marginBottom: 30}}
-          listStyle={{gap: 10}}
-          title={<Text category="label">Members</Text>}
-          detailNavigator={
-            <Button
-              onPress={isAllowAddMembers ? handleNavigateAddMembers : undefined}
+        {houseId === undefined ? (
+          <View />
+        ) : (
+          <>
+            <View
               style={{
-                borderRadius: 1000,
-                width: 35,
-                height: 35,
-              }}
-              appearance="ghost"
-              status="basic">
-              <Icon name="plus" />
-            </Button>
-          }>
-          {members.map(mem => (
-            <Avatar
-              key={mem.id}
-              label={getUserFullName(user)}
-              source={{
-                uri: mem.avatar,
-              }}
-              style={{width: 50, height: 50}}
-              loadingIndicatorSource={{
-                uri: boringAvatar(mem.first_name),
-              }}
-            />
-          ))}
-          <Button
-            style={{
-              borderRadius: 1000,
-              width: 50,
-              height: 50,
-            }}
-            status="basic"
-            onPress={handleNavigateAddMembers}>
-            <Icon name="plus" />
-          </Button>
-        </UserList>
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+                alignItems: 'flex-start',
+              }}>
+              <View style={{gap: 8}}>
+                <Text category="s1" style={{opacity: 0.7}}>
+                  Welcome Back!
+                </Text>
+                <View style={{position: 'relative'}}>
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: -4,
+                      right: -8,
+                    }}>
+                    <Icon size="tiny" name="edit-outline" />
+                  </View>
+                  <EditableText
+                    style={{
+                      fontWeight: 'bold',
+                      color: 'black',
+                      fontSize: 28,
+                    }}
+                    value={detail?.name}
+                    onUpdate={value => {
+                      handleUpdateHouseName(value);
+                    }}
+                  />
+                </View>
+              </View>
+              <View>{__renderHouseActionsBar()}</View>
+            </View>
+            <UserList
+              containerStyle={{marginBottom: 30}}
+              listStyle={{gap: 10}}
+              title={<Text category="label">Members</Text>}
+              detailNavigator={
+                <Button
+                  onPress={
+                    isAllowAddMembers ? handleNavigateAddMembers : undefined
+                  }
+                  style={{
+                    borderRadius: 1000,
+                    width: 35,
+                    height: 35,
+                  }}
+                  appearance="ghost"
+                  status="basic">
+                  <Icon name="plus" />
+                </Button>
+              }>
+              {members.map(mem => (
+                <Avatar
+                  key={mem.id}
+                  label={getUserFullName(user)}
+                  source={{
+                    uri: mem.avatar,
+                  }}
+                  style={{width: 50, height: 50}}
+                  loadingIndicatorSource={{
+                    uri: boringAvatar(mem.first_name),
+                  }}
+                />
+              ))}
+              <Button
+                style={{
+                  borderRadius: 1000,
+                  width: 50,
+                  height: 50,
+                }}
+                status="basic"
+                onPress={handleNavigateAddMembers}>
+                <Icon name="plus" />
+              </Button>
+            </UserList>
 
-        <RoomsList rooms={rooms} allowAddRoom={isAllowAddRoom} />
+            <RoomsList rooms={rooms} allowAddRoom={isAllowAddRoom} />
+          </>
+        )}
       </ScreenLayout>
 
       <ItemsSelectModal

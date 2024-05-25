@@ -24,6 +24,8 @@ export function useNotificationListener() {
           return;
         }
 
+        console.log({remoteMessage});
+
         showPopup(POPUPS.NOTIFICATION, {
           notification: {
             ...remoteMessage?.notification,

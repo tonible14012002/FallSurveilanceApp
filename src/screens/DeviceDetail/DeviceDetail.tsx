@@ -1,5 +1,5 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {Avatar, Button, Text} from '@ui-kitten/components';
+import {Avatar, Button, Spinner, Text} from '@ui-kitten/components';
 import {View} from 'react-native';
 import {ConfirmationModal} from '~/components/common/ConfimationModal';
 import Icon from '~/components/core/Icon';
@@ -15,6 +15,7 @@ import {mutate} from 'swr';
 import {API_PATH} from '~/constants/api';
 import {useVideoStreaming} from '~/libs/hooks/useVideoStreaming';
 import {RTCView} from 'react-native-webrtc';
+import {Skeleton} from '~/components/core/Skeleton';
 
 export default function DeviceDetailScreen() {
   const {navigate} = useNavigation<PrivateScreenWithBottomBarProps>();
@@ -144,25 +145,50 @@ export default function DeviceDetailScreen() {
 
         {/* </View> */}
         <View style={{gap: 16}}>
-          {localStream && (
+          {
             <View
               style={{
-                marginLeft: 3,
-                borderWidth: 7,
-                borderColor: '#000',
+                marginLeft: 4,
                 padding: 0,
                 width: '98%',
                 borderRadius: 8,
               }}>
-              <RTCView
-                streamURL={(localStream as any).toURL()}
+              <View
                 style={{
+                  height: 240,
                   width: '100%',
-                  height: 200,
-                }}
-              />
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  position: 'relative',
+                }}>
+                {localStream ? (
+                  <RTCView
+                    streamURL={(localStream as any).toURL()}
+                    style={{
+                      position: 'absolute',
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      top: 0,
+                    }}
+                  />
+                ) : (
+                  <>
+                    <Skeleton
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        top: 0,
+                      }}
+                    />
+                    <Spinner size="medium" />
+                  </>
+                )}
+              </View>
             </View>
-          )}
+          }
 
           <View style={{gap: 8}}>
             <Text category="label">Name</Text>

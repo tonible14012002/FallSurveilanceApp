@@ -48,7 +48,9 @@ export const HouseNotification = () => {
       boldWords.push(members[0].nickname);
 
       const membersLength = members.length;
-      if (membersLength > 1) boldWords.push(`${membersLength - 1} others`);
+      if (membersLength > 1) {
+        boldWords.push(`${membersLength - 1} others`);
+      }
 
       title += ' added to the house!';
     }
@@ -80,16 +82,18 @@ export const HouseNotification = () => {
   }) => {
     const {data} = item;
 
-    if (!!!data.length)
+    if (!data.length) {
       return (
         <Text style={{textAlign: 'center', marginTop: 20}}>
           No notifications found!
         </Text>
       );
+    }
 
     return (
       <List
         key={item.pageable?.next_page}
+        style={{backgroundColor: 'transparent'}}
         data={data}
         renderItem={({item: noti}) => {
           const avatar =
@@ -130,10 +134,7 @@ export const HouseNotification = () => {
         />
       }>
       <TouchableOpacity style={{alignItems: 'flex-end'}}>
-        <Text
-          category="s2"
-          status="primary"
-          style={{textDecorationLine: 'underline'}}>
+        <Text category="s2" status="primary">
           Mark all as read
         </Text>
       </TouchableOpacity>

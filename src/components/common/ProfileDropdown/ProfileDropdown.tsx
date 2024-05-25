@@ -46,7 +46,9 @@ export const ProfileDropdown = (props: ProfileDropdownProps) => {
           title={<Text category="s1">{getUserFullName(user)}</Text>}
         />
         <ListItem
-          onPressHandler={logout}
+          onPressHandler={async () => {
+            await logout?.();
+          }}
           level="1"
           title={
             <Text status="danger" category="s1">

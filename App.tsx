@@ -4,10 +4,12 @@ import {NavigationContainer} from '@react-navigation/native';
 import {ApplicationProvider, IconRegistry} from '@ui-kitten/components';
 import {EvaIconsPack} from '@ui-kitten/eva-icons';
 import React from 'react';
+import {LogBox} from 'react-native';
 import 'react-native-gesture-handler';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {HouseDetailContextProvider} from '~/components/HouseDetail';
 import AuthGuard from '~/components/auth/AuthGuard';
+import AutoRevalidateSWRConfig from '~/components/core/AutoRevalidateSWRConfig';
 import BottomTabBar from '~/components/core/BottomTabBar';
 import {
   privateRoutes,
@@ -25,6 +27,11 @@ import {
   PublicNavigator,
   PublicScreen,
 } from '~/libs/navigation';
+
+LogBox.ignoreLogs([
+  'source.uri should not be an empty string',
+  'ReactImageView: Image source "" doesn\'t exist',
+]); // Ignore log notification by message
 
 const PrivateTabScreens = () => {
   return (
@@ -71,6 +78,7 @@ const PrivateScreens = () => {
 function App() {
   return (
     <GestureHandlerRootView style={{flex: 1}}>
+      <AutoRevalidateSWRConfig />
       <ToastUtils />
       <ApplicationProvider {...eva} theme={eva.light}>
         <IconRegistry icons={EvaIconsPack} />

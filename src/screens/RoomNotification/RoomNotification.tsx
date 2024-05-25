@@ -48,7 +48,9 @@ export const RoomNotification = () => {
       boldWords.push(members[0].nickname);
 
       const membersLength = members.length;
-      if (membersLength > 1) boldWords.push(`${membersLength - 1} others`);
+      if (membersLength > 1) {
+        boldWords.push(`${membersLength - 1} others`);
+      }
 
       title += ' added to the room!';
     }
@@ -80,12 +82,13 @@ export const RoomNotification = () => {
   }) => {
     const {data} = item;
 
-    if (!!!data.length)
+    if (!data.length) {
       return (
         <Text style={{textAlign: 'center', marginTop: 20}}>
           No notifications found!
         </Text>
       );
+    }
 
     return (
       <List
@@ -130,10 +133,7 @@ export const RoomNotification = () => {
         />
       }>
       <TouchableOpacity style={{alignItems: 'flex-end'}}>
-        <Text
-          category="s2"
-          status="primary"
-          style={{textDecorationLine: 'underline'}}>
+        <Text category="s2" status="primary">
           Mark all as read
         </Text>
       </TouchableOpacity>
