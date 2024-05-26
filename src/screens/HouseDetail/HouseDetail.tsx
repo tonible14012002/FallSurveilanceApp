@@ -340,7 +340,8 @@ export default function HouseDetailScreen() {
             title={<Text style={{fontWeight: '700'}}>{item.name}</Text>}
             subTitle={`${item.members.length} members`}
             rightEle={
-              <View style={{flexDirection: 'row'}}>
+              <View
+                style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
                 {item.is_owner && (
                   <View
                     style={{

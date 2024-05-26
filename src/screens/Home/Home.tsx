@@ -25,6 +25,7 @@ export default function Home() {
   const {user} = useAuthContext();
   const {setHouseId} = useHouseDetailContext();
   const {houses, isFirstLoading} = useFetchJoinedHouses();
+  console.log({houses, isFirstLoading});
 
   const owned_houses = useMemo(
     () => houses?.filter(house => house.is_owner),

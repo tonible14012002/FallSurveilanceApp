@@ -33,7 +33,6 @@ export default function RegisterForm() {
         {...data, password_confirm: data.password ?? 'pw'},
         API_PATH.IDENTITY_SERVICES.REGISTER,
       ).json<BaseResponse<RegisterResponse>>(r => r);
-
       navigation.navigate('Login');
     } catch (e: any) {
       if (e?.response.status == 400) {

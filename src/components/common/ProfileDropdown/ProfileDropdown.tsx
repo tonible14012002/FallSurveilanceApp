@@ -6,8 +6,6 @@ import {Pressable, StyleSheet} from 'react-native';
 import ListItem from '~/components/core/ListItem';
 import {useAuthContext} from '~/context/auth';
 import {getUserFullName} from '~/utils/user';
-import {useNavigation} from '@react-navigation/native';
-import {PublicScreenProps} from '~/constants/routes';
 
 interface ProfileDropdownProps {
   trigger: ReactNode;
@@ -20,7 +18,6 @@ interface ProfileDropdownProps {
 export const ProfileDropdown = (props: ProfileDropdownProps) => {
   const {trigger, onOpen, isOpen, onClose, placement} = props;
   const {logout, user} = useAuthContext();
-  const navigation = useNavigation<PublicScreenProps>();
 
   const renderTrigger = () => <Pressable onPress={onOpen}>{trigger}</Pressable>;
 
@@ -52,7 +49,6 @@ export const ProfileDropdown = (props: ProfileDropdownProps) => {
           onPressHandler={async () => {
             onClose?.();
             await logout?.();
-            navigation.navigate('Login');
           }}
           level="1"
           title={

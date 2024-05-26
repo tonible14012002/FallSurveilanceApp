@@ -7,18 +7,16 @@ import {useRenderIcon} from '~/hooks/useRenderIcon';
 import {LoginFormSchemaType} from '~/schema/form';
 import {API, API_PATH} from '~/constants/api';
 import {BaseResponse} from '~/schema/common';
-import {LoginResponse} from '~/schema/api/identity';
-import {useAuthContext} from '~/context/auth';
-import jwtManager from '~/libs/jwt/jwtManager';
 import {requestUserPermission} from '~/libs/notification';
 import {formatFieldErrorMessage} from '~/libs/utils';
 import {showToast} from '~/libs/toast';
 import {ToastColorEnum} from '../ToastMessage/ToastColorEnum';
+import {useAuthContext} from '~/context/auth';
 
 export default function LoginForm() {
   const [isLoading, setIsloading] = useState(false);
 
-  const {setUser} = useAuthContext();
+  const {login} = useAuthContext();
   const {renderIcon} = useRenderIcon();
   const {
     handleSubmit,
@@ -28,16 +26,7 @@ export default function LoginForm() {
   const onSubmit = async (data: any) => {
     try {
       setIsloading(true);
-      const resp = await API.FALL_SURVEILANCE.post(
-        data,
-        API_PATH.IDENTITY_SERVICES.LOGIN,
-      ).json<BaseResponse<LoginResponse>>(r => r);
-
-      const {user, access, refresh} = resp.data;
-      jwtManager.setToken(access);
-      jwtManager.setRefreshToken(refresh);
-
-      setUser(user);
+      const user = await login?.(data);
       showToast('Login Succeed', ToastColorEnum.Succes);
 
       try {
@@ -45,15 +34,18 @@ export default function LoginForm() {
         if (token) {
           await API.FALL_SURVEILANCE_NOTI.post(
             {
-              userId: user.id,
+              userId: user?.id as string,
               token,
             },
             API_PATH.NOTIFICATION_SERVICES.REGISTER_TOKEN,
           ).json<BaseResponse<any>>(r => r);
         }
-      } catch (e) {}
+      } catch (e) {
+        console.log(e);
+      }
     } catch (e: any) {
-      if (e?.response?.status === '400' && e?.json.data) {
+      console.log('asdjfiaoisdj');
+      if (e?.response?.status === 400 && e?.json.data) {
         showToast(
           `Invalid information\n${formatFieldErrorMessage(e?.json.data ?? {})}`,
           ToastColorEnum.Error,

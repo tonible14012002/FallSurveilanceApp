@@ -88,7 +88,7 @@ export const API_PATH = {
     HOUSE: (houseId: string) => `/notification-services/house/${houseId}/`,
     ROOM: (roomId: string) => `/notification-services/room/${roomId}/`,
     DEVICE: (deviceId: string) => `/notification-services/device/${deviceId}/`,
-    PRIVATE: `/notification-services/private/`,
+    PRIVATE: '/notification-services/private/',
     REGISTER_TOKEN: '/register-token',
     ADD_DEVICE: '/jetson-devices',
     DELETE_DEVICE: '/jetson-devices',

@@ -121,7 +121,6 @@ export default function PrivateNotification() {
                 noti.event_code ===
                 PRIVATE_NOTIFICATION_CODE.NOTIFY_USER_DEVICE_FALL_DETECTED
               }
-              style={{marginBottom: 8}}
               isNotSeen={!noti.is_seen}
               title={__renderNotificationText(
                 noti.event_code as PrivateNotificationCodeType,

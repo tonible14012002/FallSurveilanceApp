@@ -2,9 +2,11 @@ import {
   PropsWithChildren,
   createContext,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
+import {useAuthContext} from '~/context/auth';
 
 interface HouseDetailContextValue {
   houseId?: string;
@@ -20,6 +22,7 @@ export const useHouseDetailContext = () => useContext(HouseDetailContext);
 
 export const HouseDetailContextProvider = (props: PropsWithChildren) => {
   const [houseId, setHouseId] = useState<string>();
+  const {user} = useAuthContext();
 
   const contextValue = useMemo(
     () => ({
@@ -28,6 +31,10 @@ export const HouseDetailContextProvider = (props: PropsWithChildren) => {
     }),
     [houseId],
   );
+
+  useEffect(() => {
+    setHouseId(undefined);
+  }, [user?.id]);
 
   return (
     <HouseDetailContext.Provider value={contextValue}>

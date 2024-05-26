@@ -1,7 +1,11 @@
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {PropsWithChildren, useCallback, useEffect, useState} from 'react';
 import {API, API_PATH, loginApi} from '~/constants/api';
-import {PublicRouteParamList, PublicScreenProps} from '~/constants/routes';
+import {
+  PrivateScreenWithBottomBarProps,
+  PublicRouteParamList,
+  PublicScreenProps,
+} from '~/constants/routes';
 import {useAuthContext} from '~/context/auth';
 import {useIsMounted} from '~/hooks/common';
 import jwtManager from '~/libs/jwt/jwtManager';
@@ -11,7 +15,9 @@ import {ScreenSkeleton} from './ScreenSkeleton';
 
 export const AuthGuard = ({children}: PropsWithChildren) => {
   const {user, setUser, logout} = useAuthContext();
-  const navigation = useNavigation<PublicScreenProps>();
+  const navigation = useNavigation<
+    PublicScreenProps & PrivateScreenWithBottomBarProps
+  >();
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const isMounted = useIsMounted();
@@ -31,6 +37,7 @@ export const AuthGuard = ({children}: PropsWithChildren) => {
         // check if user is already logged in
         setIsAuthenticated(true);
         setIsLoading(false);
+        loginApi(token as string);
         return;
       }
       // get user object
@@ -72,27 +79,28 @@ export const AuthGuard = ({children}: PropsWithChildren) => {
   ]);
 
   useEffect(() => {
-    console.log('checking');
     handleTokenGuard();
   }, [handleTokenGuard]);
 
   useEffect(() => {
-    console.log('checking');
-    if (!isLoading && !isAuthenticated) {
-      console.log('navigate to login');
+    if (
+      !isLoading &&
+      !isAuthenticated &&
+      !['Login', 'Register'].includes(route.name)
+    ) {
       logout?.();
       navigation.navigate('Login');
     }
-  }, [isAuthenticated, isLoading, logout, navigation]);
+  }, [isAuthenticated, isLoading, logout, navigation, route.name, setUser]);
 
   useEffect(() => {
-    console.log('checking');
     if (
       !isLoading &&
       isAuthenticated &&
       ['Login', 'Register'].includes(route.name)
     ) {
       navigation.navigate('Private');
+      navigation.navigate('Home');
     }
   }, [isAuthenticated, isLoading, navigation, route.name]);
 
